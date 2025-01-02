@@ -1,4 +1,4 @@
-/* eslint-disable react/display-name */
+/* eslint-disable react/display-name */  
 "use client";  
 
 import React from "react";  
@@ -36,36 +36,35 @@ const StarRating: React.FC<{ rating: number; count: number }> = React.memo(({ ra
   );  
 });  
 
-const formatPrice = (price: string): string => {  
-  return parseFloat(price).toFixed(2);  
+const formatPrice = (price: number | string): string => {  
+  return parseFloat(String(price)).toFixed(2);  
 };  
 
-const ImageWithFallback: React.FC<{ src: string; alt: string }> = ({ src, alt }) => {
-  const [imageSrc, setImageSrc] = React.useState(src);
+const ImageWithFallback: React.FC<{ src: string; alt: string; width: number; height: number; fallbackSrc?: string }> = React.memo(({ src, alt, width, height, fallbackSrc = "/path/to/placeholder-image.jpg" }) => {  
+  const [imageSrc, setImageSrc] = React.useState(src);  
 
-  const handleError = () => {
-    setImageSrc("/path/to/placeholder-image.jpg"); 
-  };
+  const handleError = () => setImageSrc(fallbackSrc);  
 
-  return (
-    <Image
-      src={imageSrc}
-      alt={alt}
-      className="transition-transform duration-300 rounded-lg transform group-hover:scale-105 mb-4"
-      fill 
-      onError={handleError}
-    />
-  );
-};
+  return (  
+    <Image  
+      src={imageSrc}  
+      alt={alt}  
+      width={width}  
+      height={height}  
+      className="transition-transform duration-300 rounded-lg transform group-hover:scale-105 mb-4"  
+      onError={handleError}  
+    />  
+  );  
+});  
 
 const Listing: React.FC = () => {  
   return (  
     <section className="max_padd_container xl:py-10 py-10">  
       <header className="w-[90%] mb-10">  
-        <h4 className="bold-16 text-secondary text-sm md:text-base ">  
+        <h4 className="bold-16 text-secondary text-sm md:text-base">  
           TAKE A LOOK AT THESE OFFERS  
         </h4>  
-        <h3 className="bold-28  sm:text-xl md:text-2xl max-w-lg">  
+        <h3 className="bold-28 sm:text-xl md:text-2xl max-w-lg">  
           We Provide Top Destinations  
         </h3>  
         <p className="max-w-lg text-gray-700">  
@@ -73,31 +72,29 @@ const Listing: React.FC = () => {
         </p>  
       </header>  
 
-      {/* Grid Layout for Testimonials */}  
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">  
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">  
         {PACKAGES.map(({ id, URL, title1, title2, price, des, duration, rating = 0, count = 0 }: Testimonial) => (  
           <article  
             key={id}  
-            className="py-2 px-2 pb-4 border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-500"  
+            className="py-2 px-2 pb-4 border  rounded-lg shadow-md hover:shadow-lg transition-shadow duration-500"  
           >  
-            {/* Image Section */}  
             {URL && (  
               <Link  
                 href="/"  
                 aria-label={`View details for ${title1}`}  
                 passHref  
                 className="group overflow-hidden relative"  
-                  
               >  
-                <div className="relative mb-3 w-full h-[210]"> {/* Container for image */}  
-                  <ImageWithFallback  
-                    src={URL}  
-                    alt={title1 || "Testimonial image"}  
-                  />  
-                </div>
+                <ImageWithFallback  
+                  src={URL}  
+                  alt={title1 || "Testimonial image"}  
+                  width={640}  
+                  height={366}  
+                />  
+
                 {price && (  
                   <span  
-                    className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-tertiary rounded-2xl text-white px-4 py-1 group-hover:bg-secondary sm:text-xl"  
+                    className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-tertiary rounded-2xl text-white px-4 py-1 group-hover:bg-secondary sm:text-lg"  
                   >  
                     ${formatPrice(price)}  
                   </span>  
@@ -105,7 +102,6 @@ const Listing: React.FC = () => {
               </Link>  
             )}  
 
-            {/* Content Section */}  
             <h4 className="text-lg lg:text-xl font-bold mb-1 ml-1">{title1}</h4>  
             <div className="flex items-start justify-start gap-1">  
               <SlLocationPin className="text-gray-500" aria-label="Location" />  
@@ -116,7 +112,7 @@ const Listing: React.FC = () => {
             <p className="text-sm text-gray-700 mb-3">{des}</p>  
             <hr />  
 
-            <footer className="flex justify-between mt-3">  
+            <footer className="flex justify-between mt-3 ">  
               <StarRating rating={rating} count={count} />  
               <div className="flex items-center gap-2">  
                 <RiTimeLine aria-label="Duration" />  
