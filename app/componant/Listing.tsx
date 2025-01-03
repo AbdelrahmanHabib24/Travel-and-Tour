@@ -78,7 +78,7 @@ const Listing: React.FC = () => {
 
                 {price && (  
                   <span  
-                    className="absolute bottom-56    left-1/2 transform -translate-x-1/2 group-hover:bg-secondary  bg-tertiary rounded-2xl text-white px-2 py-1 text-sm md:text-lg lg:text-xl"  
+                    className="absolute bottom-56  left-1/2 transform -translate-x-1/2 group-hover:bg-secondary  bg-tertiary rounded-2xl text-white px-2 py-1 text-sm md:text-lg lg:text-xl"  
                   >  
                     ${formatPrice(price)}  
                   </span>  
