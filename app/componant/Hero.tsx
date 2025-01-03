@@ -5,6 +5,7 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";  
 import { IoLocation } from "react-icons/io5";  
 import debounce from "lodash/debounce";  
+import Loading from "../loading"; 
 import BackgroundVideo from "./BackgroundVideo";  
 
 const Hero: React.FC = () => {  
@@ -12,6 +13,7 @@ const Hero: React.FC = () => {
   const [city, setCity] = useState("");  
   const [date, setDate] = useState("");  
   const [maxPrice, setMaxPrice] = useState(1000);  
+  const [isLoading, setIsLoading] = useState(true);
 
   const fullText = "Travel To Any Corner In The World";  
   const typingSpeed = 100;  
@@ -60,6 +62,18 @@ const Hero: React.FC = () => {
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {  
     setDate(e.target.value);  
   };  
+
+  useEffect(() => {  
+    const timer = setTimeout(() => {  
+      setIsLoading(false);  
+    }, 10000); 
+
+    return () => clearTimeout(timer);  
+  }, []);  
+
+  if (isLoading) {  
+    return <Loading />; 
+  }  
 
   return (  
     <section className="relative w-full h-screen flex items-center justify-center" id="home">  
@@ -116,7 +130,6 @@ const Hero: React.FC = () => {
             />  
           </div>  
 
-          {/* Max Price Input */}  
           <div className="flex-1">  
             <label htmlFor="price" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">  
               Max price:  
