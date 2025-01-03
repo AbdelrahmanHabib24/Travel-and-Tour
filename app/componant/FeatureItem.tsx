@@ -8,7 +8,7 @@ type FeatureItemProps = {
 
 const FeatureItem = ({ URL, title }: FeatureItemProps) => {  
   return (  
-    <div className="mx-4  group"> {/* إضافة mb-8 هنا */}  
+    <div className="mx-4  group"> 
       <Link  
         href="/"  
         className="overflow-hidden relative"  

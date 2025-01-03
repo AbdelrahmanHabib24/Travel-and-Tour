@@ -1,16 +1,16 @@
-"use client"; // تذكير باستخدام هذه السطر للمكونات التي تستخدم هوكات  
+"use client";  
 
 import React, { useEffect, useState } from "react";  
 
 const BackgroundVideo: React.FC = () => {  
-  const [isClient, setIsClient] = useState(false); // State للتحقق من كوننا على العميل  
+  const [isClient, setIsClient] = useState(false);  
 
   useEffect(() => {  
-    setIsClient(true); // لا تقم بتحديث الحالة إلا في العميل  
+    setIsClient(true);  
   }, []);  
 
   if (!isClient) {  
-    return null; // لا تعرض شيئًا على الخادم  
+    return null;  
   }  
 
   return (  
@@ -18,6 +18,7 @@ const BackgroundVideo: React.FC = () => {
       autoPlay  
       loop  
       muted  
+      preload="auto"  
       className="absolute inset-0 w-full h-full object-cover"  
       aria-label="A scenic travel video playing in the background"  
       poster="/poster.jpg"  

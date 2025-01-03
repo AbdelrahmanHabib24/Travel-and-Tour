@@ -5,7 +5,7 @@ import Testimonials from "./componant/Testimonials";
 
 export default function Home() {
   return (
-    <div className=""> 
+    <div className=" overflow-hidden"> 
     <Hero/>
     <Feature/>
     <Listing/>
