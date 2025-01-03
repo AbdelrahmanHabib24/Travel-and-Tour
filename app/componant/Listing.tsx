@@ -40,23 +40,6 @@ const formatPrice = (price: number | string): string => {
   return parseFloat(String(price)).toFixed(2);  
 };  
 
-const ImageWithFallback: React.FC<{ src: string; alt: string; width: number; height: number; fallbackSrc?: string }> = React.memo(({ src, alt, width, height, fallbackSrc = "/path/to/placeholder-image.jpg" }) => {  
-  const [imageSrc, setImageSrc] = React.useState(src);  
-
-  const handleError = () => setImageSrc(fallbackSrc);  
-
-  return (  
-    <Image  
-      src={imageSrc}  
-      alt={alt}  
-      width={width}  
-      height={height}  
-      className="transition-transform duration-300 rounded-lg transform group-hover:scale-105 mb-4"  
-      onError={handleError}  
-    />  
-  );  
-});  
-
 const Listing: React.FC = () => {  
   return (  
     <section className="max_padd_container xl:py-10 py-10">  
@@ -76,25 +59,26 @@ const Listing: React.FC = () => {
         {PACKAGES.map(({ id, URL, title1, title2, price, des, duration, rating = 0, count = 0 }: Testimonial) => (  
           <article  
             key={id}  
-            className="py-2 px-2 pb-4 border  rounded-lg shadow-md hover:shadow-lg transition-shadow duration-500"  
+            className="py-2 px-2 pb-4 border group  relative  rounded-lg shadow-md hover:shadow-lg transition-shadow duration-500"  
           >  
             {URL && (  
               <Link  
                 href="/"  
                 aria-label={`View details for ${title1}`}  
                 passHref  
-                className="group overflow-hidden relative"  
+                className=" overflow-hidden"  
               >  
-                <ImageWithFallback  
+                <Image  
                   src={URL}  
                   alt={title1 || "Testimonial image"}  
                   width={640}  
                   height={366}  
+                  className="transition-transform duration-300 rounded-lg transform group-hover:scale-105 mb-4"  
                 />  
 
                 {price && (  
                   <span  
-                    className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-tertiary rounded-2xl text-white px-4 py-1 group-hover:bg-secondary sm:text-lg"  
+                    className="absolute bottom-56    left-1/2 transform -translate-x-1/2 group-hover:bg-secondary  bg-tertiary rounded-2xl text-white px-2 py-1 text-sm md:text-lg lg:text-xl"  
                   >  
                     ${formatPrice(price)}  
                   </span>  
