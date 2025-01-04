@@ -1,13 +1,13 @@
 "use client";  
 
 import React, { useEffect, useState } from "react";  
-import Loading from "../loading"; // تأكد من أن لديك مكون التحميل هنا  
+import Loading from "../loading";  
 
 const BackgroundVideo: React.FC = () => {  
   const [isClient, setIsClient] = useState(false);  
   const [isVideoVisible, setIsVideoVisible] = useState(false);  
   const [isLoading, setIsLoading] = useState(true);  
-  const [hasError, setHasError] = useState(false); // حالة جديدة للتعامل مع الأخطاء  
+  const [hasError, setHasError] = useState(false); 
 
   useEffect(() => {  
     const loadVideo = async () => {  
@@ -25,17 +25,16 @@ const BackgroundVideo: React.FC = () => {
         setIsLoading(false);  
       } catch (error) {  
         console.error("Error loading video:", error);  
-        setHasError(true); // تعيين حالة الخطأ  
+        setHasError(true);  
       }  
     };  
 
-    loadVideo(); // استدعاء دالة تحميل الفيديو  
-
+    loadVideo(); 
     setIsClient(true);  
 
     return () => {  
-      setIsVideoVisible(false); // إعادة تعيين حالة الفيديو عندUnmounting  
-      setIsLoading(true); // إعادة تعيين حالة التحميل  
+      setIsVideoVisible(false); 
+      setIsLoading(true);  
     };  
   }, []);  
 

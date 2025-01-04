@@ -52,7 +52,7 @@ body {
   border-top-color: #09c;
   position: absolute;
   left: 0;
-  padding-left: 50px;
+ 
   top: 0;
   animation: weld-rotate 2s infinite ease-in;
 }
