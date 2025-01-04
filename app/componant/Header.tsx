@@ -49,7 +49,7 @@ const Header = () => {
         </div>  
 
         {menuOpened && (  
-          <div className="absolute bg-white shadow-lg rounded-lg right-[0.%] top-14 z-50 transition-all duration-500 mt-3">  
+          <div className="absolute bg-white shadow-lg rounded-lg right-[0.5%] top-14 z-50 transition-all duration-500 mt-3">  
             <Nav   
               containerStyles="flexCenter transition-all duration-500 py-8 gap-y-6 px-6 flex-col"   
               linkStyles="hover:text-secondary cursor-pointer text-tertiary"   
