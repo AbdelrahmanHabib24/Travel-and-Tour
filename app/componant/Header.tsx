@@ -2,7 +2,7 @@
 "use client";  
 import Link from "next/link";  
 import React, { useEffect, useState, useCallback } from "react";  
-import { usePathname, useRouter } from 'next/navigation';  
+import { usePathname, useRouter } from "next/navigation";  
 import Nav from "@/app/componant/Nav";  
 import { CiMenuFries } from "react-icons/ci";  
 import { IoCloseOutline } from "react-icons/io5";  
@@ -12,11 +12,17 @@ const Header = () => {
   const router = useRouter();  
   const [active, setActive] = useState(false);  
   const [menuOpened, setMenuOpened] = useState(false);  
-  const [showLoginButton, setShowLoginButton] = useState(true);  
+  const [isLoggedIn, setIsLoggedIn] = useState(false);  
 
   const toggleMenu = useCallback(() => {  
-    setMenuOpened(prevState => !prevState);  
+    setMenuOpened((prevState) => !prevState);  
   }, []);  
+
+  const handleLogout = () => {  
+    document.cookie = "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"; // Clear auth token from cookies  
+    setIsLoggedIn(false); // Update login state  
+    router.push("/Login"); // Redirect to the login page  
+  };  
 
   useEffect(() => {  
     const handleScroll = () => setActive(window.scrollY > 40);  
@@ -25,11 +31,13 @@ const Header = () => {
   }, []);  
 
   useEffect(() => {  
-    setShowLoginButton(pathname !== '/Login');   
-  }, [pathname]);   
+    // Check if the authToken exists in cookies  
+    const authToken = document.cookie.split("; ").find((row) => row.startsWith("authToken="));  
+    setIsLoggedIn(!!authToken); // If authToken exists, user is logged in  
+  }, [pathname]);  
 
-  const handleSignUpClick = () => router.push('/SignUp');  
-  const handleLoginClick = () => router.push('/Login');  
+  const handleSignUpClick = () => router.push("/SignUp");  
+  const handleLoginClick = () => router.push("/Login");  
 
   return (  
     <header className={`${active ? "bg-white shadow-lg py-3" : "bg-opacity-70 py-4"} fixed right-0 left-0 top-0 w-full z-50 transition-all duration-500`}>  
@@ -39,28 +47,35 @@ const Header = () => {
         </Link>  
 
         <Nav  
-          containerStyles="hidden lg:flex items-center  text-center justify-between gap-x-10"  
+          containerStyles="hidden lg:flex items-center text-center justify-between gap-x-10"  
           linkStyles="hover:text-secondary cursor-pointer text-tertiary"  
         />  
 
-<div className="flex items-center lg:gap-x-12  gap-x-10 md:gap-x-32 ">
-  <button
-    onClick={handleSignUpClick}
-    className="bg-secondary text-white text-sm md:text-lg rounded-lg py-1 px-2 md:px-2 hover:text-tertiary transition-all duration-300"
-  >
-    Signup
-  </button>
-
-  {showLoginButton && (
-    <button
-      onClick={handleLoginClick}
-      className="bg-secondary text-white text-sm md:text-lg rounded-lg py-1  px-2 md:px-2 hover:text-tertiary transition-all duration-300"
-    >
-      Login
-    </button>
-  )}
-</div>
-
+        <div className="flex items-center lg:gap-x-12 gap-x-10 md:gap-x-32">  
+          {isLoggedIn ? (  
+            <button  
+              onClick={handleLogout}  
+              className="bg-orange-500 text-white text-sm md:text-lg rounded-lg py-1 px-2 md:px-2 hover:text-tertiary transition-all duration-300"  
+            >  
+              Log out  
+            </button>  
+          ) : (  
+            <>  
+              <button  
+                onClick={handleSignUpClick}  
+                className="bg-secondary text-white text-sm md:text-lg rounded-lg py-1 px-2 md:px-2 hover:text-tertiary transition-all duration-300"  
+              >  
+                Signup  
+              </button>  
+              <button  
+                onClick={handleLoginClick}  
+                className="bg-secondary text-white text-sm md:text-lg rounded-lg py-1 px-2 md:px-2 hover:text-tertiary transition-all duration-300"  
+              >  
+                Login  
+              </button>  
+            </>  
+          )}  
+        </div>  
 
         <div  
           onClick={toggleMenu}  
@@ -69,7 +84,7 @@ const Header = () => {
           aria-label="Toggle menu"  
           className="transition-all duration-500 lg:hidden cursor-pointer"  
           tabIndex={0}  
-          onKeyDown={(e) => e.key === 'Enter' && toggleMenu()}  
+          onKeyDown={(e) => e.key === "Enter" && toggleMenu()}  
         >  
           {menuOpened ? <IoCloseOutline className="transition-all duration-500" /> : <CiMenuFries className="transition-all duration-500" />}  
         </div>  

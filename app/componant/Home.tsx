@@ -11,12 +11,12 @@ const ProtectedHome: React.FC = () => {
       .split("; ")
       .find((row) => row.startsWith("authToken="))
       ?.split("=")[1];
-
+  
     if (!authToken) {
-      router.push("/Login"); // إعادة توجيه المستخدم إلى صفحة تسجيل الدخول
+      router.push("/Login"); 
     }
   }, [router]);
-
+  
   return (
     <div>
       {/* محتوى الصفحة المحمية */}

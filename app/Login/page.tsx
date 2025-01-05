@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -21,7 +22,6 @@ const Home: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isMounted, setIsMounted] = useState(true);
 
   const router = useRouter();
@@ -36,6 +36,8 @@ const Home: React.FC = () => {
     const { name } = e.target;
     validateField(name, formData[name as keyof FormData]);
   };
+
+ 
 
   const validateField = (fieldName: string, value: string) => {
     let error = "";
@@ -69,17 +71,17 @@ const Home: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm()) return;
-  
+
     setLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
-  
+
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
         const user = JSON.parse(storedUser);
         if (user.email === formData.email && user.password === formData.password) {
-          document.cookie = `authToken=${formData.email}; path=/;`; // حفظ رمز المصادقة في الكوكيز
-          router.push("/"); // إعادة التوجيه للصفحة الرئيسية
+          document.cookie = `authToken=${formData.email}; path=/;`; // Save auth token in cookies
+          router.push("/"); // Redirect to home page
         } else {
           setErrors({ email: "Invalid email or password." });
         }
@@ -92,7 +94,6 @@ const Home: React.FC = () => {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     const { email, password } = formData;
@@ -141,6 +142,8 @@ const Home: React.FC = () => {
               />
               <SubmitButton isFormValid={isFormValid} loading={loading} />
             </form>
+
+            
           </motion.div>
         )}
       </AnimatePresence>
