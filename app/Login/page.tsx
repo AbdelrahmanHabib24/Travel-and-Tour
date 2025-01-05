@@ -121,7 +121,7 @@ const Login: React.FC = () => {
             exit={{ opacity: 0, y: 20 }} // Exit animation
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-2xl font-semibold mb-4 text-center">Login</h1>
+            <h1 className="text-2xl bold-22 mb-4 text-center">Login</h1>
 
             <form onSubmit={handleSubmit} noValidate>
               <InputField
