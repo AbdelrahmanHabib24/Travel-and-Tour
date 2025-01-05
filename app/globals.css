@@ -10,7 +10,7 @@
 }
 
 body {
-  height: 200vh;
+  height: 100vh;
 }
 
 .linearGradient {
@@ -289,4 +289,10 @@ body {
   .bold-15 {
     @apply text-[15px] font-[700];
   }
+}
+
+.fix-height{
+  
+  min-height: calc(100vh - 100px);   /* This will result in a final height of 100px */  
+
 }
