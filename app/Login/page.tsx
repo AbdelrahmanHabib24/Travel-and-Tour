@@ -1,10 +1,10 @@
-"use client"; // Ensure this is present for Next.js client-side rendering
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import InputField from "@/app/componant/InputField"; // Check path correctness
-import SubmitButton from "@/app/componant/SubmitButton"; // Check path correctness
+import InputField from "@/app/componant/InputField";
+import SubmitButton from "@/app/componant/SubmitButton";
 
 interface FormData {
   email: string;
@@ -16,15 +16,12 @@ interface FormErrors {
   password?: string;
 }
 
-const Login: React.FC = () => {
-  const [formData, setFormData] = useState<FormData>({
-    email: "",
-    password: "",
-  });
-
+const Home: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({ email: "", password: "" });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isMounted, setIsMounted] = useState(true);
 
   const router = useRouter();
@@ -72,20 +69,17 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm()) return;
-
+  
     setLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate API call
-      console.log("Login Data Submitted:", formData);
-
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+  
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
         const user = JSON.parse(storedUser);
         if (user.email === formData.email && user.password === formData.password) {
-          setIsMounted(false); // Trigger animation for component unmount
-          setTimeout(() => {
-            router.push("/"); // Navigate after animation
-          }, 500); // Wait for animation to complete
+          document.cookie = `authToken=${formData.email}; path=/;`; // حفظ رمز المصادقة في الكوكيز
+          router.push("/"); // إعادة التوجيه للصفحة الرئيسية
         } else {
           setErrors({ email: "Invalid email or password." });
         }
@@ -98,6 +92,7 @@ const Login: React.FC = () => {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     const { email, password } = formData;
@@ -118,7 +113,7 @@ const Login: React.FC = () => {
             className="bg-white p-6 rounded-lg shadow-md w-full"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }} // Exit animation
+            exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.5 }}
           >
             <h1 className="text-2xl bold-22 mb-4 text-center">Login</h1>
@@ -153,4 +148,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default Home;
