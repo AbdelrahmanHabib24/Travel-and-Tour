@@ -67,12 +67,14 @@ const Header = () => {
               >  
                 Signup  
               </button>  
-              <button  
-                onClick={handleLoginClick}  
-                className="bg-secondary text-white text-sm md:text-lg rounded-lg py-1 px-2 md:px-2 hover:text-tertiary transition-all duration-300"  
-              >  
-                Login  
-              </button>  
+              {pathname !== "/Login" && (  
+                <button  
+                  onClick={handleLoginClick}  
+                  className="bg-secondary text-white text-sm md:text-lg rounded-lg py-1 px-2 md:px-2 hover:text-tertiary transition-all duration-300"  
+                >  
+                  Login  
+                </button>  
+              )}  
             </>  
           )}  
         </div>  
