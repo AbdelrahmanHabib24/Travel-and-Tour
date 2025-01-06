@@ -40,7 +40,7 @@ const Form: React.FC<FormProps> = ({
     <form onSubmit={handleSubmit} noValidate>
       {/* Username */}
       <div className="mb-4">
-        <label htmlFor="username" className="block mb-1 font-medium">
+        <label htmlFor="username" className="block mb-1  font-medium">
           Username:
         </label>
         <input
