@@ -86,7 +86,7 @@ const Home: React.FC = () => {
           setErrors({ email: "Invalid email or password." });
         }
       } else {
-        setErrors({ email: "No Email found." });
+        setErrors({ email: "No Email found. Please register first." });
       }
     } catch (error) {
       console.error("Error during login:", error);
@@ -111,7 +111,7 @@ const Home: React.FC = () => {
       <AnimatePresence>
         {isMounted && (
           <motion.div
-            className="bg-white p-6 rounded-lg shadow-md w-full"
+            className="bg-white p-6 rounded-lg shadow-md w-96"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
