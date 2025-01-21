@@ -1,6 +1,6 @@
 import React from 'react';  
 import Link from 'next/link';  
-
+import '@fortawesome/fontawesome-free/css/all.min.css';
 interface FooterLinkProps {  
   href: string; // Define href type as string  
   children: React.ReactNode; // Define children type  
@@ -52,25 +52,34 @@ const Footer: React.FC = () => {
             <h4 className="text-lg text-secondary font-semibold pb-2">Follow Us</h4>  
             <ul>  
               <li>  
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition duration-300">Facebook</a>  
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition duration-300" aria-label="Facebook">  
+                  Facebook  
+                </a>  
               </li>  
               <li>  
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition duration-300">Twitter</a>  
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition duration-300" aria-label="Twitter">  
+                  Twitter  
+                </a>  
               </li>  
               <li>  
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition duration-300">Instagram</a>  
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition duration-300" aria-label="Instagram">  
+                  Instagram  
+                </a>  
               </li>  
               <li>  
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition duration-300">LinkedIn</a>  
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition duration-300" aria-label="LinkedIn">  
+                  LinkedIn  
+                </a>  
               </li>  
             </ul>  
           </div>  
         </div>  
       </div>  
       <hr />  
-      <div className="bg-gray-800 py-4 text-center">  
-        <p>&copy; {currentYear} Passport. All rights reserved.</p>  
-      </div>  
+      <div className="bg-gray-800 py-4 flex text-center gap-x-6 justify-center items-center">  
+    <p className="text-center  justify-center flex">&copy; {currentYear} Passport. All rights reserved.</p>  
+    
+</div>
     </footer>  
   );  
 };  

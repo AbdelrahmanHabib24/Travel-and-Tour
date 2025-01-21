@@ -39,6 +39,8 @@ const Header = () => {
   const handleSignUpClick = () => router.push("/SignUp");  
   const handleLoginClick = () => router.push("/Login");  
 
+  
+
   return (  
     <header className={`${active ? "bg-white shadow-lg py-3" : "bg-opacity-70 py-4"} fixed right-0 left-0 top-0 w-full z-50 transition-all duration-500`}>  
       <div className="max_padd_container flex justify-between gap-x-6 items-center transition-all duration-500">  
@@ -48,14 +50,13 @@ const Header = () => {
 
         <Nav  
           containerStyles="hidden lg:flex items-center text-center justify-between gap-x-10"  
-          linkStyles="hover:text-secondary cursor-pointer text-tertiary"  
+          linkStyles="hover:text-secondary cursor-pointer text-tertiary" 
         />  
-
         <div className="flex items-center lg:gap-x-12 gap-x-10 md:gap-x-32">  
           {isLoggedIn ? (  
             <button  
               onClick={handleLogout}  
-              className="bg-orange-500 text-white text-sm md:text-lg rounded-lg py-1 px-2 md:px-2 hover:text-tertiary transition-all duration-300"  
+              className="bg-orange-500 text-white text-sm md:text-lg rounded-lg py-1 px-2 md:px-2 hover:text-tertiary transform hover:scale-105 transition-all duration-300"  
             >  
               Log out  
             </button>  
@@ -63,14 +64,14 @@ const Header = () => {
             <>  
               <button  
                 onClick={handleSignUpClick}  
-                className="bg-secondary text-white text-sm md:text-lg rounded-lg py-1 px-2 md:px-2 hover:text-tertiary transition-all duration-300"  
+                className="bg-secondary text-white text-sm md:text-lg rounded-lg py-1 px-2 md:px-2 hover:text-tertiary transform hover:scale-105 transition-all duration-300"  
               >  
                 Signup  
               </button>  
               {pathname !== "/Login" && (  
                 <button  
                   onClick={handleLoginClick}  
-                  className="bg-secondary text-white text-sm md:text-lg rounded-lg py-1 px-2 md:px-2 hover:text-tertiary transition-all duration-300"  
+                  className="bg-secondary text-white text-sm md:text-lg rounded-lg py-1 px-2 md:px-2 hover:text-tertiary  transition-all duration-300"  
                 >  
                   Login  
                 </button>  

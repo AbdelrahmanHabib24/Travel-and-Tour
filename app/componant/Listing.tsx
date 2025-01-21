@@ -42,7 +42,7 @@ const formatPrice = (price: number | string): string => {
 
 const Listing: React.FC = () => {  
   return (  
-    <section className="max_padd_container xl:py-10 py-10">  
+    <section className=" max_padd_container  xl:py-10 py-10">  
       <header className="w-[90%] mb-10">  
         <h4 className="bold-16 text-secondary text-sm md:text-base">  
           TAKE A LOOK AT THESE OFFERS  
@@ -63,8 +63,8 @@ const Listing: React.FC = () => {
           >  
             {URL && (  
               <Link  
-                href="/"  
-                aria-label={`View details for ${title1}`}  
+              href={`/package?id=${id}`}
+              aria-label={`View details for ${title1}`}  
                 passHref  
                 className=" overflow-hidden"  
               >  
