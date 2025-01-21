@@ -4,9 +4,9 @@
 export const LINKS = [
   { title: "Home", path: "/", offset: -50 },
   { title: "About", path: "/about", offset: -50 },
-  { title: "Contact", path: "/blog", offset: -50 },
-  { title: "Feature", path: "feature", offset: -50 },
-  { title: "Testimonials", path: "/Testimonials", offset: -50 },
+  { title: "Blog", path: "/blog", offset: -50 },
+  { title: "Feature", path: "/Feature", offset: -50 },
+  { title: "Testimonials", path: "/estimonials", offset: -50 },
 
 ];
 
