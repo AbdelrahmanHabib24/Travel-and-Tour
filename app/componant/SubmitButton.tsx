@@ -1,23 +1,21 @@
-// components/SubmitButton.tsx  
-import React from "react";  
+// SubmitButton.tsx  
+import React from 'react';  
 
 interface SubmitButtonProps {  
-  isFormValid: boolean;  
   loading: boolean;  
+  disabled: boolean;  
 }  
 
-const SubmitButton: React.FC<SubmitButtonProps> = ({ isFormValid, loading }) => {  
+const SubmitButton: React.FC<SubmitButtonProps> = ({ loading, disabled }) => {  
   return (  
     <button  
       type="submit"  
-      className={`w-full py-2 rounded-md transition duration-200 ${  
-        isFormValid  
-          ? "bg-blue-500 text-white hover:bg-blue-600"  
-          : "opacity-50 cursor-not-allowed bg-gray-300"  
-      }`}  
-      disabled={!isFormValid || loading}  
+      className={`w-full py-2 px-4 font-semibold text-white rounded-lg   
+        ${disabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}   
+        transition duration-300 ease-in-out`}  
+      disabled={disabled} // يؤدي لتعطيل الزر  
     >  
-      {loading ? "Logging In..." : "Login"}  
+      {loading ? 'Loading...' : 'Log in'}  
     </button>  
   );  
 };  

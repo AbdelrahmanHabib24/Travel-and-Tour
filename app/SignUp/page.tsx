@@ -46,18 +46,20 @@ const Signup: React.FC = () => {
         break;
       case "password":
         if (!value.trim()) error = "Password is required.";
-        else if (value.length < 6)
-          error = "Password must be at least 6 characters long.";
+        else if (value.length < 8)
+          error = "Password must be at least 8 characters long.";
         else if (!upperCaseRegex.test(value))
           error = "Password must include at least one uppercase letter.";
+         else if (!/\d/.test(value)) {
+          error = "Password must contain at least one number.";
+        }
         else if (!specialCharRegex.test(value))
           error = "Password must include at least one special character.";
-      
+
         break;
       case "confirmPassword":
         if (!value.trim()) error = "Please confirm your password.";
-        else if (value !== formData.password)
-          error = "Passwords do not match.";
+        else if (value !== formData.password) error = "Passwords do not match.";
         break;
       default:
         break;
@@ -103,15 +105,15 @@ const Signup: React.FC = () => {
     <div className=" fix-height flexCenter pt-14 mb-5  max_padd_container">
       <div className="w-96 border rounded-lg border-co bg-white p-6">
         <h1 className="flexCenter bold-22 mb-4 ">Sign up</h1>
-      <Form
-        formData={formData}
-        errors={errors}
-        handleChange={handleChange}
-        handleBlur={handleBlur}
-        handleSubmit={handleSubmit}
-        loading={loading}
-        isFormValid={Object.values(errors).every((error) => !error)}
-      />
+        <Form
+          formData={formData}
+          errors={errors}
+          handleChange={handleChange}
+          handleBlur={handleBlur}
+          handleSubmit={handleSubmit}
+          loading={loading}
+          isFormValid={Object.values(errors).every((error) => !error)}
+        />
       </div>
     </div>
   );
