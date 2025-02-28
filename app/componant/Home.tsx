@@ -13,7 +13,7 @@ const ProtectedHome: React.FC = () => {
       ?.split("=")[1];
   
     if (!authToken) {
-      router.push("/Login"); 
+      router.push("/"); 
     }
   }, [router]);
   

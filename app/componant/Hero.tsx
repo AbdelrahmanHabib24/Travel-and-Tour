@@ -7,7 +7,7 @@ import BackgroundVideo from "./BackgroundVideo";
 
 const cities = ["Italy", "France",  "Australia" , "Hong Kong" , "Brazil" , "London" , "Indonesia" , "Switzerland","India"
 
-]; // قائمة المدن المتاحة  
+]; 
 
 
 
@@ -62,7 +62,6 @@ const Hero: React.FC = () => {
 
   const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {  
     event.preventDefault();  
-    // توجيه إلى صفحة النتائج عند تنفيذ البحث  
     router.push(`/results?city=${city}&&maxPrice=${maxPrice}`);  
   };  
 
