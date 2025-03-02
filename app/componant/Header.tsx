@@ -21,8 +21,8 @@ const Header = () => {
   const handleLogout = () => {  
     document.cookie = "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"; // Clear auth token from cookies  
     setIsLoggedIn(false); // Update login state  
-    router.push("/Login"); // Redirect to the home page  
-  };
+    router.push("/Login"); // Redirect to the login page  
+  };  
 
   useEffect(() => {  
     const handleScroll = () => setActive(window.scrollY > 40);  
@@ -37,7 +37,7 @@ const Header = () => {
   }, [pathname]);  
 
   const handleSignUpClick = () => router.push("/SignUp");  
-  const handleLoginClick = () => router.push("/Login")
+  const handleLoginClick = () => router.push("/Login");  
 
   
 
@@ -70,7 +70,7 @@ const Header = () => {
               </button>  
               {pathname !== "/Login" && (  
                 <button  
-                 onClick={handleLoginClick}
+                  onClick={handleLoginClick}  
                   className="bg-secondary text-white text-sm md:text-lg rounded-lg py-1 px-2 md:px-2 hover:text-tertiary  transition-all duration-300"  
                 >  
                   Login  
