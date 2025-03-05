@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"; // Make sure this is at the top for Next.js 13+ compatibility  
 
 import { useRouter } from 'next/navigation';  
@@ -15,7 +16,9 @@ interface PaymentFormData {
 }  
 
 const PaymentPage: React.FC = () => {  
-  const [isModalOpen, setIsModalOpen] = useState(false);  
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [loading, setLoading] = useState(false); // Loading state  
+ 
   const router = useRouter();   
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm<PaymentFormData>();  
@@ -44,7 +47,7 @@ const PaymentPage: React.FC = () => {
   };  
 
   return (  
-    <div className=" fix-height max-w-screen-sm mx-auto px-4 py-8 relative">  
+    <div className=" fix-height sm:max-w-lg max-w-screen-sm mx-auto px-4 py-8 relative">  
 
       {/* Modal */}  
       {isModalOpen && (  
@@ -132,11 +135,12 @@ const PaymentPage: React.FC = () => {
 
               {/* Submit Button */}  
               <div className="flex justify-center items-center">  
-                <button  
+              <button  
                   type="submit"  
-                  className="bg-blue-500 hover:bg-blue-700 text-center text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"  
+                  className={`bg-blue-500 hover:bg-blue-700 text-center text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}  
+                  disabled={loading} // Disable button if loading  
                 >  
-                  Pay Now  
+                  {loading ? (<span>Loading...</span>) : (<span>Pay Now</span>)} {/* Loading indicator */}  
                 </button>  
               </div>  
             </form>  
