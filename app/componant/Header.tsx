@@ -19,7 +19,7 @@ const Header = () => {
   }, []);  
 
   const handleLogout = () => {  
-    document.cookie = "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"; // Clear auth token from cookies  
+    document.cookie = "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";   
     setIsLoggedIn(false); // Update login state  
     router.push("/Login"); // Redirect to the login page  
   };  
@@ -39,18 +39,25 @@ const Header = () => {
   const handleSignUpClick = () => router.push("/SignUp");  
   const handleLoginClick = () => router.push("/Login");  
 
-  
-
   return (  
-    <header className={`${active ? "bg-white shadow-lg py-3" : "bg-opacity-70 py-4"} fixed right-0 left-0 top-0 w-full z-50 transition-all duration-500`}>  
+    <header  
+      className={`${  
+        active ? "bg-white shadow-lg py-3" : "bg-opacity-70 py-4"  
+      } fixed right-0 left-0 top-0 w-full z-50 transition-all duration-500`}  
+    >  
       <div className="max_padd_container flex justify-between gap-x-6 items-center transition-all duration-500">  
-        <Link href="/">  
-          <img src="/logo.svg" alt="Logo" height={99} width={133} />  
+        <Link href="/" style={{ display: "block" }}>  
+          <img  
+            src="/logo.svg"  
+            alt="Go to the homepage"  
+            height={99}  
+            width={133}  
+          />  
         </Link>  
 
         <Nav  
           containerStyles="hidden lg:flex items-center text-center justify-between gap-x-10"  
-          linkStyles="hover:text-secondary cursor-pointer text-tertiary" 
+          linkStyles="hover:text-secondary cursor-pointer text-tertiary"  
         />  
         <div className="flex items-center lg:gap-x-12 gap-x-10 md:gap-x-32">  
           {isLoggedIn ? (  
@@ -89,7 +96,11 @@ const Header = () => {
           tabIndex={0}  
           onKeyDown={(e) => e.key === "Enter" && toggleMenu()}  
         >  
-          {menuOpened ? <IoCloseOutline className="transition-all duration-500" /> : <CiMenuFries className="transition-all duration-500" />}  
+          {menuOpened ? (  
+            <IoCloseOutline className="transition-all duration-500" />  
+          ) : (  
+            <CiMenuFries className="transition-all duration-500" />  
+          )}  
         </div>  
 
         {menuOpened && (  
@@ -105,4 +116,4 @@ const Header = () => {
   );  
 };  
 
-export default Header;
+export default Header;  

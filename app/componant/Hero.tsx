@@ -90,7 +90,6 @@ const Hero: React.FC = () => {
               Search for your trip  
             </h2>  
 
-            {/* قائمة اختيار المدينة بدلاً من حقل النص */}  
             <div className="flex-1">  
               <label htmlFor="city" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">  
                 Select your destination:  

@@ -1,13 +1,12 @@
-"use client"; // This line specifies that this is a client component  
+"use client";   
 
 import React from "react";  
 import "slick-carousel/slick/slick.css";  
 import "slick-carousel/slick/slick-theme.css";  
-import { FEATURE } from "../ulits/type"; // Ensure that 'type' is correctly exported  
+import { FEATURE } from "../ulits/type"; 
 import FeatureItem from "./FeatureItem";  
 import Slider from "react-slick";  
 
-// Dynamically import Slider without SSR  
 const Feature = () => {  
     const settings = {  
         dots: true,  
@@ -18,25 +17,25 @@ const Feature = () => {
         slidesToScroll: 1,  
         responsive: [  
             {  
-                breakpoint: 1400, // تعديل عدد الشرائح في الشاشات الكبيرة  
+                breakpoint: 1400,  
                 settings: {  
                     slidesToShow: 4,  
                 },  
             },  
             {  
-                breakpoint: 1280, // تعديل عدد الشرائح في الشاشات الكبيرة  
+                breakpoint: 1280, 
                 settings: {  
                     slidesToShow: 3,  
                 },  
             },  
             {  
-                breakpoint: 768, // تعديل عدد الشرائح في الشاشات الكبيرة  
+                breakpoint: 768,  
                 settings: {  
                     slidesToShow: 2,  
                 },  
             },  
             {  
-                breakpoint: 640, // تعديل عدد الشرائح في الشاشات الصغيرة  
+                breakpoint: 640,  
                 settings: {  
                     slidesToShow: 1,  
                 },  
@@ -45,7 +44,7 @@ const Feature = () => {
     };  
 
     return (  
-        <section className="max_padd_container  flexCenter  xl:py-20 py-20">
+        <section className="max_padd_container flex items-center justify-center  xl:py-20 py-20">
             <div className="w-[110%]  lg:w-[103%] md:w-[104%]">
                 <div className="mx-4">
                     <h4 className="bold-16 text-secondary">WHAT WE SERVE</h4>

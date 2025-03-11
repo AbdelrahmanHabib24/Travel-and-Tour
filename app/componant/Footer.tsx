@@ -52,24 +52,24 @@ const Footer: React.FC = () => {
             <h4 className="text-lg text-secondary font-semibold pb-2">Follow Us</h4>  
             <ul>  
               <li>  
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition duration-300" aria-label="Facebook">  
+                <Link href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition duration-300" aria-label="Facebook">  
                   Facebook  
-                </a>  
+                </Link>  
               </li>  
               <li>  
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition duration-300" aria-label="Twitter">  
+                <Link href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition duration-300" aria-label="Twitter">  
                   Twitter  
-                </a>  
+                </Link>  
               </li>  
               <li>  
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition duration-300" aria-label="Instagram">  
+                <Link href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition duration-300" aria-label="Instagram">  
                   Instagram  
-                </a>  
+                </Link>  
               </li>  
               <li>  
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition duration-300" aria-label="LinkedIn">  
+                <Link href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 transition duration-300" aria-label="LinkedIn">  
                   LinkedIn  
-                </a>  
+                </Link>  
               </li>  
             </ul>  
           </div>  

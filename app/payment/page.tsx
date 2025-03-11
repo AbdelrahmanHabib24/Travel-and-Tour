@@ -47,11 +47,10 @@ const PaymentPage: React.FC = () => {
   };  
 
   return (  
-    <div className=" fix-height sm:max-w-lg max-w-screen-sm mx-auto px-4 py-8 relative">  
-
-      {/* Modal */}  
+    <div className=" fix-height  max_padd_container   max-w-screen  px-4 py-8 relative">  
+    <div className='max-w-screen-sm '>
       {isModalOpen && (  
-        <div className="fixed inset-0 flex justify-center items-center bg-gray-600 bg-opacity-50 z-50">  
+        <div className="fixed inset-0 flex  justify-center items-center bg-gray-600 bg-opacity-50 z-50">  
           <motion.div  
             className="bg-white p-8 rounded-lg shadow-lg w-full sm:w-96"  
             initial="hidden"  
@@ -147,6 +146,7 @@ const PaymentPage: React.FC = () => {
           </motion.div>  
         </div>  
       )}  
+      </div>
     </div>  
   );  
 };  
