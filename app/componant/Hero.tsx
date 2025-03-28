@@ -70,6 +70,12 @@ const Hero: React.FC = () => {
 
   // Intersection Observer for animations
   useEffect(() => {
+    // Create local variables to hold the current ref values
+    const typedText = typedTextRef.current;
+    const heading = headingRef.current;
+    const searchSection = searchSectionRef.current;
+    const form = formRef.current;
+  
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -81,20 +87,22 @@ const Hero: React.FC = () => {
       },
       { threshold: 0.1 }
     );
-
-    if (typedTextRef.current) observer.observe(typedTextRef.current);
-    if (headingRef.current) observer.observe(headingRef.current);
-    if (searchSectionRef.current) observer.observe(searchSectionRef.current);
-    if (formRef.current) observer.observe(formRef.current);
-
+  
+    // Observe the elements using the local variables
+    if (typedText) observer.observe(typedText);
+    if (heading) observer.observe(heading);
+    if (searchSection) observer.observe(searchSection);
+    if (form) observer.observe(form);
+  
     return () => {
-      if (typedTextRef.current) observer.unobserve(typedTextRef.current);
-      if (headingRef.current) observer.unobserve(headingRef.current);
-      if (searchSectionRef.current) observer.unobserve(searchSectionRef.current);
-      if (formRef.current) observer.unobserve(formRef.current);
+      // Cleanup using the local variables
+      if (typedText) observer.unobserve(typedText);
+      if (heading) observer.unobserve(heading);
+      if (searchSection) observer.unobserve(searchSection);
+      if (form) observer.unobserve(form);
     };
-  }, []);
-
+  }, []); // Empty dependency array, runs once on mount and cleanup on unmount
+  
   // Typing animation
   useEffect(() => {
     const type = (i: number) => {
