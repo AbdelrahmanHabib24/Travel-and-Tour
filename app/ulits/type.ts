@@ -5,8 +5,8 @@ export const LINKS = [
   { title: "Home", path: "/", offset: -50 },
   { title: "About", path: "/about", offset: -50 },
   { title: "Blog", path: "/blog", offset: -50 },
-  { title: "Feature", path: "/Feature", offset: -50 },
-  { title: "Testimonials", path: "/estimonials", offset: -50 },
+  { title: "Feature", path: "/#feature", offset: -50 },
+  { title: "Testimonials", path: "/#testimonials", offset: -50 },
 
 ];
 
@@ -14,7 +14,7 @@ export const LINKS = [
 
 
 export const FEATURE = [  
-  { title: "Brazil", URL: "/brazil.jpg" },    // Corrected URL for Brazil  
+  { title: "Brazil", URL: "/brazil.jpg" },     
   { title: "England", URL: "/england.jpg" },  
   { title: "France", URL: "/france.jpg" },  
   { title: "Australia", URL: "/australia.jpg" },  
@@ -234,3 +234,50 @@ export const TESTIMONIALS = [
   Desc: "Exceptional adventures, seamless planning, and curated experiences. Breathtaking views and unforgettable stories. Truly a life-changing trip; every moment was invaluable."  
 },
 ]
+
+
+// app/data/cardsData.ts
+export const cardsData = [
+  {
+    title: "London",
+    image:
+      "https://images.unsplash.com/photo-1486299267070-83823f5448dd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1171&q=80",
+    rating: "4.5",
+    place: "Big Ben",
+  },
+  {
+    title: "Paris",
+    image:
+      "https://images.unsplash.com/photo-1581010864468-c972b8705439?ixlib=rb-1.2.1&auto=format&fit=crop&w=687&q=80",
+    rating: "5",
+    place: "Eiffel Tower",
+  },
+  {
+    title: "Rome",
+    image:
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1096&q=80",
+    rating: "4.7",
+    place: "Colosseum",
+  },
+  {
+    title: "Pisa",
+    image:
+      "https://images.unsplash.com/photo-1581473483413-313a5afffb08?ixlib=rb-1.2.1&auto=format&fit=crop&w=714&q=80",
+    rating: "4.3",
+    place: "Pisa Tower",
+  },
+  {
+    title: "New York",
+    image:
+      "https://images.unsplash.com/photo-1585155967849-91c736589c84?ixlib=rb-1.2.1&auto=format&fit=crop&w=627&q=80",
+    rating: "4.8",
+    place: "Statue of Liberty",
+  },
+  {
+    title: "Sydney",
+    image:
+      "https://images.unsplash.com/photo-1527915676329-fd5ec8a12d4b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1171&q=80",
+    rating: "5",
+    place: "Sydney Opera House",
+  },
+];

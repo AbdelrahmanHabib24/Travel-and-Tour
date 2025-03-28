@@ -1,37 +1,52 @@
-/* eslint-disable react/jsx-no-duplicate-props */  
-/* eslint-disable react/jsx-key */  
-import React from "react";  
-import Link from "next/link"; // Importing Next.js Link component  
-import { LINKS } from "@/app/ulits/type"; // Ensure the path to your LINKS is correct  
+"use client"; // Ensure this is a client component since we're using useEffect
+import Link from "next/link";
+import { useEffect } from "react";
+import { LINKS } from "@/app/ulits/type"; // Make sure this path is correct
+import AOS from "aos"; // Import AOS
+import "aos/dist/aos.css"; // Import AOS CSS
 
-type NavProps = {  
-  linkStyles?: string;      
-  containerStyles?: string; 
-};  
+type NavProps = {
+  linkStyles?: string;
+  containerStyles?: string;
+};
 
-// Default props  
-const defaultProps = {  
-  linkStyles: 'default-link-class', 
-  containerStyles: 'default-container-class',
-};  
+const defaultProps = {
+  linkStyles: "default-link-class",
+  containerStyles: "default-container-class",
+};
 
-const Nav: React.FC<NavProps> = ({  
-  containerStyles,  
-  linkStyles,  
-}) => {  
-  return (  
-    <nav className={containerStyles} role="navigation" aria-label="Main Navigation">  
-      {LINKS.map((link) => (  
-        <Link key={link.title} href={link.path} passHref> {/* Using Next.js Link for routing */}  
-          <a className={linkStyles} role="link"> {/* Anchor tag required for better accessibility */}  
-            {link.title}  
-          </a>  
-        </Link>  
-      ))}  
-    </nav>  
-  );  
-};  
+const Nav: React.FC<NavProps> = ({ containerStyles, linkStyles }) => {
+  // Initialize AOS on component mount
+  useEffect(() => {
+    AOS.init({
+      duration: 600, // Animation duration in milliseconds
+      once: true, // Whether animation should happen only once
+      offset: 100, // Offset (in pixels) from the top of the element to trigger the animation
+    });
+  }, []);
 
-Nav.defaultProps = defaultProps;  
+  return (
+    <nav
+      className={containerStyles}
+      role="navigation"
+      aria-label="Main Navigation"
+    >
+      {LINKS.map((link, index) => (
+        <Link
+          key={link.title}
+          href={link.path}
+          className={linkStyles}
+          role="link"
+          data-aos="fade-right" // AOS animation type
+          data-aos-delay={index * 100} // Delay each link's animation (e.g., 0ms, 100ms, 200ms, etc.)
+        >
+          {link.title}
+        </Link>
+      ))}
+    </nav>
+  );
+};
+
+Nav.defaultProps = defaultProps;
 
 export default Nav;
