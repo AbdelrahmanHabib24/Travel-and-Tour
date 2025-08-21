@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation"; // Use next/navigation for client-side navigation
+import { useRouter } from "next/navigation"; 
 import Form from "@/app/componant/Form";
 
 const Signup: React.FC = () => {
@@ -17,7 +17,7 @@ const Signup: React.FC = () => {
   );
   const [loading, setLoading] = useState(false);
 
-  const router = useRouter(); // Use next/navigation for client-side routing
+  const router = useRouter(); 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

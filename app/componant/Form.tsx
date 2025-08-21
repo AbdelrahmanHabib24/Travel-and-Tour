@@ -34,7 +34,7 @@ const Form: React.FC<FormProps> = ({
     formData.email &&
     formData.password &&
     formData.confirmPassword &&
-    isFormValid; // التحقق من أن الحقول ممتلئة وصحيحة
+    isFormValid; 
 
   return (
     <form onSubmit={handleSubmit} noValidate>

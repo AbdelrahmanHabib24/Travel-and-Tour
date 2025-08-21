@@ -15,10 +15,8 @@ import {
   FaPlane,
 } from "react-icons/fa";
 
-// Static imports for images (used as URLs)
-const Banner = "/footer-pattern.jpg"; // Reverted to a more suitable background image
+const Banner = "/footer-pattern.jpg"; 
 
-// Types for Footer Links and Social Links
 interface FooterLink {
   title: string;
   href: string;

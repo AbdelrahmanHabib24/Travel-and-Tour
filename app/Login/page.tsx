@@ -26,7 +26,6 @@ const Login: React.FC = () => {
     const { name, value } = e.target;  
     setFormData((prevData) => ({ ...prevData, [name]: value }));  
 
-    // Reset the error for the field when the user starts typing  
     setErrors((prevErrors) => ({ ...prevErrors, [name]: undefined }));  
   };  
 
@@ -138,7 +137,7 @@ const Login: React.FC = () => {
             />  
             <SubmitButton   
               loading={loading}   
-              disabled={isSubmitDisabled} // Passing the disabled prop to SubmitButton  
+              disabled={isSubmitDisabled}   
             />  
           </form>  
         </motion.div>  

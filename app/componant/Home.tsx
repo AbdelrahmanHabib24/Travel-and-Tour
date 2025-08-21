@@ -19,7 +19,6 @@ const ProtectedHome: React.FC = () => {
   
   return (
     <div>
-      {/* محتوى الصفحة المحمية */}
     </div>
   );
 };

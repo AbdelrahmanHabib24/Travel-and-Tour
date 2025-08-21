@@ -5,7 +5,7 @@ import Hero from "./componant/Hero";
 import Listing from "./componant/Listing";
 import Testimonials from "./componant/Testimonials";
 import ProtectedHome from "./componant/Home";
-import Link from "next/link";  // Import Next.js Link component
+import Link from "next/link";  
 
 export default function Home() {
   return (

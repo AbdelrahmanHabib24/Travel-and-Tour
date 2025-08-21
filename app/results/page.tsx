@@ -31,12 +31,11 @@ const ResultsPage: React.FC = () => {
   const date = searchParams.get('date') || '';
   const maxPrice = parseFloat(searchParams.get('maxPrice') || '5000');
 
-  const [loading, setLoading] = useState(true); // State to track loading
-  const [filteredListings, setFilteredListings] = useState<ListingType[]>([]); // State for filtered results
+  const [loading, setLoading] = useState(true); 
+  const [filteredListings, setFilteredListings] = useState<ListingType[]>([]); 
 
-  // Memoized filtering function
   const filterListings = useCallback(() => {
-    setLoading(true); // Set loading to true before filtering
+    setLoading(true); 
 
     const searchTerm = city.toLowerCase();
     const results = PACKAGES.filter((listing) => {
@@ -49,10 +48,9 @@ const ResultsPage: React.FC = () => {
     });
 
     setFilteredListings(results);
-    setLoading(false); // Set loading to false after filtering
+    setLoading(false); 
   }, [city, maxPrice]);
 
-  // Using useEffect to trigger the filter when city or maxPrice changes
   useEffect(() => {
     filterListings();
   }, [filterListings]);

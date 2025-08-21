@@ -1,12 +1,11 @@
-'use client'; // Client-side rendering directive  
+'use client';   
 
 import React from "react";  
 import { TESTIMONIALS } from "../ulits/type";  
 import Image from "next/image";  
 import dynamic from "next/dynamic";  
-import { motion } from "framer-motion";  // Import framer-motion for animations
+import { motion } from "framer-motion";  
 
-// Dynamically import the Slider component with SSR disabled  
 const Slider = dynamic(() => import("react-slick"), { ssr: false });  
 
 const Testimonials = () => {  
@@ -50,14 +49,14 @@ const Testimonials = () => {
       className="py-10"  
       initial={{ opacity: 0 }}  
       whileInView={{ opacity: 1 }}  
-      transition={{ duration: 1, ease: "easeOut" }}  // Faster, smoother animation  
+      transition={{ duration: 1, ease: "easeOut" }}  
     >  
-      <div className="w-[90%] mx-auto"> {/* Center content on larger screens */}  
+      <div className="w-[90%] mx-auto">   
         <motion.h4  
           className="bold-16 text-center text-secondary"  
           initial={{ opacity: 0, y: -20 }}  
           whileInView={{ opacity: 1, y: 0 }}  
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}  // Faster, smooth animation for title  
+          transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}  
         >
           HAPPY CUSTOMER
         </motion.h4>  
@@ -65,7 +64,7 @@ const Testimonials = () => {
           className="bold-28 regular-22 text-center mb-5"  
           initial={{ opacity: 0, y: -20 }}  
           whileInView={{ opacity: 1, y: 0 }}  
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}  // Faster, smooth animation for subtitle  
+          transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}   
         >
           Testimonials
         </motion.h3>  
@@ -102,10 +101,10 @@ export const TestimonialsItem = ({
   return (  
     <motion.div  
       id="testimonials"  
-      className="mb-4 justify-center items-center flex flex-col" // Centered text styling  
-      initial={{ opacity: 0, scale: 0.9 }}  // Initial state (invisible and small)  
-      whileInView={{ opacity: 1, scale: 1 }}  // When in view, show and scale to full size  
-      transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}  // Faster smooth animation  
+      className="mb-4 justify-center items-center flex flex-col"  
+      initial={{ opacity: 0, scale: 0.9 }}  
+      whileInView={{ opacity: 1, scale: 1 }}   
+      transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}   
     >  
       <Image  
         className="rounded-full"  

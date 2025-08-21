@@ -6,13 +6,13 @@
 
 import {  useEffect, useState } from "react";
 import { useSearchParams  , useRouter} from "next/navigation";
-import { PACKAGE } from "@/app/ulits/type"; // Ensure PACKAGE is an array of package objects
-import Image from "next/image"; // Image component for optimized loading
-import Slider from "react-slick"; // Import Slick for carousel
-import "slick-carousel/slick/slick.css"; // Import Slick styles
-import "slick-carousel/slick/slick-theme.css"; // Import Slick theme styles
-import { motion } from "framer-motion"; // Import motion from Framer Motion
-import Cookies from 'js-cookie';  // استيراد مكتبة js-cookie
+import { PACKAGE } from "@/app/ulits/type"; 
+import Image from "next/image"; 
+import Slider from "react-slick"; 
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css"; 
+import { motion } from "framer-motion"; 
+import Cookies from 'js-cookie';  
 import {
   FaRegUser,
   FaUsers,
@@ -24,7 +24,6 @@ import {
 import { toast, ToastContainer } from "react-toastify";
 import router from "next/router";
 
-// Define the structure of the package data
 type PACKAGE = {
   id: string;
   URL: string;
@@ -35,13 +34,13 @@ type PACKAGE = {
   des: string;
   rating?: number;
   count?: number;
-  images?: string[]; // Array of images for the slider
-  ageRange?: string; // e.g., "Ages 0-99"
-  maxGroupSize?: number; // e.g., max of 19 per group
-  travelDuration?: string; // e.g., "3h"
-  startTimeInfo?: string; // e.g., "Check availability"
-  mobileTicket?: boolean; // e.g., true for mobile tickets
-  liveGuideLanguages?: string[]; // e.g., ["German", "Chinese", ...]
+  images?: string[]; 
+  ageRange?: string; 
+  maxGroupSize?: number; 
+  travelDuration?: string; 
+  startTimeInfo?: string; 
+  mobileTicket?: boolean; 
+  liveGuideLanguages?: string[]; 
 
 };
 
@@ -49,13 +48,13 @@ type PACKAGE = {
 
 
 type Comment = {
-  id: number; // Unique identifier for each comment
-  text: string; // The comment text
+  id: number; 
+  text: string; 
 };
 
 type ImageModalProps = {
   isOpen: boolean;
-  onClose: () => void; // Function to close the modal
+  onClose: () => void; 
   imgSrc: string;
   title: string;
 };
@@ -111,7 +110,7 @@ const container = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.3, // Time between each element's appearance
+      staggerChildren: 0.3, 
     },
   },
 };
@@ -126,7 +125,7 @@ const PackageDetails = () => {
   const [packageDetails, setPackageDetails] = useState<PACKAGE | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); // حالة لتخزين حالة تسجيل الدخول
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); 
 
   const [selectedImage, setSelectedImage] = useState("");
   const [comments, setComments] = useState<Comment[]>([]);
@@ -164,12 +163,12 @@ const PackageDetails = () => {
     }
   };
   const handleReserveClick = () => {
-    const authToken = Cookies.get('authToken');  // التحقق من الكوكيز باستخدام js-cookie
+    const authToken = Cookies.get('authToken');  
   
     if (authToken) {
-      router.push('/payment');  // توجيه المستخدم إلى صفحة الدفع إذا كان مسجلاً دخوله
+      router.push('/payment');  
     } else {
-      toast.error('You must be logged in to reserve');  // عرض رسالة خطأ
+      toast.error('You must be logged in to reserve');  
     }
   };
   
@@ -387,13 +386,13 @@ const PackageDetails = () => {
 
               <motion.div
                 className="flexCenter mt-5"
-                initial={{ x: "100%" }} // بدأ من الجنب الأيمن (يمكنك تعديل هذا للجانب الأيسر)
-                animate={{ x: 0 }} // الوصول إلى مكانه الطبيعي
+                initial={{ x: "100%" }} 
+                animate={{ x: 0 }} 
                 transition={{
                   type: "spring",
-                  stiffness: 100, // تقليل القوة لجعل الحركة أكثر سلاسة
-                  damping: 40, // زيادة التباطؤ لجعل الحركة أكثر سلاسة
-                  duration: 1 // زيادة المدة لجعل الحركة بطيئة
+                  stiffness: 100, 
+                  damping: 40, 
+                  duration: 1 
                 }}
               >
                 <button
@@ -453,7 +452,7 @@ const PackageDetails = () => {
       </motion.div><>
           <ToastContainer   className="mt-14"       position="top-center"
  />
-          {/* باقي المكونات الخاصة بك */}      </></>
+              </></>
   )}
 
   return null;

@@ -48,25 +48,22 @@ const formatPrice = (price: number | string): string => {
 const Listing: React.FC = () => {
   const [isMounted, setIsMounted] = useState(false);
 
-  // Set isMounted to true after the component mounts on the client
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  // Initialize AOS after mounting
   useEffect(() => {
     if (isMounted) {
       AOS.init({
-        duration: 800, // Animation duration
-        once: false, // Allow animations to replay when scrolling back up
-        offset: 0, // Trigger animations immediately when elements are in view
-        anchorPlacement: "top-center", // Trigger based on the top-center of the element
+        duration: 800, 
+        once: false, 
+        offset: 0, 
+        anchorPlacement: "top-center", 
       });
-      AOS.refresh(); // Refresh AOS to detect elements
+      AOS.refresh(); 
     }
   }, [isMounted]);
 
-  // Refresh AOS after PACKAGES are rendered
   useEffect(() => {
     if (isMounted) {
       AOS.refresh();

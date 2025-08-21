@@ -16,11 +16,7 @@ body {
 .linearGradient {
   background: linear-gradient(180deg, #fde1ff 0%, #e1ffea22 60%);
 }
-/* width */
 
-/* إخفاء شريط التمرير في الشاشات الأقل من 768 بكسل */
-
-/* Track */
 ::-webkit-scrollbar-track {
   background: white;
   border: 1px solid #8080802f;

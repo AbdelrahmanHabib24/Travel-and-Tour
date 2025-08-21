@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"; // Make sure this is at the top for Next.js 13+ compatibility  
+"use client";  
 
 import { useRouter } from 'next/navigation';  
 import React, { useState, useEffect } from 'react';  
@@ -8,7 +8,6 @@ import { FaCcVisa, FaCcMastercard, FaCcDiscover } from 'react-icons/fa';
 import { IoIosCloseCircleOutline } from 'react-icons/io';  
 import { motion } from 'framer-motion';  
 
-// تعريف واجهة البيانات للنموذج  
 interface PaymentFormData {  
   cardNumber: string;  
   expiryDate: string;  
@@ -17,7 +16,7 @@ interface PaymentFormData {
 
 const PaymentPage: React.FC = () => {  
   const [isModalOpen, setIsModalOpen] = useState(false); 
-  const [loading, setLoading] = useState(false); // Loading state  
+  const [loading, setLoading] = useState(false);   
  
   const router = useRouter();   
 
@@ -35,7 +34,6 @@ const PaymentPage: React.FC = () => {
 
   const closeModal = () => {  
     setIsModalOpen(false);  
-    // Wait for animation before routing away  
     setTimeout(() => router.push("/"), 300);   
   };  
 

@@ -20,8 +20,8 @@ const Header = () => {
 
   const handleLogout = () => {  
     document.cookie = "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";   
-    setIsLoggedIn(false); // Update login state  
-    router.push("/Login"); // Redirect to the login page  
+    setIsLoggedIn(false); 
+    router.push("/Login");   
   };  
 
   useEffect(() => {  
@@ -31,9 +31,8 @@ const Header = () => {
   }, []);  
 
   useEffect(() => {  
-    // Check if the authToken exists in cookies  
     const authToken = document.cookie.split("; ").find((row) => row.startsWith("authToken="));  
-    setIsLoggedIn(!!authToken); // If authToken exists, user is logged in  
+    setIsLoggedIn(!!authToken); 
   }, [pathname]);  
 
   const handleSignUpClick = () => router.push("/SignUp");  

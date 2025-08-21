@@ -68,9 +68,7 @@ const Hero: React.FC = () => {
   const searchSectionRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
-  // Intersection Observer for animations
   useEffect(() => {
-    // Create local variables to hold the current ref values
     const typedText = typedTextRef.current;
     const heading = headingRef.current;
     const searchSection = searchSectionRef.current;
@@ -88,20 +86,18 @@ const Hero: React.FC = () => {
       { threshold: 0.1 }
     );
   
-    // Observe the elements using the local variables
     if (typedText) observer.observe(typedText);
     if (heading) observer.observe(heading);
     if (searchSection) observer.observe(searchSection);
     if (form) observer.observe(form);
   
     return () => {
-      // Cleanup using the local variables
       if (typedText) observer.unobserve(typedText);
       if (heading) observer.unobserve(heading);
       if (searchSection) observer.unobserve(searchSection);
       if (form) observer.unobserve(form);
     };
-  }, []); // Empty dependency array, runs once on mount and cleanup on unmount
+  }, []); 
   
   // Typing animation
   useEffect(() => {
@@ -132,12 +128,12 @@ const Hero: React.FC = () => {
 
   const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setCity(event.target.value);
-    setError(null); // Clear error on change
+    setError(null); 
   };
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDate(event.target.value);
-    setError(null); // Clear error on change
+    setError(null); 
   };
 
   const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -178,7 +174,7 @@ const Hero: React.FC = () => {
         <div className="absolute inset-0 bg-[#2f6a7f2f] z-10"></div>
         <BackgroundVideo />
 
-        <div className="relative max_padd_container z-20 text-white flex flex-col justify-center gap-8 text-center px-4 sm:px-10 w-full">
+        <div className="relative  z-20 text-white flex flex-col justify-center gap-8 text-center px-4 sm:px-10 w-full">
           {/* Typed Text */}
           <p
             ref={typedTextRef}
