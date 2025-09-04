@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { PACKAGE } from "@/app/ulits/type"; // خلي البيانات في ملف خارجي
+import { PACKAGE } from "@/app/ulits/type"; 
 
 const prisma = new PrismaClient();
 

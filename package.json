@@ -10,9 +10,10 @@
     "postinstall": "prisma generate"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts",
-    "schema": "prisma/schema.prisma"
-  },
+  "schema": "prisma/schema.prisma",
+  "seed": "tsx prisma/seed.ts"
+}
+,
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@fortawesome/free-brands-svg-icons": "^6.7.1",
