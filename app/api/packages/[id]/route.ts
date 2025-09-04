@@ -3,6 +3,8 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+
+
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ id: string }> } // ⚡ params نوعه Promise
@@ -14,6 +16,8 @@ export async function GET(
     where: { id: Number(id) },
     include: { images: true, comments: true },
   });
+
+  console.log("Fetched package:", pkg);
 
   if (!pkg)
     return NextResponse.json({ error: "Package not found" }, { status: 404 });
