@@ -115,7 +115,7 @@ const Listing: React.FC = () => {
             >
               {URL && (
                 <Link
-                  href={`/package?id=${id}`}
+                  href={`/packages/${id}`}
                   aria-label={`View details for ${title1}`}
                   passHref
                   className="overflow-hidden"

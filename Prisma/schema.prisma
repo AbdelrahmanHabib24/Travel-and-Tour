@@ -1,0 +1,46 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model Package {
+  id                 Int       @id @default(autoincrement())
+  URL                String
+  title1             String
+  title2             String
+  price              Float
+  duration           String
+  des                String
+  rating             Float
+  count              Int
+  ageRange           String?
+  maxGroupSize       Int?
+  travelDuration     String?
+  startTimeInfo      String?
+  mobileTicket       Boolean
+  liveGuideLanguages String[]
+  images             Image[]
+  comments           Comment[]   
+}
+
+model Image {
+  id        Int     @id @default(autoincrement())
+  url       String
+  packageId Int
+  package   Package @relation(fields: [packageId], references: [id])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  text      String
+  createdAt DateTime @default(now())
+  userName  String            
+  avatarUrl String?             
+  packageId Int
+  package   Package  @relation(fields: [packageId], references: [id])
+}

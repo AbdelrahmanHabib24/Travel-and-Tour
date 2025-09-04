@@ -5,7 +5,7 @@ import Hero from "./componant/Hero";
 import Listing from "./componant/Listing";
 import Testimonials from "./componant/Testimonials";
 import ProtectedHome from "./componant/Home";
-import Link from "next/link";  
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -15,8 +15,8 @@ export default function Home() {
       <Feature />
       <Listing />
       <Link href="#testimonials" scroll={false}>
-  <Testimonials />
-</Link>
+        <Testimonials />
+      </Link>
     </div>
   );
 }

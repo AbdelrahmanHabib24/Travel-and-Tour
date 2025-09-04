@@ -1,32 +1,38 @@
-import type { Metadata } from "next";  
-import { Nunito } from "next/font/google";  
-import "slick-carousel/slick/slick.css";  
-import "./globals.css";  
+import type { Metadata } from "next";
+import { Nunito } from "next/font/google";
+import Head from "next/head"; // 👈 هنا
 
-import Header from "@/app/componant/Header";  
-import Footer from "@/app/componant/Footer";  
+import "slick-carousel/slick/slick.css";
+import "./globals.css";
 
-const nunito = Nunito({  
-  subsets: ["latin"],  
-  weight: ["300", "400", "500", "600", "700", "800", "900"],  
-  variable: "--font-nunito",  
-});  
+import Header from "@/app/componant/Header";
+import Footer from "@/app/componant/Footer";
+import Providers from "./providers";
 
-export const metadata: Metadata = {  
-  title: "Passport",  
-  description: "Tour and travel app",  
-};  
+const nunito = Nunito({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-nunito",
+});
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {  
-  return (  
-    <html lang="en">  
-      <body className={`bg-primary text-tertiary  transition-all duration-300 ${nunito.variable}`}>  
-        <Header />  
+export const metadata: Metadata = {
+  title: "Passport",
+  description: "Tour and travel app",
+};
 
-        <main>{children}</main>  
-
-        <Footer />  
-      </body>  
-    </html>  
-  );  
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <Head>
+        <link rel="preload" as="video" href="/video.mp4" type="video/mp4" />
+      </Head>
+      <body className={`bg-primary text-tertiary transition-all duration-300 ${nunito.variable}`}>
+        <Providers>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </Providers>
+      </body>
+    </html>
+  );
 }
