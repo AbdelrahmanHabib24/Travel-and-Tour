@@ -10,34 +10,30 @@ type NavProps = {
   containerStyles?: string;
 };
 
-const defaultProps = {
-  linkStyles: "default-link-class",
-  containerStyles: "default-container-class",
-};
 
-const Nav: React.FC<NavProps> = ({ containerStyles, linkStyles }) => {
+
+const Nav: React.FC<NavProps> = ({
+  containerStyles = "default-container-class",
+  linkStyles = "default-link-class",
+}) => {
   useEffect(() => {
     AOS.init({
-      duration: 600, 
-      once: true, 
-      offset: 100, 
+      duration: 600,
+      once: true,
+      offset: 100,
     });
   }, []);
 
   return (
-    <nav
-      className={containerStyles}
-      role="navigation"
-      aria-label="Main Navigation"
-    >
+    <nav className={containerStyles} role="navigation" aria-label="Main Navigation">
       {LINKS.map((link, index) => (
         <Link
           key={link.title}
           href={link.path}
           className={linkStyles}
           role="link"
-          data-aos="fade-right" 
-          data-aos-delay={index * 100} 
+          data-aos="fade-right"
+          data-aos-delay={index * 100}
         >
           {link.title}
         </Link>
@@ -46,6 +42,6 @@ const Nav: React.FC<NavProps> = ({ containerStyles, linkStyles }) => {
   );
 };
 
-Nav.defaultProps = defaultProps;
+
 
 export default Nav;
