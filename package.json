@@ -48,7 +48,7 @@
     "@types/react-dom": "^19.1.9",
     "@types/react-scroll": "^1.8.10",
     "@types/react-slick": "^0.23.13",
-    "eslint": "^8",
+    "eslint": "^9.0.0",
     "eslint-config-next": "15.0.3",
     "postcss": "^8",
     "prisma": "^6.15.0",
