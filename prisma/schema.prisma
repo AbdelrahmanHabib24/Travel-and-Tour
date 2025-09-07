@@ -1,14 +1,12 @@
-// prisma/schema.prisma
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
+
 model Package {
   id                 Int       @id @default(autoincrement())
   URL                String
@@ -25,8 +23,8 @@ model Package {
   startTimeInfo      String?
   mobileTicket       Boolean
   liveGuideLanguages String[]
+  comments           Comment[]
   images             Image[]
-  comments           Comment[]   
 }
 
 model Image {
@@ -40,8 +38,14 @@ model Comment {
   id        Int      @id @default(autoincrement())
   text      String
   createdAt DateTime @default(now())
-  userName  String            
-  avatarUrl String?             
+  userName  String
+  avatarUrl String?
   packageId Int
   package   Package  @relation(fields: [packageId], references: [id])
+}
+
+model playing_with_neon {
+  id    Int    @id @default(autoincrement())
+  name  String
+  value Float? @db.Real
 }
