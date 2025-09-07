@@ -43,9 +43,3 @@ model Comment {
   packageId Int
   package   Package  @relation(fields: [packageId], references: [id])
 }
-
-model playing_with_neon {
-  id    Int    @id @default(autoincrement())
-  name  String
-  value Float? @db.Real
-}
