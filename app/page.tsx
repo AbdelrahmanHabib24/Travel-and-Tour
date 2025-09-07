@@ -15,12 +15,12 @@ export default function Home() {
     <div className="overflow-x-hidden">
       <ProtectedHome />
 
-      {/* <AppRoot
+      <AppRoot
         appConfig={{
           startButtonText: "Travel Assistant",
           isPreConnectBufferEnabled: true,
         }}
-      /> */}
+      />
 
       <Hero />
       <Feature />

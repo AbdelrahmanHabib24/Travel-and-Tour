@@ -31,7 +31,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function transcriptionToChatMessage(
+function transcriptionToChatMessage(
   textStream: TextStreamData,
   room: Room
 ): ReceivedChatMessage {
@@ -108,8 +108,8 @@ export const SessionView = ({
   const { state: agentState, audioTrack } = useVoiceAssistant();
   const { localParticipant } = useLocalParticipant();
   const { messages, send } = useChatAndTranscription();
-
   const room = useRoomContext();
+
   const [isMuted, setIsMuted] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [showChat, setShowChat] = useState(false);
@@ -126,19 +126,15 @@ export const SessionView = ({
     await localParticipant.setMicrophoneEnabled(!newMuted);
   };
 
- const handleStop = () => {
-  if (!audioTrack?.publication?.track) return;
-  const track = audioTrack.publication.track;
-
-  const attachedElements = track.detach();
-  attachedElements.forEach((el) => {
-    el.pause();
-    el.currentTime = 0; 
-  });
-
-};
-
-
+  const handleStop = () => {
+    if (!audioTrack?.publication?.track) return;
+    const track = audioTrack.publication.track;
+    const attachedElements = track.detach();
+    attachedElements.forEach((el) => {
+      el.pause();
+      el.currentTime = 0;
+    });
+  };
 
   useEffect(() => {
     if (sessionStarted) {
@@ -176,121 +172,140 @@ export const SessionView = ({
   return (
     <>
       {showCard && (
-        <div className="fixed top-0 right-0 h-full w-96 max-w-sm bg-gradient-to-tr from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-l-2xl shadow-2xl overflow-hidden z-50 flex flex-col justify-between">
+     <div className="fixed top-0 right-0 h-full w-full sm:max-w-sm md:w-96 
+  bg-gradient-to-b from-white to-orange-50 border-l border-orange-100 
+  shadow-2xl rounded-none sm:rounded-l-2xl z-50 flex flex-col">
+
+  {/* Close button */}
+  <button
+    onClick={() => {
+      setShowCard(false);
+      onEndSession();
+    }}
+    className="absolute top-4 right-4 bg-orange-100 hover:bg-orange-200 
+    p-3 rounded-full shadow-md transition-all"
+  >
+    <X size={22} weight="bold" className="text-orange-600" />
+  </button>
+
+  {/* Agent Section */}
+  <div className="flex-1 flex justify-center items-center p-6">
+    {audioTrack ? (
+      <AgentTile state={agentState} audioTrack={audioTrack} className="max-h-56" />
+    ) : (
+      <p className="text-center text-gray-500 text-sm italic">
+        Waiting for agent audio...
+      </p>
+    )}
+  </div>
+
+  {/* Controls */}
+  <div className="flex items-center justify-around gap-3 p-4 border-t 
+    bg-white/80 backdrop-blur-sm">
+    
+    {/* Chat Button */}
+    <button
+      onClick={() => setShowChat(!showChat)}
+      className="bg-orange-100 hover:bg-orange-200 
+      p-3 rounded-full text-orange-600 shadow-sm transition-all"
+    >
+      <ChatDots size={22} weight="fill" />
+    </button>
+
+    {/* Mic Button */}
+    <button
+      onClick={toggleMute}
+      className={cn(
+        "p-3 rounded-full shadow-md transition-all",
+        isMuted
+          ? "bg-red-500 hover:bg-red-600 text-white"
+          : "bg-orange-500 hover:bg-orange-600 text-white"
+      )}
+    >
+      {isMuted ? (
+        <MicrophoneSlash size={22} weight="fill" />
+      ) : (
+        <Microphone size={22} weight="fill" />
+      )}
+    </button>
+
+    {/* Stop Button */}
+    <button
+      onClick={handleStop}
+      className="bg-gray-800 hover:bg-black p-3 rounded-full text-white 
+      shadow-sm transition-all"
+    >
+      <StopCircle size={22} weight="fill" />
+    </button>
+  </div>
+
+  {/* Chat Drawer */}
+  <AnimatePresence>
+    {showChat && (
+      <motion.div
+        initial={{ opacity: 0, x: "100%" }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: "100%" }}
+        transition={{ duration: 0.3 }}
+        className="fixed bottom-0 right-0 h-full w-full sm:max-w-sm md:w-96 
+          bg-gradient-to-b from-white to-orange-50 border-l border-orange-100 
+          shadow-2xl flex flex-col"
+      >
+        {/* Header */}
+        <div className="flex justify-between items-center p-4 border-b border-orange-100">
+          <h2 className="text-lg font-semibold text-orange-600">Chat</h2>
           <button
-            onClick={() => {
-              setShowCard(false);
-              onEndSession();
-            }}
-            className="absolute top-4 right-4 z-50 bg-white/80 dark:bg-gray-700 hover:bg-white dark:hover:bg-gray-600 p-3 rounded-full shadow-md text-black"
+            onClick={() => setShowChat(false)}
+            className="bg-orange-100 hover:bg-orange-200 p-2 rounded-full shadow-sm"
           >
-            <X size={24} weight="bold" />
+            <X size={20} weight="bold" className="text-orange-600" />
           </button>
-
-          <div className="flex-1 flex justify-center items-center p-4">
-            {audioTrack ? (
-              <AgentTile
-                state={agentState}
-                audioTrack={audioTrack}
-                className="max-h-56 "
-              />
-            ) : (
-              <p className="text-center text-gray-500 text-sm italic">
-                Waiting for agent audio...
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-wrap items-center justify-between gap-3 p-4 border-t bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-t-xl shadow-inner">
-            <button
-              onClick={() => setShowChat(!showChat)}
-              className="bg-blue-500 hover:bg-blue-600 p-3 rounded-full text-white shadow-md transition-all transform hover:scale-105"
-            >
-              <ChatDots size={24} weight="fill" />
-            </button>
-
-            <button
-              onClick={toggleMute}
-              className={cn(
-                "p-3 rounded-full text-white shadow-md transition-all transform hover:scale-105",
-                isMuted
-                  ? "bg-red-500 hover:bg-red-600"
-                  : "bg-green-500 hover:bg-green-600"
-              )}
-            >
-              {isMuted ? (
-                <MicrophoneSlash size={24} weight="fill" />
-              ) : (
-                <Microphone size={24} weight="fill" />
-              )}
-            </button>
-
-            <button
-              onClick={handleStop}
-              className="bg-gray-700 hover:bg-gray-800 p-3 rounded-full text-white shadow-md transition-all transform hover:scale-105"
-            >
-              <StopCircle size={24} weight="fill" />
-            </button>
-          </div>
-
-          <AnimatePresence>
-            {showChat && (
-              <motion.div
-                initial={{ opacity: 0, x: 100 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 100 }}
-                transition={{ duration: 0.3 }}
-                className="fixed top-0 right-0 h-full w-96 max-w-sm bg-gradient-to-tr from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-l-2xl shadow-2xl overflow-hidden z-50 flex flex-col"
-              >
-                <div className="flex justify-between items-center p-4 border-b border-gray-300 dark:border-gray-700">
-                  <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
-                    Chat
-                  </h2>
-                  <button
-                    onClick={() => setShowChat(false)}
-                    className="bg-white/80 dark:bg-gray-700 hover:bg-white dark:hover:bg-gray-600 p-3 rounded-full shadow-md text-black"
-                  >
-                    <X size={24} weight="bold" />
-                  </button>
-                </div>
-
-                <div className="flex-1 overflow-y-auto p-4 space-y-2">
-                  {messages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={cn(
-                        "px-3 py-2 rounded-xl max-w-[75%] break-words shadow-sm transition-colors",
-                        message.from?.isLocal
-                          ? "bg-blue-100 ml-auto hover:bg-blue-200"
-                          : "bg-gray-100 mr-auto hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
-                      )}
-                    >
-                      {message.message}
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex p-3 border-t bg-white/90 dark:bg-gray-800/90 gap-2 backdrop-blur-md rounded-t-xl shadow-inner">
-                  <input
-                    type="text"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    disabled={!isAgentAvailable(agentState)}
-                    placeholder="Type a message..."
-                    className="flex-1 border rounded-lg px-3 py-2 focus:outline-none disabled:bg-gray-200 dark:disabled:bg-gray-700 shadow-inner"
-                  />
-                  <button
-                    onClick={() => handleSendMessage(inputValue)}
-                    disabled={!isAgentAvailable(agentState)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md transition-all transform hover:scale-105"
-                  >
-                    Send
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
+
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={cn(
+                "px-4 py-2 rounded-lg max-w-[80%] break-words text-sm",
+                message.from?.isLocal
+                  ? "bg-gray-100 text-gray-800 ml-auto"
+                  : "bg-orange-100 text-orange-800 mr-auto"
+              )}
+            >
+              {message.message}
+            </div>
+          ))}
+        </div>
+
+        {/* Input */}
+        <div className="flex p-3 border-t border-orange-100 gap-2">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            disabled={!isAgentAvailable(agentState)}
+            placeholder="Type a message..."
+            className="flex-1 border border-orange-200 
+            rounded-lg px-3 py-2 focus:outline-none focus:ring-2 
+            focus:ring-orange-400 disabled:opacity-50 
+            bg-white text-gray-900"
+          />
+          <button
+            onClick={() => handleSendMessage(inputValue)}
+            disabled={!isAgentAvailable(agentState)}
+            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 
+            rounded-lg shadow-md transition-all"
+          >
+            Send
+          </button>
+        </div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+</div>
+
       )}
     </>
   );
