@@ -12,7 +12,7 @@ const BackgroundVideo: React.FC = () => {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setPlay(true); // لما العنصر يدخل الشاشة يبدأ تشغيل الفيديو
+            setPlay(true); 
             observer.disconnect();
           }
         });
@@ -44,13 +44,12 @@ const BackgroundVideo: React.FC = () => {
       loop={play}
       muted
       playsInline
-      preload="auto"
-      poster="/poster.jpg" // صورة تظهر قبل ما الفيديو يشتغل
+      preload="none"
       className="absolute inset-0 w-full h-full object-cover"
       aria-label="A scenic travel video playing in the background"
       onError={() => setHasError(true)}
     >
-      {play && <source src="/video.mp4" type="video/mp4" />}
+      {play && <source src="/Video.mp4" type="video/mp4" />}
       Your browser does not support the video tag.
     </video>
   );
