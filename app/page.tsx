@@ -1,16 +1,32 @@
 "use client";
 
-import Feature from "./componant/Feature";
-import Hero from "./componant/Hero";
-import Listing from "./componant/Listing";
-import Testimonials from "./componant/Testimonials";
+import dynamic from "next/dynamic";
 import ProtectedHome from "./componant/Home";
-import Link from "next/link";
-
 import AppRoot from "./componant/AppRoot";
+import Link from "next/link";
+import Loading from "./loading"; 
+
+const Hero = dynamic(() => import("./componant/Hero"), {
+  ssr: false,
+  loading: () => <Loading />,
+});
+
+const Feature = dynamic(() => import("./componant/Feature"), {
+  ssr: false,
+  loading: () => <Loading />,
+});
+
+const Listing = dynamic(() => import("./componant/Listing"), {
+  ssr: false,
+  loading: () => <Loading />,
+});
+
+const Testimonials = dynamic(() => import("./componant/Testimonials"), {
+  ssr: false,
+  loading: () => <Loading />,
+});
 
 export default function Home() {
-
   return (
     <div className="overflow-x-hidden">
       <ProtectedHome />

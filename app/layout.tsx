@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
-import Head from "next/head"; // 👈 هنا
 
 import "slick-carousel/slick/slick.css";
 import "./globals.css";
@@ -23,16 +22,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <Head>
+      <head>
         <link rel="preload" as="video" href="/video.mp4" type="video/mp4" />
-      </Head>
+      </head>
       <body className={`bg-primary text-tertiary transition-all duration-300 ${nunito.variable}`}>
         <Providers>
           <Header />
-          <main>{children}</main>
+          <main className="min-h-screen">{children}</main>
           <Footer />
         </Providers>
       </body>
     </html>
   );
 }
+
