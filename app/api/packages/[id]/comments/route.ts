@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/app/ulits/prisma";
 
-const prisma = new PrismaClient();
 // GET Comments
 export async function GET(
   req: Request,

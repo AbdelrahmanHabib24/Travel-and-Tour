@@ -1,34 +1,35 @@
 import { PrismaClient } from "@prisma/client";
-import { PACKAGE } from "@/app/ulits/type"; 
+import { PACKAGE, PACKAGES } from "@/app/ulits/type";
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log("🌱 Seeding packages...");
 
-  for (const pkg of PACKAGE) {
-    await prisma.package.create({
-  data: {
-    URL: pkg.URL,
-    title1: pkg.title1,
-    title2: pkg.title2,
-    price: Number(pkg.price), 
-    duration: pkg.duration,
-    des: pkg.des,
-    rating: pkg.rating,
-    count: pkg.count,
-    ageRange: pkg.ageRange,
-    maxGroupSize: pkg.maxGroupSize,
-    travelDuration: pkg.travelDuration,
-    startTimeInfo: pkg.startTimeInfo,
-    mobileTicket: pkg.mobileTicket,
-    liveGuideLanguages: pkg.liveGuideLanguages,
-    images: {
-      create: pkg.images.map((url: string) => ({ url })),
-    },
-  },
-});
+  const allPackages = [...PACKAGE, ...PACKAGES];
 
+  for (const pkg of allPackages) {
+    await prisma.package.create({
+      data: {
+        URL: pkg.URL,
+        title1: pkg.title1,
+        title2: pkg.title2,
+        price: Number(pkg.price),
+        duration: pkg.duration,
+        des: pkg.des,
+        rating: pkg.rating,
+        count: pkg.count,
+        ageRange: (pkg as any).ageRange ?? null,
+        maxGroupSize: (pkg as any).maxGroupSize ?? null,
+        travelDuration: (pkg as any).travelDuration ?? null,
+        startTimeInfo: (pkg as any).startTimeInfo ?? null,
+        mobileTicket: (pkg as any).mobileTicket ?? false, 
+        liveGuideLanguages: (pkg as any).liveGuideLanguages ?? [],
+        images: pkg.images
+          ? { create: pkg.images.map((url: string) => ({ url })) }
+          : undefined,
+      },
+    });
   }
 
   console.log("✅ Packages seeded!");
