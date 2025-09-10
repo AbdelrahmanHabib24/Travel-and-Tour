@@ -15,16 +15,17 @@ const BackgroundVideo: React.FC = () => {
 
   return (
     <video
-      src="/Video.mp4"
       autoPlay
       loop
       muted
       playsInline
-      preload="auto"
+      preload="metadata"
+      disableRemotePlayback
       className="absolute inset-0 w-full h-full object-cover"
-      aria-label="A scenic travel video playing in the background"
       onError={() => setHasError(true)}
     >
+      <source src="/Video.webm" type="video/webm" />
+      <source src="/Video.mp4" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
   );
