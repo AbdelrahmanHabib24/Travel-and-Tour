@@ -7,7 +7,7 @@ import Link from "next/link";
 import Loading from "./loading"; 
 
 const Hero = dynamic(() => import("./componant/Hero"), {
-  ssr: false,
+  ssr: true, 
   loading: () => <Loading />,
 });
 
