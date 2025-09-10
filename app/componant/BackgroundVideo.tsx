@@ -20,7 +20,6 @@ const BackgroundVideo: React.FC = () => {
       muted
       playsInline
       preload="metadata"
-      disableRemotePlayback
       className="absolute inset-0 w-full h-full object-cover"
       onError={() => setHasError(true)}
     >
