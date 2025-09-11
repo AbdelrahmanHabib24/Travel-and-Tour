@@ -95,7 +95,7 @@ const Hero: React.FC = () => {
   const handleSearch = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      const { city, date, maxPrice } = form;
+      const { city,  maxPrice } = form;
       setIsSubmitting(true);
       try {
         await new Promise((res) => setTimeout(res, 2000));
