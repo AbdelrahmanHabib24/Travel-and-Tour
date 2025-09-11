@@ -29,6 +29,7 @@
     "livekit-client": "^2.15.6",
     "livekit-server-sdk": "^2.13.3",
     "lodash": "^4.17.21",
+    "lottie-react": "^2.4.1",
     "next": "^15.5.2",
     "phosphor-react": "^1.4.1",
     "react-credit-cards-2": "^1.0.3",

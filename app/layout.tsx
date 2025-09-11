@@ -4,8 +4,8 @@ import { Nunito } from "next/font/google";
 import "slick-carousel/slick/slick.css";
 import "./globals.css";
 
-import Header from "@/app/componant/Header";
-import Footer from "@/app/componant/Footer";
+import Header from "@/app/component/Header";
+import Footer from "@/app/component/Footer";
 import Providers from "./providers";
 
 const nunito = Nunito({

@@ -1,15 +1,15 @@
 "use client";
-import AppRoot from "@/app/componant/AppRoot";
+import AppRoot from "@/app/component/AppRoot";
 
 export default function SessionPage() {
   return (
     <div className="h-screen w-screen bg-white overflow-hidden">
-       <AppRoot
+      <AppRoot
         appConfig={{
           startButtonText: "Voice Agent",
           isPreConnectBufferEnabled: true,
         }}
-        autoStartSession={true} 
+        autoStartSession={true}
       />
     </div>
   );

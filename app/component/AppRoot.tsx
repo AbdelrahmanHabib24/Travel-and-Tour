@@ -9,8 +9,8 @@ import {
 } from "@livekit/components-react";
 import { toast as sonnerToast } from "sonner";
 
-import FloatingAssistant from "@/app/componant/FloatingAssistant";
-import { SessionView } from "@/app/componant/SessionView";
+import FloatingAssistant from "@/app/component/FloatingAssistant";
+import { SessionView } from "@/app/component/SessionView";
 import useConnectionDetails from "@/app/ulits/useConnectionDetails";
 
 interface AppConfig {
@@ -120,8 +120,8 @@ const AppRoot = ({ appConfig, autoStartSession = false }: AppRootProps) => {
         <FloatingAssistant
           startButtonText={appConfig.startButtonText}
           onStartCall={() => {
-            setSessionStarted(true); 
-            setShowCard(true); 
+            setSessionStarted(true);
+            setShowCard(true);
           }}
           disabled={sessionStarted && showCard}
         />

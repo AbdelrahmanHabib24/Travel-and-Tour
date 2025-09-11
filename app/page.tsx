@@ -1,29 +1,29 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import ProtectedHome from "./componant/Home";
-import AppRoot from "./componant/AppRoot";
+import ProtectedHome from "./component/Home";
+import AppRoot from "./component/AppRoot";
 import Link from "next/link";
-import Loading from "./loading"; 
+import PageLoader from "@/app/component/PageLoader"; // ✅
 
-const Hero = dynamic(() => import("./componant/Hero"), {
-  ssr: true, 
-  loading: () => <Loading />,
+const Hero = dynamic(() => import("./component/Hero"), {
+  ssr: true,
+  loading: () => <PageLoader />, // ⬅️
 });
 
-const Feature = dynamic(() => import("./componant/Feature"), {
+const Feature = dynamic(() => import("./component/Feature"), {
   ssr: false,
-  loading: () => <Loading />,
+  loading: () => <PageLoader />, // ⬅️
 });
 
-const Listing = dynamic(() => import("./componant/Listing"), {
+const Listing = dynamic(() => import("./component/Listing"), {
   ssr: false,
-  loading: () => <Loading />,
+  loading: () => <PageLoader />, // ⬅️
 });
 
-const Testimonials = dynamic(() => import("./componant/Testimonials"), {
+const Testimonials = dynamic(() => import("./component/Testimonials"), {
   ssr: false,
-  loading: () => <Loading />,
+  loading: () => <PageLoader />, // ⬅️
 });
 
 export default function Home() {

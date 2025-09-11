@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import Loading from "@/app/loading"; // ✅ استدعاء الـ Loading component
+
 
 const BackgroundVideo: React.FC = () => {
   const [hasError, setHasError] = useState(false);
-  const [loaded, setLoaded] = useState(false);
 
   if (hasError) {
     return (
@@ -17,11 +16,7 @@ const BackgroundVideo: React.FC = () => {
 
   return (
     <div className="absolute inset-0 w-full h-full">
-      {!loaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black">
-          <Loading />
-        </div>
-      )}
+      
 
       <video
         autoPlay
@@ -32,7 +27,6 @@ const BackgroundVideo: React.FC = () => {
         disableRemotePlayback
         className="absolute inset-0 w-full h-full object-cover"
         onError={() => setHasError(true)}
-        onLoadedData={() => setLoaded(true)} 
       >
         <source src="/Video.mp4" type="video/mp4" />
         Your browser does not support the video tag.

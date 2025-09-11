@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation"; 
-import Form from "@/app/componant/Form";
+import { useRouter } from "next/navigation";
+import Form from "@/app/component/Form";
 
 const Signup: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -17,7 +17,7 @@ const Signup: React.FC = () => {
   );
   const [loading, setLoading] = useState(false);
 
-  const router = useRouter(); 
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -50,10 +50,9 @@ const Signup: React.FC = () => {
           error = "Password must be at least 8 characters long.";
         else if (!upperCaseRegex.test(value))
           error = "Password must include at least one uppercase letter.";
-         else if (!/\d/.test(value)) {
+        else if (!/\d/.test(value)) {
           error = "Password must contain at least one number.";
-        }
-        else if (!specialCharRegex.test(value))
+        } else if (!specialCharRegex.test(value))
           error = "Password must include at least one special character.";
 
         break;
