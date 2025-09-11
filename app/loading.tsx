@@ -6,8 +6,14 @@ import loadingAnimation from "@/app/loading.json";
 
 export default function GlobalLoading() {
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-white">
-
+    <div
+      className="
+        fixed inset-0 z-[9999]
+        flex items-center justify-center
+        bg-black/20           
+        backdrop-blur-md    
+      "
+    >
       <Lottie
         animationData={loadingAnimation}
         loop

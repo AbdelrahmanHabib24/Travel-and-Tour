@@ -4,9 +4,12 @@ import dynamic from "next/dynamic";
 import ProtectedHome from "./component/Home";
 import AppRoot from "./component/AppRoot";
 import Link from "next/link";
-import Hero from "./component/Hero";
 import GlobalLoading from "./loading";
 
+const Hero = dynamic(() => import("./component/Hero"), {
+  ssr: true,
+  loading: () => <GlobalLoading/>, 
+});
 
 const Feature = dynamic(() => import("./component/Feature"), {
   ssr: false,
