@@ -1,11 +1,19 @@
-import React from 'react';  
+// app/loading.tsx
+"use client";
 
-const Loading = () => {  
-  return (  
-    <section className=" loading ">  
-      <span className="loader ml-10"></span>
-    </section>  
-  );  
-};  
+import Lottie from "lottie-react";
+import loadingAnimation from "@/app/loading.json";
 
-export default Loading;
+export default function GlobalLoading() {
+  return (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-white">
+
+      <Lottie
+        animationData={loadingAnimation}
+        loop
+        autoplay
+        className="w-40 h-40"
+      />
+    </div>
+  );
+}

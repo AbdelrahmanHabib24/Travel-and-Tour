@@ -19,6 +19,7 @@ import {
 } from "react-icons/fa";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import GlobalLoading from "@/app/loading";
 
 type PackageType = {
   id: number;
@@ -116,8 +117,7 @@ export default function PackageDetailsClient({ id }: { id: string }) {
   if (isLoading)
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-orange-500"></div>
-        <p className="ml-4 text-lg font-semibold text-gray-600">Loading...</p>
+       <GlobalLoading/>
       </div>
     );
 

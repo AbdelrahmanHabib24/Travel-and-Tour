@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
-
 import "slick-carousel/slick/slick.css";
 import "./globals.css";
 
@@ -17,7 +16,12 @@ const nunito = Nunito({
 export const metadata: Metadata = {
   title: "Passport",
   description: "Tour and travel app",
+  other: {
+    "link:preload:video": "/Video.mp4;as=video;type=video/mp4",
+    "link:preload:json": "/loading.json;as=fetch;type=application/json;crossorigin=anonymous"
+  },
 };
+
 
 export default function RootLayout({
   children,
