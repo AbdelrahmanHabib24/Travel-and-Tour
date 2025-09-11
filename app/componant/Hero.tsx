@@ -1,42 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* ---------------------- Hero.tsx ---------------------- */
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { IoLocation } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import BackgroundVideo from "./BackgroundVideo";
-
-// Move CSS keyframes to globals.css (suggested, but shown here for completeness)
-const styles = `
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes zoomIn {
-    from { opacity: 0; transform: scale(0.8); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  .fade-down, .fade-up, .zoom-in, .form-fade-up {
-    opacity: 0;
-  }
-  .fade-down.visible { animation: fadeDown 800ms ease-out 200ms forwards; }
-  .fade-up.visible { animation: fadeUp 800ms ease-out 400ms forwards; }
-  .zoom-in.visible { animation: zoomIn 800ms ease-out 600ms forwards; }
-  .form-fade-up.visible { animation: fadeUp 800ms ease-out 800ms forwards; }
-  /* Add input focus animation */
-  @keyframes inputFocus {
-    from { transform: scale(1); }
-    to { transform: scale(1.02); box-shadow: 0 0 8px rgba(59, 130, 246, 0.5); }
-  }
-  .input-focus:focus-within {
-    animation: inputFocus 300ms ease-out forwards;
-  }
-`;
 
 const cities = [
   "Italy",
@@ -52,54 +21,39 @@ const cities = [
 
 const Hero: React.FC = () => {
   const [typedText, setTypedText] = useState("");
-  const [city, setCity] = useState("");
-  const [date, setDate] = useState("");
-  const [maxPrice, setMaxPrice] = useState(1000);
+  const [form, setForm] = useState({ city: "", date: "", maxPrice: 1000 });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
   const fullText = "Travel To Any Corner In The World";
   const typingSpeed = 100;
   const backspacingSpeed = 50;
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const router = useRouter();
 
-  const typedTextRef = useRef<HTMLParagraphElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const searchSectionRef = useRef<HTMLDivElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
+  const animatedRefs = useRef<(HTMLElement | null)[]>([]);
 
+  // Intersection animations
   useEffect(() => {
-    const typedText = typedTextRef.current;
-    const heading = headingRef.current;
-    const searchSection = searchSectionRef.current;
-    const form = formRef.current;
-  
     const observer = new IntersectionObserver(
-      (entries) => {
+      (entries) =>
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("visible");
             observer.unobserve(entry.target);
           }
-        });
-      },
+        }),
       { threshold: 0.1 }
     );
-  
-    if (typedText) observer.observe(typedText);
-    if (heading) observer.observe(heading);
-    if (searchSection) observer.observe(searchSection);
-    if (form) observer.observe(form);
-  
-    return () => {
-      if (typedText) observer.unobserve(typedText);
-      if (heading) observer.unobserve(heading);
-      if (searchSection) observer.unobserve(searchSection);
-      if (form) observer.unobserve(form);
-    };
-  }, []); 
-  
-  // Typing animation
+
+    animatedRefs.current.forEach((el) => {
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Typing effect
   useEffect(() => {
     const type = (i: number) => {
       if (i <= fullText.length) {
@@ -120,88 +74,74 @@ const Hero: React.FC = () => {
     };
 
     type(0);
-
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
     };
   }, []);
 
-  const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setCity(event.target.value);
-    setError(null); 
-  };
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      const { id, value } = e.target;
+      setForm((prev) => ({
+        ...prev,
+        [id]: id === "maxPrice" ? +value : value,
+      }));
+    },
+    []
+  );
 
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDate(event.target.value);
-    setError(null); 
-  };
-
-  const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMaxPrice(Number(event.target.value));
-  };
-
-  const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    // Form validation
-    if (!city) {
-      setError("Please select a destination.");
-      return;
-    }
-    if (!date) {
-      setError("Please select a date.");
-      return;
-    }
-
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      // Simulate API call (replace with actual API logic)
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      router.push(`/results?city=${city}&maxPrice=${maxPrice}`);
-    } catch (err) {
-      setError("An error occurred while searching. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const handleSearch = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const { city, date, maxPrice } = form;
+      setIsSubmitting(true);
+      try {
+        await new Promise((res) => setTimeout(res, 2000));
+        router.push(`/results?city=${city}&maxPrice=${maxPrice}`);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [form, router]
+  );
 
   return (
-    <>
-      <style>{styles}</style>
-      <section className="relative w-full h-screen flex items-center justify-center" id="home">
-        <div className="absolute inset-0 bg-[#2f6a7f2f] z-10"></div>
-        <BackgroundVideo />
+    <section
+      className="relative w-full min-h-screen flex items-center justify-center"
+      id="home"
+    >
+      <div className="absolute inset-0 bg-[#2f6a7f2f] z-10" />
+      <BackgroundVideo />
 
-        <div className="relative  z-20 text-white flex flex-col justify-center gap-8 text-center px-4 sm:px-10 w-full">
-          {/* Typed Text */}
-          <p
-            ref={typedTextRef}
-            className="text-base sm:text-lg md:text-2xl text-orange-500 fade-down"
-            aria-live="polite"
-          >
-            {typedText}
-          </p>
+      <div className="relative z-20 text-white flex flex-col items-center gap-6 text-center px-4 sm:px-6 lg:px-10 w-full  ">
+        <p className="text-orange-400 text-base sm:text-lg md:text-2xl fade-down">
+          {typedText}
+        </p>
 
-          {/* Main Heading */}
-          <h1
-            ref={headingRef}
-            className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold fade-up"
-          >
-            Make Your Tour Amazing With Us
-          </h1>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold fade-up">
+          Make Your Tour Amazing With Us
+        </h1>
 
-          {/* Search Section */}
-          <div ref={searchSectionRef} className="zoom-in">
+        <div
+          ref={(el) => {
+            animatedRefs.current[2] = el;
+          }}
+          className="w-full  sm:flex flex-col   items-center "
+        >
+          {/* Title Label */}
+          {/* Search Section */}{" "}
+          <div className="zoom-in">
+            {" "}
             <span className="bg-white text-tertiary px-4 py-2 rounded-lg text-sm sm:text-base font-medium">
-              Search For Your Trip
-            </span>
-
-            {/* Search Form */}
+              {" "}
+              Search For Your Trip{" "}
+            </span>{" "}
+            {/* Search Form */}{" "}
             <form
-              ref={formRef}
-              className="bg-white p-4 sm:p-6 rounded-lg text-start shadow-lg w-full max-w-4xl mx-auto flex flex-col sm:flex-row gap-4 form-fade-up"
+              className="bg-white p-4 sm:p-6 rounded-lg text-start shadow-lg 
+             flex flex-col md:flex-row gap-4 form-fade-up"
               role="form"
               aria-labelledby="search-form"
               onSubmit={handleSearch}
@@ -209,110 +149,84 @@ const Hero: React.FC = () => {
               <h2 id="search-form" className="sr-only">
                 Search for your trip
               </h2>
-
-              {/* Error Message */}
-              {error && (
-                <div className="w-full text-center sm:col-span-3">
-                  <p className="text-red-500 text-sm" role="alert">
-                    {error}
-                  </p>
-                </div>
-              )}
-
-              {/* City Input */}
-              <div className="flex-1 input-focus">
+              {/* Destination */}
+              <div className="flex flex-col text-left">
                 <label
                   htmlFor="city"
-                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1"
+                  className="text-gray-700 font-semibold text-sm mb-1 text-left"
                 >
                   Select your destination:
                 </label>
-                <div className="flex items-center bg-gray-100 rounded-md border border-gray-300 focus-within:border-blue-500 transition-all">
+                <div className="flex items-center bg-gray-100 rounded-md border border-gray-300 focus-within:border-blue-500 transition">
                   <select
                     id="city"
-                    className="flex-1 p-2 sm:p-3 border-none rounded-md bg-transparent text-gray-700 focus:outline-none"
-                    value={city}
-                    onChange={handleCityChange}
-                    aria-invalid={error && !city ? "true" : "false"}
-                    aria-describedby={error && !city ? "city-error" : undefined}
+                    value={form.city}
+                    onChange={handleChange}
                     required
+                    className="flex-1 h-11 px-3 bg-transparent text-gray-700 focus:outline-none min-w-0"
                   >
                     <option value="">Select a city...</option>
-                    {cities.map((cityName) => (
-                      <option key={cityName} value={cityName}>
-                        {cityName}
+                    {cities.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
                       </option>
                     ))}
                   </select>
                   <IoLocation className="text-gray-500 mx-2" />
                 </div>
               </div>
-
-              {/* Date Input */}
-              <div className="flex-1 input-focus">
+              {/* Date */}
+              <div className="flex flex-col text-left">
                 <label
                   htmlFor="date"
-                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1"
+                  className="text-gray-700 font-semibold text-sm mb-1 text-left"
                 >
                   Select your date:
                 </label>
                 <input
                   type="date"
                   id="date"
-                  className="w-full p-2 sm:p-3 border-none rounded-md bg-gray-100 text-gray-700 border border-gray-300 focus:outline-none focus:border-blue-500 transition-all"
-                  value={date}
-                  onChange={handleDateChange}
-                  min={new Date().toISOString().split("T")[0]} // Prevent past dates
-                  aria-invalid={error && !date ? "true" : "false"}
-                  aria-describedby={error && !date ? "date-error" : undefined}
+                  value={form.date}
+                  onChange={handleChange}
                   required
+                  min={new Date().toISOString().split("T")[0]}
+                  className="w-full h-11 px-3 bg-gray-100 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 transition"
                 />
               </div>
-
-              {/* Max Price Input */}
-              <div className="flex-1 input-focus">
+              {/* Max Price */}
+              <div className="flex flex-col text-left">
                 <label
-                  htmlFor="price"
-                  className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1"
+                  htmlFor="maxPrice"
+                  className="text-gray-700 font-semibold text-sm mb-1 text-left"
                 >
-                  Max price:
+                  Max Price:
                 </label>
                 <input
                   type="range"
-                  id="price"
-                  max={5000}
+                  id="maxPrice"
                   min={1000}
+                  max={5000}
+                  step={100}
+                  value={form.maxPrice}
+                  onChange={handleChange}
                   className="w-full accent-blue-500"
-                  value={maxPrice}
-                  onChange={handleMaxPriceChange}
-                  aria-label="Select maximum price"
                 />
-                <div className="text-gray-700 text-xs sm:text-sm mt-1">
-                  Max Price: ${maxPrice.toLocaleString()}
-                </div>
+                <span className="text-gray-600 text-sm mt-1 text-left">
+                  ${form.maxPrice.toLocaleString()}
+                </span>
               </div>
-
-              {/* Search Button */}
-              <button
-                type="submit"
-                className={`
-                  relative flex items-center justify-center gap-2
-                  bg-blue-500 text-white py-2 px-2 sm:py-3 sm:px-6 rounded-md
-                  text-sm sm:text-base font-medium
-                  hover:bg-blue-600 hover:scale-105 active:scale-95
-                  focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2
-                  transition-all duration-300
-                  disabled:bg-blue-300 disabled:cursor-not-allowed
-                  ${isSubmitting ? "opacity-70 cursor-wait" : ""}
-                `}
-                disabled={isSubmitting}
-                aria-label={isSubmitting ? "Searching in progress" : "Search for your trip"}
-                aria-busy={isSubmitting}
-              >
-                <span className="flex items-center gap-2">
+              {/* Button */}
+              <div className="flex items-center justify-center sm:mt-5 ">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className={`w-full h-11 flex items-center justify-center py gap-2 bg-blue-500 text-white px-6 rounded-md text-sm sm:text-base font-medium hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 ${
+                    isSubmitting ? "opacity-70 cursor-wait" : ""
+                  }`}
+                >
                   {isSubmitting ? (
                     <svg
-                      className="animate-spin h-5 w-5 text-white"
+                      className="animate-spin h-4 w-4 sm:h-5 sm:w-5 text-white"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -335,13 +249,13 @@ const Hero: React.FC = () => {
                     <FaSearch className="h-4 w-4 sm:h-5 sm:w-5" />
                   )}
                   <span>{isSubmitting ? "Searching..." : "Search"}</span>
-                </span>
-              </button>
+                </button>
+              </div>
             </form>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 };
 
