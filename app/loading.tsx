@@ -1,16 +1,18 @@
+// app/loading.tsx
 "use client";
 
-import { DotLottiePlayer } from "@dotlottie/react-player";
-import "@dotlottie/react-player/dist/index.css";
+import Lottie from "lottie-react";
+import loadingAnimation from "@/app/loading.json";
 
 export default function GlobalLoading() {
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-white">
-      <DotLottiePlayer
-        src="/loading.lottie"  
-        autoplay
+
+      <Lottie
+        animationData={loadingAnimation}
         loop
-        style={{ width: "200px", height: "200px" }}
+        autoplay
+        className="w-40 h-40"
       />
     </div>
   );
