@@ -35,7 +35,7 @@ body {
   transition: height 500ms;
 }
 
-.loader {
+/* .loader {
   position: relative;
   width: 200px;
   height: 200px;
@@ -80,7 +80,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-}
+} */
 @layer base {
   .active {
     @apply text-secondary relative flex-1 after:w-full after:h-[1px] after:bg-secondary after:absolute after:-bottom-3 after:right-0;
