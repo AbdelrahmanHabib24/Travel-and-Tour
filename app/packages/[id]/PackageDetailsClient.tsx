@@ -149,7 +149,7 @@ export default function PackageDetailsClient({ id }: { id: string }) {
   };
 
   return (
-    <div className="bg-gradient-to-b from-orange-50 to-white mt-14">
+    <div className="bg-gradient-to-b  from-orange-50 to-white mt-14">
       {/* Hero Section */}
       <div className="relative h-[350px] sm:h-[450px] md:h-[500px] w-full">
         <Image

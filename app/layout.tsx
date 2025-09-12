@@ -30,14 +30,17 @@ export default function RootLayout({
         <link rel="preload" as="video" href="/Video.mp4" type="video/mp4" />
       </head>
       <body
-        className={`bg-primary text-tertiary transition-all duration-300 ${nunito.variable} `}
+        className={`bg-primary text-tertiary transition-all duration-300 ${nunito.variable}`}
       >
         <Providers>
+          {/* Flex container to push footer to bottom */}
+          <div className="flex flex-col min-h-screen ">
             <Header />
             <Suspense fallback={<GlobalLoading />}>
-              <main className="min-h-screen">{children}</main>
+              <main className="flex-1">{children}</main>
             </Suspense>
-            <Footer />
+            <Footer  />
+          </div>
         </Providers>
       </body>
     </html>

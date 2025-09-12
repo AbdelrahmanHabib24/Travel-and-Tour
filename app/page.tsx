@@ -1,30 +1,12 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import ProtectedHome from "./component/Home";
 import AppRoot from "./component/AppRoot";
 import Link from "next/link";
-import GlobalLoading from "./loading";
-
-const Hero = dynamic(() => import("./component/Hero"), {
-  ssr: false,
-  loading: () => <GlobalLoading/>, 
-});
-
-const Feature = dynamic(() => import("./component/Feature"), {
-  ssr: false,
-  loading: () => <GlobalLoading/>, 
-});
-
-const Listing = dynamic(() => import("./component/Listing"), {
-  ssr: true,
-  loading: () => <GlobalLoading/>, 
-});
-
-const Testimonials = dynamic(() => import("./component/Testimonials"), {
-  ssr: false,
-  loading: () => <GlobalLoading />, 
-});
+import Hero from "./component/Hero";
+import Feature from "./component/Feature";
+import Listing from "./component/Listing";
+import Testimonials from "./component/Testimonials";
 
 export default function Home() {
   return (
