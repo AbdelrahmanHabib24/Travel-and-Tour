@@ -13,6 +13,7 @@ body {
   height: 100vh;
 }
 
+
 .linearGradient {
   background: linear-gradient(180deg, #fde1ff 0%, #e1ffea22 60%);
 }
@@ -289,9 +290,5 @@ body {
   }
 }
 
-.fix-height{
-  
-  min-height: calc(100vh - 100px);   
 
-}
 
