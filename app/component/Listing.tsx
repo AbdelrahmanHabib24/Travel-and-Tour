@@ -1,9 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/display-name */
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { PACKAGES } from "../ulits/type";
 import Image from "next/image";
 import { SlLocationPin } from "react-icons/sl";
 import { TbStarFilled, TbStarHalfFilled } from "react-icons/tb";
@@ -11,17 +8,19 @@ import { RiTimeLine } from "react-icons/ri";
 import Link from "next/link";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import GlobalLoading from "../loading";
 
-type Testimonial = {
-  id: string;
+type PackageType = {
+  id: number;
   URL: string;
   title1: string;
   title2: string;
-  price: string;
+  price: number;
   des: string;
   duration: string;
   rating?: number;
   count?: number;
+  images?: { id: number; url: string }[];
 };
 
 const StarRating: React.FC<{ rating: number; count: number }> = React.memo(
@@ -46,6 +45,8 @@ const formatPrice = (price: number | string): string => {
 };
 
 const Listing: React.FC = () => {
+  const [packages, setPackages] = useState<PackageType[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -54,21 +55,30 @@ const Listing: React.FC = () => {
 
   useEffect(() => {
     if (isMounted) {
-      AOS.init({
-        duration: 800, 
-        once: false, 
-        offset: 0, 
-        anchorPlacement: "top-center", 
-      });
-      AOS.refresh(); 
+      AOS.init({ duration: 800, once: false, offset: 0, anchorPlacement: "top-center" });
+      AOS.refresh();
     }
   }, [isMounted]);
 
+  // fetch data from API
   useEffect(() => {
-    if (isMounted) {
-      AOS.refresh();
-    }
-  }, [PACKAGES, isMounted]);
+    const fetchPackages = async () => {
+      try {
+        const res = await fetch("/api/packages"); 
+        const data: PackageType[] = await res.json();
+        setPackages(data);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setLoading(false);
+      }
+    };
+    fetchPackages();
+  }, []);
+
+  if (loading) {
+    return <GlobalLoading/>;
+  }
 
   return (
     <section className="max_padd_container xl:py-10 py-10" id="listing">
@@ -80,27 +90,13 @@ const Listing: React.FC = () => {
           We Provide Top Destinations
         </h3>
         <p className="max-w-lg text-gray-700">
-          Discover amazing destinations with top-notch facilities. Explore the
-          world with unbeatable offers and excellent services.
+          Discover amazing destinations with top-notch facilities. Explore the world with unbeatable offers and excellent services.
         </p>
       </header>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {PACKAGES.map(
-          (
-            {
-              id,
-              URL,
-              title1,
-              title2,
-              price,
-              des,
-              duration,
-              rating = 0,
-              count = 0,
-            }: Testimonial,
-            index
-          ) => (
+        {packages.map(
+          ({ id, URL, title1, title2, price, des, duration, rating = 0, count = 0 }, index) => (
             <article
               key={id}
               className="py-2 px-2 pb-4 border group relative rounded-lg shadow-md hover:shadow-lg transition-shadow duration-500"
@@ -114,34 +110,24 @@ const Listing: React.FC = () => {
                 : {})}
             >
               {URL && (
-                <Link
-                  href={`/packages/${id}`}
-                  aria-label={`View details for ${title1}`}
-                  passHref
-                  className="overflow-hidden"
-                >
+                <Link href={`/packages/${id}`} aria-label={`View details for ${title1}`} passHref>
                   <div className="transition-transform duration-300 rounded-lg transform group-hover:scale-105 mb-4">
                     <Image
                       src={URL}
-                      alt={title1 || "Testimonial image"}
+                      alt={title1 || "Package image"}
                       width={640}
                       height={366}
                       className="rounded-lg"
                       loading="lazy"
                     />
                   </div>
-
-                  {price && (
-                    <span className="absolute bottom-56 left-1/2 transform -translate-x-1/2 group-hover:bg-secondary bg-tertiary rounded-2xl text-white px-2 py-1 text-sm md:text-lg lg:text-xl">
-                      ${formatPrice(price)}
-                    </span>
-                  )}
+                  <span className="absolute bottom-56 left-1/2 transform -translate-x-1/2 group-hover:bg-secondary bg-tertiary rounded-2xl text-white px-2 py-1 text-sm md:text-lg lg:text-xl">
+                    ${formatPrice(price)}
+                  </span>
                 </Link>
               )}
 
-              <h4 className="text-lg lg:text-xl font-bold mb-1 ml-1">
-                {title1}
-              </h4>
+              <h4 className="text-lg lg:text-xl font-bold mb-1 ml-1">{title1}</h4>
               <div className="flex items-start justify-start gap-1">
                 <SlLocationPin className="text-gray-500" aria-label="Location" />
                 <h5 className="text-gray-600 text-sm">{title2}</h5>

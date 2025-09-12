@@ -55,7 +55,9 @@ async function fetchPackage(id: string): Promise<PackageType> {
 }
 
 async function fetchComments(id: string): Promise<Comment[]> {
-  const res = await fetch(`/api/packages/${id}/comments`, { cache: "no-store" });
+  const res = await fetch(`/api/packages/${id}/comments`, {
+    cache: "no-store",
+  });
   if (!res.ok) throw new Error("Failed to fetch comments");
   return res.json();
 }
@@ -66,7 +68,11 @@ export default function PackageDetailsClient({ id }: { id: string }) {
   const [activeTab, setActiveTab] = useState("overview");
   const queryClient = useQueryClient();
 
-  const { data: packageDetails, error, isLoading } = useQuery({
+  const {
+    data: packageDetails,
+    error,
+    isLoading,
+  } = useQuery({
     queryKey: ["package", id],
     queryFn: () => fetchPackage(id),
     enabled: !!id,
@@ -117,7 +123,7 @@ export default function PackageDetailsClient({ id }: { id: string }) {
   if (isLoading)
     return (
       <div className="flex justify-center items-center h-screen">
-       <GlobalLoading/>
+        <GlobalLoading />
       </div>
     );
 
@@ -207,19 +213,23 @@ export default function PackageDetailsClient({ id }: { id: string }) {
         {activeTab === "overview" && (
           <>
             {/* Slider */}
-            <Slider {...sliderSettings}>
-              {packageDetails.images.map((img) => (
-                <div key={img.id} className="px-1 sm:px-2">
-                  <Image
-                    src={img.url}
-                    alt={packageDetails.title1}
-                    width={1200}
-                    height={700}
-                    className="rounded-2xl shadow-lg"
-                  />
-                </div>
-              ))}
-            </Slider>
+            {packageDetails.images && packageDetails.images.length > 0 ? (
+              <Slider {...sliderSettings}>
+                {packageDetails.images.map((img) => (
+                  <div key={img.id} className="px-1 sm:px-2">
+                    <Image
+                      src={img.url}
+                      alt={packageDetails.title1}
+                      width={1200}
+                      height={700}
+                      className="rounded-2xl shadow-lg"
+                    />
+                  </div>
+                ))}
+              </Slider>
+            ) : (
+              <p className="text-center text-gray-500">No images available</p>
+            )}
 
             {/* Info Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mt-6 md:mt-10">
@@ -227,27 +237,35 @@ export default function PackageDetailsClient({ id }: { id: string }) {
                 whileHover={{ scale: 1.03 }}
                 className="p-4 sm:p-6 bg-white rounded-xl shadow-xl text-center"
               >
-                <h3 className="text-sm sm:text-lg font-semibold text-gray-600">Price</h3>
-                <p className="text-xl sm:text-2xl font-bold text-orange-600">${packageDetails.price}</p>
+                <h3 className="text-sm sm:text-lg font-semibold text-gray-600">
+                  Price
+                </h3>
+                <p className="text-xl sm:text-2xl font-bold text-orange-600">
+                  ${packageDetails.price}
+                </p>
               </motion.div>
               <motion.div
                 whileHover={{ scale: 1.03 }}
                 className="p-4 sm:p-6 bg-white rounded-xl shadow-xl text-center"
               >
-                <h3 className="text-sm sm:text-lg font-semibold text-gray-600">Duration</h3>
+                <h3 className="text-sm sm:text-lg font-semibold text-gray-600">
+                  Duration
+                </h3>
                 <p className="text-lg sm:text-xl">{packageDetails.duration}</p>
               </motion.div>
               <motion.div
                 whileHover={{ scale: 1.03 }}
                 className="p-4 sm:p-6 bg-white rounded-xl shadow-xl text-center"
               >
-                <h3 className="text-sm sm:text-lg font-semibold text-gray-600">Rating</h3>
+                <h3 className="text-sm sm:text-lg font-semibold text-gray-600">
+                  Rating
+                </h3>
                 <p className="text-lg sm:text-xl text-yellow-500 flex items-center justify-center gap-2">
                   <FaStar /> {packageDetails.rating ?? "N/A"}
                 </p>
                 {packageDetails.count && (
-                  <p className="text-xs sm:text-sm text-gray-500">(
-                                    {packageDetails.count} reviews)
+                  <p className="text-xs sm:text-sm text-gray-500">
+                    ({packageDetails.count} reviews)
                   </p>
                 )}
               </motion.div>
@@ -283,7 +301,8 @@ export default function PackageDetailsClient({ id }: { id: string }) {
             </div>
             <div className="bg-gradient-to-r from-white to-orange-50 shadow-lg rounded-xl p-4 sm:p-6">
               <FaLanguage className="inline text-orange-500 mr-2" />
-              Languages: {packageDetails.liveGuideLanguages?.join(", ") || "N/A"}
+              Languages:{" "}
+              {packageDetails.liveGuideLanguages?.join(", ") || "N/A"}
             </div>
           </motion.div>
         )}
@@ -325,7 +344,9 @@ export default function PackageDetailsClient({ id }: { id: string }) {
                     className="rounded-full"
                   />
                   <div>
-                    <p className="font-semibold text-gray-800 text-sm sm:text-base">{c.userName}</p>
+                    <p className="font-semibold text-gray-800 text-sm sm:text-base">
+                      {c.userName}
+                    </p>
                     <p className="text-gray-600 text-xs sm:text-sm">{c.text}</p>
                   </div>
                 </li>
@@ -338,4 +359,3 @@ export default function PackageDetailsClient({ id }: { id: string }) {
     </div>
   );
 }
-

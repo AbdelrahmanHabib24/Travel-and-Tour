@@ -24,18 +24,20 @@ const FloatingAssistant = forwardRef<HTMLDivElement, FloatingAssistantProps>(
           duration: 3,
           ease: "easeInOut",
         }}
-        className={`fixed bottom-6 right-6 z-50`}
+        className={`fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50`}
       >
         <button
           onClick={onStartCall}
           disabled={disabled}
-          className={`bg-blue-500 text-white p-4 rounded-full shadow-lg flex items-center gap-2 ${
-            disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"
-          }`}
+          className={`bg-blue-500 text-white p-3 sm:p-4 rounded-full shadow-lg flex items-center gap-1 sm:gap-2 
+            ${disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"}
+          `}
         >
-          <FaRobot className="text-2xl" />
+          <FaRobot className="text-xl sm:text-2xl" />
           {startButtonText && (
-            <span className="text-sm font-medium">{startButtonText}</span>
+            <span className="text-xs sm:text-sm font-medium">
+              {startButtonText}
+            </span>
           )}
         </button>
       </motion.div>

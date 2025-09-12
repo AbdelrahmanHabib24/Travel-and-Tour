@@ -7,7 +7,7 @@ import Link from "next/link";
 import GlobalLoading from "./loading";
 
 const Hero = dynamic(() => import("./component/Hero"), {
-  ssr: true,
+  ssr: false,
   loading: () => <GlobalLoading/>, 
 });
 
@@ -17,7 +17,7 @@ const Feature = dynamic(() => import("./component/Feature"), {
 });
 
 const Listing = dynamic(() => import("./component/Listing"), {
-  ssr: false,
+  ssr: true,
   loading: () => <GlobalLoading/>, 
 });
 

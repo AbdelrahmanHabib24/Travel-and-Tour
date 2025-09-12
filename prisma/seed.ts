@@ -1,12 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-import { PACKAGE, PACKAGES } from "@/app/ulits/type";
+import {  PACKAGE } from "@/app/ulits/type";
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log("🌱 Seeding packages...");
 
-  const allPackages = [...PACKAGE, ...PACKAGES];
+  const allPackages = [ ...PACKAGE];
 
   for (const pkg of allPackages) {
     await prisma.package.create({
@@ -32,7 +32,6 @@ async function main() {
     });
   }
 
-  console.log("✅ Packages seeded!");
 }
 
 main()
