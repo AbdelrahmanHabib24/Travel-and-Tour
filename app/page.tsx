@@ -7,23 +7,23 @@ import Link from "next/link";
 import GlobalLoading from "./loading";
 
 const Hero = dynamic(() => import("./component/Hero"), {
-  // ssr: false,
-  // loading: () => <GlobalLoading/>, 
+  ssr: false,
+  loading: () => <GlobalLoading/>, 
 });
 
 const Feature = dynamic(() => import("./component/Feature"), {
-  // ssr: false,
-  // loading: () => <GlobalLoading/>, 
+  ssr: false,
+  loading: () => <GlobalLoading/>, 
 });
 
 const Listing = dynamic(() => import("./component/Listing"), {
-  // ssr: true,
-  // loading: () => <GlobalLoading/>, 
+  ssr: true,
+  loading: () => <GlobalLoading/>, 
 });
 
 const Testimonials = dynamic(() => import("./component/Testimonials"), {
-  // ssr: false,
-  // loading: () => <GlobalLoading />, 
+  ssr: false,
+  loading: () => <GlobalLoading />, 
 });
 
 export default function Home() {

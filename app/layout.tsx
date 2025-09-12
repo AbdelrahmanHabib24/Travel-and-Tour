@@ -33,13 +33,11 @@ export default function RootLayout({
         className={`bg-primary text-tertiary transition-all duration-300 ${nunito.variable} `}
       >
         <Providers>
-          <div className="flex flex-col min-h-screen">
             <Header />
             <Suspense fallback={<GlobalLoading />}>
-              <main className="flex-1">{children}</main>
+              <main className="min-h-screen">{children}</main>
             </Suspense>
             <Footer />
-          </div>
         </Providers>
       </body>
     </html>

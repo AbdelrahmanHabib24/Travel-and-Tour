@@ -292,3 +292,4 @@ body {
 
 
 
+.fix-height { min-height: calc(100vh - 400px); }
