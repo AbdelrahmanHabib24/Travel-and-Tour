@@ -80,7 +80,7 @@ export default function PackageDetailsClient({ id, initialData }: PackageDetails
   } = useQuery({
     queryKey: ["package", id],
     queryFn: () => fetchPackage(id),
-    enabled: !!id,
+    enabled: false,
     staleTime: 1000 * 60 * 5,
     initialData, 
   });

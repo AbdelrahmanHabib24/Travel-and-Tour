@@ -2,11 +2,8 @@ import PackageDetailsClient from "./PackageDetailsClient";
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL! || "http://localhost:3000";
-  const res = await fetch(`${baseUrl}/api/packages/${id}`, {
-    cache: "no-store",
-  });
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
+  const res = await fetch(`${baseUrl}/api/packages/${id}`, { cache: "no-store" });
 
   if (!res.ok) throw new Error("Failed to fetch package");
 
