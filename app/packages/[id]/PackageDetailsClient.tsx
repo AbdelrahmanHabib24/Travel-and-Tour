@@ -50,7 +50,6 @@ type Comment = {
 
 type PackageDetailsClientProps = {
   id: string;
-  initialData: PackageType; 
 };
 
 async function fetchPackage(id: string): Promise<PackageType> {
@@ -67,7 +66,7 @@ async function fetchComments(id: string): Promise<Comment[]> {
   return res.json();
 }
 
-export default function PackageDetailsClient({ id, initialData }: PackageDetailsClientProps) {
+export default function PackageDetailsClient({ id }: PackageDetailsClientProps) {
   const router = useRouter();
   const [newComment, setNewComment] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
@@ -80,9 +79,8 @@ export default function PackageDetailsClient({ id, initialData }: PackageDetails
   } = useQuery({
     queryKey: ["package", id],
     queryFn: () => fetchPackage(id),
-    enabled: false,
+    enabled: !!id,
     staleTime: 1000 * 60 * 5,
-    initialData, 
   });
 
   const { data: comments = [] } = useQuery({
