@@ -1,6 +1,3 @@
-[build]
-  command = "npm install && npx prisma generate && npm run build"
-  publish = ".next"
-
-[secrets]
-  omit_keys = ["NEXT_PUBLIC_BASE_URL"]
+# netlify.toml
+[build.environment]
+SECRETS_SCAN_OMIT_KEYS = ["NEXT_PUBLIC_BASE_URL"]
