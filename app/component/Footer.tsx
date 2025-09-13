@@ -29,9 +29,9 @@ const socialLinks = [
 ];
 
 const contactInfo = {
-  location: "Noida, Uttar Pradesh",
-  phone: "+91 123456789",
-  email: "support@shopsy.com",
+  location: "Egypt, Alexandria",
+  phone: "+201023289634",
+  email: "abdelrahmanhabib502@gmail.com",
 };
 
 // Newsletter Component

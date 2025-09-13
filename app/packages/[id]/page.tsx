@@ -1,8 +1,7 @@
 import { use } from "react";
+import PackageDetailsClient from "./PackageDetailsClient";
 
-import dynamic from "next/dynamic";
 
-const PackageDetailsClient = dynamic(() => import("./PackageDetailsClient"), { ssr: true });
 
 
 export default function PackagePage({ params }: { params: Promise<{ id: string }> }) {

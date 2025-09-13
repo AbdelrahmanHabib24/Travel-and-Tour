@@ -33,13 +33,22 @@ export default function RootLayout({
         className={`bg-primary text-tertiary transition-all duration-300 ${nunito.variable}`}
       >
         <Providers>
-          {/* Flex container to push footer to bottom */}
-          <div className="flex flex-col min-h-screen ">
+          <div className="flex flex-col min-h-screen">
             <Header />
-            <Suspense fallback={<GlobalLoading />}>
-              <main className="flex-1">{children}</main>
-            </Suspense>
-            <Footer  />
+            <main className="flex-1">
+              <Suspense
+                fallback={
+                  <div className="flex-1 flex items-center justify-center">
+                    <GlobalLoading />
+                  </div>
+                }
+              >
+                <>
+                  <div className="flex-1">{children}</div>
+                  <Footer />
+                </>
+              </Suspense>
+            </main>
           </div>
         </Providers>
       </body>
