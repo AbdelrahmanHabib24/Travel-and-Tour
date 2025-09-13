@@ -91,7 +91,7 @@ const Footer: React.FC = () => {
 
   return (
     <footer
-      className="relative flex flex-col text-white bg-cover bg-bottom overflow-hidden"
+      className="relative flex mt-auto w-full flex-col text-white bg-cover bg-bottom overflow-hidden"
       style={{ backgroundImage: `url(${Banner})` }}
     >
       <div className="absolute inset-0 bg-black/50 -z-10" />

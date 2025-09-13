@@ -48,6 +48,11 @@ type Comment = {
   createdAt: string;
 };
 
+type PackageDetailsClientProps = {
+  id: string;
+  initialData: PackageType; 
+};
+
 async function fetchPackage(id: string): Promise<PackageType> {
   const res = await fetch(`/api/packages/${id}`, { cache: "no-store" });
   if (!res.ok) throw new Error("Failed to fetch package");
@@ -62,7 +67,7 @@ async function fetchComments(id: string): Promise<Comment[]> {
   return res.json();
 }
 
-export default function PackageDetailsClient({ id }: { id: string }) {
+export default function PackageDetailsClient({ id, initialData }: PackageDetailsClientProps) {
   const router = useRouter();
   const [newComment, setNewComment] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
@@ -77,6 +82,7 @@ export default function PackageDetailsClient({ id }: { id: string }) {
     queryFn: () => fetchPackage(id),
     enabled: !!id,
     staleTime: 1000 * 60 * 5,
+    initialData, 
   });
 
   const { data: comments = [] } = useQuery({
