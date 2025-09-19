@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Slider from "react-slick";
 import { motion } from "framer-motion";
-import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {

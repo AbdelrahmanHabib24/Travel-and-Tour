@@ -1,5 +1,4 @@
 import Header from "@/app/component/Header";
-import Footer from "@/app/component/Footer";
 
 export default function SignupLayout({ children }: { children: React.ReactNode }) {
   return (

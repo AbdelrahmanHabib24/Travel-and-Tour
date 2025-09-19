@@ -99,12 +99,18 @@ const Footer: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:justify-between gap-10">
           {/* Company Info */}
           <div className="flex flex-col flex-1">
-            <Link href="/" className="flex items-center gap-2 mb-4" aria-label="Travel Home">
+            <Link
+              href="/"
+              className="flex items-center gap-2 mb-4"
+              aria-label="Travel Home"
+            >
               <FaPlane className="text-gray-200 w-6 h-6 hover:text-blue-400 hover:rotate-45 transition-all duration-300" />
               <h1 className="text-lg font-bold">Travel</h1>
             </Link>
             <p className="text-gray-300 text-sm">
-              Explore the world's most amazing destinations with us. Book your dream trip and enjoy exclusive offers, reliable service, and unforgettable experiences.
+              Explore the world&#39;s most amazing destinations with us. Book
+              your dream trip and enjoy exclusive offers, reliable service, and
+              unforgettable experiences.
             </p>
           </div>
 
