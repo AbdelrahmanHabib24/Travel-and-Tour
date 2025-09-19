@@ -18,12 +18,12 @@ const Header = () => {
     setMenuOpened((prevState) => !prevState);
   }, []);
 
-  const handleLogout = () => {
-    document.cookie =
-      "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-    setIsLoggedIn(false);
-    router.push("/Login");
-  };
+  const handleLogout = async () => {
+  await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+  setIsLoggedIn(false);
+  router.push("/Login");
+};
+
 
   useEffect(() => {
     const handleScroll = () => setActive(window.scrollY > 40);
@@ -32,11 +32,23 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    const authToken = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("authToken="));
-    setIsLoggedIn(!!authToken);
-  }, [pathname]);
+  const checkAuth = async () => {
+    try {
+      const res = await fetch("/api/auth/user", { credentials: "include" });
+      if (res.ok) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    } catch (err) {
+      console.error("Auth check failed:", err);
+      setIsLoggedIn(false);
+    }
+  };
+
+  checkAuth();
+}, [pathname]);
+
 
   const handleSignUpClick = () => router.push("/SignUp");
   const handleLoginClick = () => router.push("/Login");
@@ -61,6 +73,7 @@ const Header = () => {
           containerStyles="hidden lg:flex items-center text-center justify-between gap-x-10"
           linkStyles="hover:text-secondary cursor-pointer text-tertiary"
         />
+
         <div className="flex items-center lg:gap-x-12 gap-x-10 md:gap-x-32">
           {isLoggedIn ? (
             <button

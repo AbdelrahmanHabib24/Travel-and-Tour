@@ -1,136 +1,147 @@
-import React from 'react';
+"use client";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { serverSignupSchema } from "@/app/ulits/zod"; // ✅ نفس الـ schema اللي عاملها
+import { z } from "zod";
+import SubmitButton from "./SubmitButton";
+
+type SignupFormData = z.infer<typeof serverSignupSchema>;
 
 interface FormProps {
-  formData: {
-    username: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-  };
-  errors: {
-    username?: string;
-    email?: string;
-    password?: string;
-    confirmPassword?: string;
-  };
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onSubmitForm: (data: SignupFormData) => void | Promise<void>;
   loading: boolean;
-  isFormValid: boolean;
+  serverErrors?: {
+    username?: string[];
+    email?: string[];
+    password?: string[];
+    confirmPassword?: string[];
+    general?: string[];
+  };
 }
 
-const Form: React.FC<FormProps> = ({
-  formData,
-  errors,
-  handleChange,
-  handleBlur,
-  handleSubmit,
-  loading,
-  isFormValid,
-}) => {
-  const allFieldsFilled =
-    formData.username &&
-    formData.email &&
-    formData.password &&
-    formData.confirmPassword &&
-    isFormValid; 
+const Form: React.FC<FormProps> = ({ onSubmitForm, loading, serverErrors }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(serverSignupSchema),
+    mode: "onChange",
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const inputClass = (hasError?: boolean) =>
+    `w-full px-4 py-3 rounded-xl border ${
+      hasError ? "border-red-400" : "border-gray-300"
+    } focus:outline-none focus:ring-2 focus:ring-orange-400`;
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
-      {/* Username */}
-      <div className="mb-4">
-        <label htmlFor="username" className="block mb-1  font-medium">
-          Username:
-        </label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-300"
-          required
-        />
-        {errors.username && (
-          <p className="text-sm text-red-500 mt-1">{errors.username}</p>
-        )}
-      </div>
+    <div className="w-full max-w-md bg-white rounded-2xl p-8 shadow-lg">
+      <h2 className="text-2xl font-bold text-center text-orange-600">
+        Create Account
+      </h2>
+      <p className="text-sm text-gray-500 text-center mb-4">
+        Join us! Please enter your details.
+      </p>
 
-      {/* Email */}
-      <div className="mb-4">
-        <label htmlFor="email" className="block mb-1 font-medium">
-          Email:
-        </label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-300"
-          required
-        />
-        {errors.email && (
-          <p className="text-sm text-red-500 mt-1">{errors.email}</p>
-        )}
-      </div>
+      {serverErrors?.general && (
+        <p className="mb-4 text-center text-sm text-red-600">
+          {serverErrors.general[0]}
+        </p>
+      )}
 
-      {/* Password */}
-      <div className="mb-4">
-        <label htmlFor="password" className="block mb-1 font-medium">
-          Password:
-        </label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-300"
-          required
-        />
-        {errors.password && (
-          <p className="text-sm text-red-500 mt-1">{errors.password}</p>
-        )}
-      </div>
-
-      {/* Confirm Password */}
-      <div className="mb-4">
-        <label htmlFor="confirmPassword" className="block mb-1 font-medium">
-          Confirm Password:
-        </label>
-        <input
-          type="password"
-          id="confirmPassword"
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-300"
-          required
-        />
-        {errors.confirmPassword && (
-          <p className="text-sm text-red-500 mt-1">{errors.confirmPassword}</p>
-        )}
-      </div>
-
-      {/* Submit Button */}
-      <button
-        type="submit"
-        className={`w-full py-2 rounded-md transition duration-200 ${
-          allFieldsFilled && !loading
-            ? "bg-blue-500 text-white hover:bg-blue-600"
-            : "bg-gray-300 text-gray-500 cursor-not-allowed"
-        }`}
-        disabled={!allFieldsFilled || loading}
+      <form
+        onSubmit={handleSubmit(onSubmitForm)}
+        noValidate
+        className="space-y-5"
       >
-        {loading ? "Signing Up..." : "Sign Up"}
-      </button>
-    </form>
+        {/* Username */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Username
+          </label>
+          <input
+            type="text"
+            {...register("username")}
+            className={inputClass(
+              !!errors.username || !!serverErrors?.username
+            )}
+            placeholder="your.username"
+          />
+          <p className="mt-1 text-xs text-red-600">
+            {errors.username?.message || serverErrors?.username?.[0]}
+          </p>
+        </div>
+
+        {/* Email */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Email
+          </label>
+          <input
+            type="email"
+            {...register("email")}
+            className={inputClass(!!errors.email || !!serverErrors?.email)}
+            placeholder="you@example.com"
+          />
+          <p className="mt-1 text-xs text-red-600">
+            {errors.email?.message || serverErrors?.email?.[0]}
+          </p>
+        </div>
+
+        {/* Password */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Password
+          </label>
+          <input
+            type="password"
+            {...register("password")}
+            className={inputClass(
+              !!errors.password || !!serverErrors?.password
+            )}
+            placeholder="••••••••"
+          />
+          <p className="mt-1 text-xs text-red-600">
+            {errors.password?.message || serverErrors?.password?.[0]}
+          </p>
+        </div>
+
+        {/* Confirm Password */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Confirm Password
+          </label>
+          <input
+            type="password"
+            {...register("confirmPassword")}
+            className={inputClass(
+              !!errors.confirmPassword || !!serverErrors?.confirmPassword
+            )}
+            placeholder="••••••••"
+          />
+          <p className="mt-1 text-xs text-red-600">
+            {errors.confirmPassword?.message ||
+              serverErrors?.confirmPassword?.[0]}
+          </p>
+        </div>
+
+        {/* Submit Button */}
+        <SubmitButton
+          type="submit"
+          loading={loading}
+          disabled={!isValid || loading}
+        >
+          Sign Up
+        </SubmitButton>
+      </form>
+    </div>
   );
 };
 

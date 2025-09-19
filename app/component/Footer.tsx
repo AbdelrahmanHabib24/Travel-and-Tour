@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -18,8 +17,9 @@ const Banner = "/footer-pattern.jpg";
 const footerLinks = [
   { title: "Home", href: "/#" },
   { title: "About", href: "/#about" },
-  { title: "Contact", href: "/#contact" },
+  { title: "Services", href: "/#services" },
   { title: "Blog", href: "/#blog" },
+  { title: "Contact", href: "/#contact" },
 ];
 
 const socialLinks = [
@@ -34,7 +34,6 @@ const contactInfo = {
   email: "abdelrahmanhabib502@gmail.com",
 };
 
-// Newsletter Component
 const NewsletterSignup: React.FC = () => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,11 +52,11 @@ const NewsletterSignup: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="w-full">
       <h2 className="text-base font-bold mb-3">Subscribe to Our Newsletter</h2>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col sm:flex-row gap-2"
+        className="flex flex-col sm:flex-row gap-2 w-full"
         aria-label="Newsletter form"
       >
         <input
@@ -91,50 +90,33 @@ const Footer: React.FC = () => {
 
   return (
     <footer
-      className="relative flex mt-auto w-full flex-col text-white bg-cover bg-bottom overflow-hidden"
+      className="relative w-full flex flex-col text-white bg-cover bg-bottom overflow-hidden"
       style={{ backgroundImage: `url(${Banner})` }}
     >
       <div className="absolute inset-0 bg-black/50 -z-10" />
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex flex-col lg:flex-row lg:justify-between gap-10">
           {/* Company Info */}
-          <div className="flex flex-col">
+          <div className="flex flex-col flex-1">
             <Link href="/" className="flex items-center gap-2 mb-4" aria-label="Travel Home">
               <FaPlane className="text-gray-200 w-6 h-6 hover:text-blue-400 hover:rotate-45 transition-all duration-300" />
               <h1 className="text-lg font-bold">Travel</h1>
             </Link>
             <p className="text-gray-300 text-sm">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum in beatae ea recusandae blanditiis veritatis.
+              Explore the world's most amazing destinations with us. Book your dream trip and enjoy exclusive offers, reliable service, and unforgettable experiences.
             </p>
           </div>
 
-          {/* Important Links */}
-          <div>
-            <h2 className="text-base font-bold mb-3">Important Links</h2>
-            <ul className="flex flex-col gap-2">
+          {/* Quick Links */}
+          <div className="flex-1">
+            <h2 className="text-base font-bold mb-3">Quick Links</h2>
+            <ul className="flex flex-col gap-2 text-sm">
               {footerLinks.map((link) => (
                 <li key={link.title}>
                   <Link
                     href={link.href}
-                    className="text-gray-200 hover:text-blue-400 hover:translate-x-1 transition-all duration-300 text-sm"
-                  >
-                    {link.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Links */}
-          <div>
-            <h2 className="text-base font-bold mb-3">Links</h2>
-            <ul className="flex flex-col gap-2">
-              {footerLinks.map((link) => (
-                <li key={link.title}>
-                  <Link
-                    href={link.href}
-                    className="text-gray-200 hover:text-blue-400 hover:translate-x-1 transition-all duration-300 text-sm"
+                    className="text-gray-200 hover:text-blue-400 hover:translate-x-1 transition-all duration-300"
                   >
                     {link.title}
                   </Link>
@@ -144,7 +126,8 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Contact & Social */}
-          <div>
+          <div className="flex-1">
+            <h2 className="text-base font-bold mb-3">Contact Us</h2>
             <div className="flex items-center gap-3 mb-4">
               {socialLinks.map((social) => {
                 const Icon = social.icon;
@@ -185,7 +168,7 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Newsletter */}
-          <div>
+          <div className="flex-1 w-full sm:w-auto">
             <NewsletterSignup />
           </div>
         </div>

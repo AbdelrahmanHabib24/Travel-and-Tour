@@ -14,74 +14,8 @@ body {
 }
 
 
-.linearGradient {
-  background: linear-gradient(180deg, #fde1ff 0%, #e1ffea22 60%);
-}
 
-::-webkit-scrollbar-track {
-  background: white;
-  border: 1px solid #8080802f;
-}
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #e6e6e6;
-  border-radius: 5px;
-}
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #ccc;
-}
-/* React Collapse */
-.ReactCollapse--collapse {
-  transition: height 500ms;
-}
 
-/* .loader {
-  position: relative;
-  width: 200px;
-  height: 200px;
-}
-.loader:before,
-.loader:after {
-  content: "";
-  display: block;
-  border: 50px solid transparent;
-  border-top-color: #09c;
-  position: absolute;
-  left: 0;
- 
-  top: 0;
-  animation: weld-rotate 2s infinite ease-in;
-}
-.loader:before {
-  border-color: transparent transparent transparent #ff3d00;
-  animation-delay: 0.5s;
-}
-@keyframes weld-rotate {
-  0%,
-  25% {
-    transform: rotate(0deg);
-  }
-  50%,
-  75% {
-    transform: rotate(180deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.loading {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #333333c1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-} */
 @layer base {
   .active {
     @apply text-secondary relative flex-1 after:w-full after:h-[1px] after:bg-secondary after:absolute after:-bottom-3 after:right-0;
@@ -292,4 +226,3 @@ body {
 
 
 
-.fix-height { min-height: calc(100vh - 400px); }

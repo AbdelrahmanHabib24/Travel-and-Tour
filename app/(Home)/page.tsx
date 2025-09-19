@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import ProtectedHome from "../component/Home";
 import AppRoot from "../component/AppRoot";
 import Hero from "../component/Hero";
 import Feature from "../component/Feature";
@@ -11,7 +10,6 @@ import Testimonials from "../component/Testimonials";
 export default function Home() {
   return (
     <div className="overflow-x-hidden min-h-screen flex flex-col">
-      <ProtectedHome />
       <AppRoot
         appConfig={{
           startButtonText: "Travel Assistant",

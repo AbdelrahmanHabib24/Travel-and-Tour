@@ -1,7 +1,7 @@
 import Header from "@/app/component/Header";
 import Footer from "@/app/component/Footer";
 
-export default function PackageLayout({ children }: { children: React.ReactNode }) {
+export default function aboutLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen ">
       <Header />

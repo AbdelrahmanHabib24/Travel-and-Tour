@@ -43,3 +43,12 @@ model Comment {
   packageId Int
   package   Package  @relation(fields: [packageId], references: [id])
 }
+
+
+model User {
+  id        Int     @id @default(autoincrement())
+  username  String  @unique   
+  email     String  @unique
+  password  String
+  createdAt DateTime @default(now())
+}

@@ -109,14 +109,24 @@ export default function PackageDetailsClient({ id }: PackageDetailsClientProps) 
     },
   });
 
-  const handleReserveClick = () => {
-    const authToken = Cookies.get("authToken");
-    if (authToken) {
+ const handleReserveClick = async () => {
+  try {
+    const res = await fetch("/api/auth/user", {
+      method: "GET",
+      credentials: "include", 
+    });
+
+    if (res.ok) {
       router.push("/payment");
     } else {
       toast.error("You must be logged in to reserve");
+      router.push("/Login");
     }
-  };
+  } catch (error) {
+    console.error("Error checking auth:", error);
+    toast.error("Something went wrong, please try again");
+  }
+};
 
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,121 +1,62 @@
 "use client";
-
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Form from "@/app/component/Form";
+import { z } from "zod";
+import { serverSignupSchema } from "@/app/ulits/zod";
+
+type SignupFormData = z.infer<typeof serverSignupSchema>;
 
 const Signup: React.FC = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  const [errors, setErrors] = useState<{ [key: string]: string | undefined }>(
-    {}
-  );
   const [loading, setLoading] = useState(false);
-
+  const [serverErrors, setServerErrors] = useState<
+    Record<string, string[] | undefined>
+  >({});
   const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-    setErrors((prevErrors) => ({ ...prevErrors, [name]: undefined }));
-  };
-
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    const { name } = e.target;
-    validateField(name, formData[name as keyof typeof formData]);
-  };
-
-  const validateField = (fieldName: string, value: string) => {
-    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
-    const upperCaseRegex = /[A-Z\u00C0-\u00D6\u00D8-\u00DE]/;
-    let error = "";
-
-    switch (fieldName) {
-      case "username":
-        if (!value.trim()) error = "Username is required.";
-        break;
-      case "email":
-        if (!value.trim()) error = "Email is required.";
-        else if (!/\S+@\S+\.\S+/.test(value))
-          error = "Please enter a valid email address.";
-        break;
-      case "password":
-        if (!value.trim()) error = "Password is required.";
-        else if (value.length < 8)
-          error = "Password must be at least 8 characters long.";
-        else if (!upperCaseRegex.test(value))
-          error = "Password must include at least one uppercase letter.";
-        else if (!/\d/.test(value)) {
-          error = "Password must contain at least one number.";
-        } else if (!specialCharRegex.test(value))
-          error = "Password must include at least one special character.";
-
-        break;
-      case "confirmPassword":
-        if (!value.trim()) error = "Please confirm your password.";
-        else if (value !== formData.password) error = "Passwords do not match.";
-        break;
-      default:
-        break;
-    }
-
-    setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: error }));
-  };
-
-  const validateForm = (): boolean => {
-    const { username, email, password, confirmPassword } = formData;
-    const newErrors: { [key: string]: string | undefined } = {};
-
-    validateField("username", username);
-    validateField("email", email);
-    validateField("password", password);
-    validateField("confirmPassword", confirmPassword);
-
-    Object.keys(formData).forEach((key) => {
-      if (errors[key]) newErrors[key] = errors[key];
-    });
-
-    setErrors(newErrors);
-    return Object.values(newErrors).every((error) => !error);
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
+  const handleSignup = async (data: SignupFormData) => {
     setLoading(true);
     try {
-      localStorage.setItem("user", JSON.stringify(formData));
-      console.log("Form Data Submitted:", formData);
-      router.push("/Login"); // Client-side navigation
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        if (result.errors) {
+          setServerErrors(result.errors);
+        } else if (result.message) {
+          setServerErrors({ general: [result.message] });
+        }
+        return;
+      }
+
+      console.log("✅ Signup success:", result.user);
+      router.push("/Login");
     } catch (error) {
       console.error("Error during signup:", error);
+      setServerErrors({ general: ["Something went wrong. Please try again."] });
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className=" fix-height flexCenter pt-14 mb-5  max_padd_container">
-      <div className="w-96 border rounded-lg border-co bg-white p-6">
-        <h1 className="flexCenter bold-22 mb-4 ">Sign up</h1>
-        <Form
-          formData={formData}
-          errors={errors}
-          handleChange={handleChange}
-          handleBlur={handleBlur}
-          handleSubmit={handleSubmit}
-          loading={loading}
-          isFormValid={Object.values(errors).every((error) => !error)}
-        />
-      </div>
+return (
+  <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div className="w-full max-w-md rounded-2xl px-5 py-10 sm:py-14 ">
+      <Form
+        onSubmitForm={handleSignup}
+        loading={loading}
+        serverErrors={serverErrors}
+      />
     </div>
-  );
+  </div>
+);
+
+
 };
 
 export default Signup;
