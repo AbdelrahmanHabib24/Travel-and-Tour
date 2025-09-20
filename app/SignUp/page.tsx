@@ -34,7 +34,6 @@ const Signup: React.FC = () => {
         return;
       }
 
-      console.log("✅ Signup success:", result.user);
       router.push("/Login");
     } catch (error) {
       console.error("Error during signup:", error);
@@ -46,7 +45,7 @@ const Signup: React.FC = () => {
 
 return (
   <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-    <div className="w-full max-w-md rounded-2xl px-5 py-10 sm:py-14 ">
+    <div className="w-full max-w-md rounded-2xl  ">
       <Form
         onSubmitForm={handleSignup}
         loading={loading}

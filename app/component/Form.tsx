@@ -1,10 +1,11 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { serverSignupSchema } from "@/app/ulits/zod"; // ✅ نفس الـ schema اللي عاملها
+import { serverSignupSchema } from "@/app/ulits/zod";
 import { z } from "zod";
 import SubmitButton from "./SubmitButton";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 type SignupFormData = z.infer<typeof serverSignupSchema>;
 
@@ -21,6 +22,9 @@ interface FormProps {
 }
 
 const Form: React.FC<FormProps> = ({ onSubmitForm, loading, serverErrors }) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -37,17 +41,17 @@ const Form: React.FC<FormProps> = ({ onSubmitForm, loading, serverErrors }) => {
   });
 
   const inputClass = (hasError?: boolean) =>
-    `w-full px-4 py-3 rounded-xl border ${
+    `w-full pr-10 px-4 py-3 rounded-xl border ${
       hasError ? "border-red-400" : "border-gray-300"
     } focus:outline-none focus:ring-2 focus:ring-orange-400`;
 
   return (
-    <div className="w-full max-w-md bg-white rounded-2xl p-8 shadow-lg">
-      <h2 className="text-2xl font-bold text-center text-orange-600">
+    <div className="w-full max-w-md bg-white rounded-2xl p-6 sm:p-8 shadow-lg mx-auto">
+      <h2 className="text-2xl font-bold text-center text-orange-600 mb-2">
         Create Account
       </h2>
       <p className="text-sm text-gray-500 text-center mb-4">
-        Join us! Please enter your details.
+        Join us! Please enter your details below.
       </p>
 
       {serverErrors?.general && (
@@ -59,7 +63,7 @@ const Form: React.FC<FormProps> = ({ onSubmitForm, loading, serverErrors }) => {
       <form
         onSubmit={handleSubmit(onSubmitForm)}
         noValidate
-        className="space-y-5"
+        className="space-y-4 sm:space-y-5"
       >
         {/* Username */}
         <div>
@@ -69,9 +73,7 @@ const Form: React.FC<FormProps> = ({ onSubmitForm, loading, serverErrors }) => {
           <input
             type="text"
             {...register("username")}
-            className={inputClass(
-              !!errors.username || !!serverErrors?.username
-            )}
+            className={inputClass(!!errors.username || !!serverErrors?.username)}
             placeholder="your.username"
           />
           <p className="mt-1 text-xs text-red-600">
@@ -96,39 +98,52 @@ const Form: React.FC<FormProps> = ({ onSubmitForm, loading, serverErrors }) => {
         </div>
 
         {/* Password */}
-        <div>
+        <div className="relative">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Password
           </label>
-          <input
-            type="password"
-            {...register("password")}
-            className={inputClass(
-              !!errors.password || !!serverErrors?.password
-            )}
-            placeholder="••••••••"
-          />
+          <div className="relative flex items-center">
+            <input
+              type={showPassword ? "text" : "password"}
+              {...register("password")}
+              className={inputClass(!!errors.password || !!serverErrors?.password)}
+              placeholder="••••••••"
+            />
+            <span
+              className="absolute right-3 cursor-pointer text-gray-400"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
           <p className="mt-1 text-xs text-red-600">
             {errors.password?.message || serverErrors?.password?.[0]}
           </p>
         </div>
 
         {/* Confirm Password */}
-        <div>
+        <div className="relative">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Confirm Password
           </label>
-          <input
-            type="password"
-            {...register("confirmPassword")}
-            className={inputClass(
-              !!errors.confirmPassword || !!serverErrors?.confirmPassword
-            )}
-            placeholder="••••••••"
-          />
+          <div className="relative flex items-center">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              {...register("confirmPassword")}
+              className={inputClass(
+                !!errors.confirmPassword || !!serverErrors?.confirmPassword
+              )}
+              placeholder="••••••••"
+            />
+            <span
+              className="absolute right-3 cursor-pointer text-gray-400"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
           <p className="mt-1 text-xs text-red-600">
-            {errors.confirmPassword?.message ||
-              serverErrors?.confirmPassword?.[0]}
+            {errors.confirmPassword?.message || serverErrors?.confirmPassword?.[0]}
           </p>
         </div>
 

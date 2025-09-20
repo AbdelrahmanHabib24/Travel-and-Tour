@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// ✅ Schema للتسجيل (Sign Up)
 export const signupSchema = z.object({
   username: z
     .string()
@@ -21,7 +20,6 @@ export const signupSchema = z.object({
     ),
 });
 
-// ✅ Schema لتسجيل الدخول (Login)
 export const loginSchema = z.object({
   email: z
     .string()
@@ -32,7 +30,6 @@ export const loginSchema = z.object({
     .min(6, "Password is too short"),
 });
 
-// ✅ Schema خاص بالباك (Sign Up مع confirmPassword)
 export const serverSignupSchema = signupSchema
   .extend({
     confirmPassword: z.string().min(1, "Please confirm your password"),

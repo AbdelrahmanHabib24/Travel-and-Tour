@@ -5,10 +5,8 @@ import { serverSignupSchema } from "@/app/ulits/zod";
 
 export async function POST(req: Request) {
   try {
-    // 1️⃣ قراءة بيانات الطلب
     const body = await req.json();
 
-    // 2️⃣ التحقق من صحة البيانات
     const parsed = serverSignupSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
