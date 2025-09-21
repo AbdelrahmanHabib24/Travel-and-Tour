@@ -3,11 +3,11 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
 export async function GET() {
-  const cookieStore = await cookies();
+  const cookieStore = await cookies(); 
   const token = cookieStore.get("authToken")?.value;
 
   if (!token) {
-    return NextResponse.json({ user: null }, { status: 200 });
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   try {

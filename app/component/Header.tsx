@@ -18,11 +18,12 @@ const Header = () => {
     setMenuOpened((prevState) => !prevState);
   }, []);
 
-  const handleLogout = async () => {
+ const handleLogout = async () => {
   await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
   setIsLoggedIn(false);
   router.push("/Login");
 };
+
 
 
   useEffect(() => {
@@ -35,7 +36,7 @@ const Header = () => {
   const checkAuth = async () => {
     try {
       const res = await fetch("/api/auth/user", { credentials: "include" });
-      if (res.ok) {
+      if (res.status === 200) {
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);
@@ -48,6 +49,7 @@ const Header = () => {
 
   checkAuth();
 }, [pathname]);
+
 
 
   const handleSignUpClick = () => router.push("/SignUp");
