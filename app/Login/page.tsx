@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,7 +13,6 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login: React.FC = () => {
   const router = useRouter();
-  const [generalError, setGeneralError] = useState<string | null>(null);
 
   const {
     register,
@@ -27,28 +26,28 @@ const Login: React.FC = () => {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    setGeneralError(null);
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
+        credentials: "include",
       });
 
       const result = await res.json();
 
       if (!res.ok) {
-        if (result.errors) {
-          Object.entries(result.errors).forEach(([field, msgs]) => {
-            if (Array.isArray(msgs)) {
-              setError(field as keyof LoginFormData, {
-                type: "server",
-                message: msgs[0],
-              });
-            }
+        if (result.errors?.email) {
+          setError("email", {
+            type: "server",
+            message: result.errors.email[0],
           });
-        } else if (result.message) {
-          setGeneralError(result.message);
+        }
+        if (result.errors?.password) {
+          setError("password", {
+            type: "server",
+            message: result.errors.password[0],
+          });
         }
         return;
       }
@@ -56,7 +55,10 @@ const Login: React.FC = () => {
       router.push("/");
     } catch (err) {
       console.error(err);
-      setGeneralError("Something went wrong. Please try again.");
+      setError("email", {
+        type: "server",
+        message: "Server error. Please try again later.",
+      });
     }
   };
 
@@ -72,11 +74,11 @@ const Login: React.FC = () => {
           Login
         </h1>
 
-        {generalError && (
-          <p className="mb-4 text-center text-sm text-red-600">{generalError}</p>
-        )}
-
-        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          className="space-y-5"
+        >
           {/* Email */}
           <div>
             <label htmlFor="email" className="block mb-1 font-medium">
@@ -93,7 +95,9 @@ const Login: React.FC = () => {
               {...register("email")}
             />
             {errors.email && (
-              <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>
+              <p className="text-sm text-red-500 mt-1">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
@@ -113,7 +117,9 @@ const Login: React.FC = () => {
               {...register("password")}
             />
             {errors.password && (
-              <p className="text-sm text-red-500 mt-1">{errors.password.message}</p>
+              <p className="text-sm text-red-500 mt-1">
+                {errors.password.message}
+              </p>
             )}
           </div>
 

@@ -1,13 +1,13 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import cookie from "cookie";
 
-export async function GET(req: Request) {
-  const cookies = cookie.parse(req.headers.get("cookie") || "");
-  const token = cookies.authToken;
+export async function GET() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("authToken")?.value;
 
   if (!token) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ user: null }, { status: 200 });
   }
 
   try {
