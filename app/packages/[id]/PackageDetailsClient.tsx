@@ -65,7 +65,9 @@ async function fetchComments(id: string): Promise<Comment[]> {
   return res.json();
 }
 
-export default function PackageDetailsClient({ id }: PackageDetailsClientProps) {
+export default function PackageDetailsClient({
+  id,
+}: PackageDetailsClientProps) {
   const router = useRouter();
   const [newComment, setNewComment] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
@@ -108,24 +110,24 @@ export default function PackageDetailsClient({ id }: PackageDetailsClientProps) 
     },
   });
 
- const handleReserveClick = async () => {
-  try {
-    const res = await fetch("/api/auth/user", {
-      method: "GET",
-      credentials: "include", 
-    });
+  const handleReserveClick = async () => {
+    try {
+      const res = await fetch("/api/auth/user", {
+        method: "GET",
+        credentials: "include",
+      });
 
-    if (res.ok) {
-      router.push("/payment");
-    } else {
-      toast.error("You must be logged in to reserve");
-      router.push("/Login");
+      if (res.ok) {
+        router.push("/payment");
+      } else {
+        toast.error("You must be logged in to reserve");
+        router.push("/Login");
+      }
+    } catch (error) {
+      console.error("Error checking auth:", error);
+      toast.error("Something went wrong, please try again");
     }
-  } catch (error) {
-    console.error("Error checking auth:", error);
-    toast.error("Something went wrong, please try again");
-  }
-};
+  };
 
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,6 +172,7 @@ export default function PackageDetailsClient({ id }: PackageDetailsClientProps) 
           alt={packageDetails.title1}
           fill
           className="object-cover brightness-75"
+          priority
         />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4 sm:px-6 text-center">
           <motion.h1
@@ -228,7 +231,7 @@ export default function PackageDetailsClient({ id }: PackageDetailsClientProps) 
             {/* Slider */}
             {packageDetails.images && packageDetails.images.length > 0 ? (
               <Slider {...sliderSettings}>
-                {packageDetails.images.map((img) => (
+                {packageDetails.images.map((img, index) => (
                   <div key={img.id} className="px-1 sm:px-2">
                     <Image
                       src={img.url}
@@ -236,6 +239,7 @@ export default function PackageDetailsClient({ id }: PackageDetailsClientProps) 
                       width={1200}
                       height={700}
                       className="rounded-2xl shadow-lg"
+                      priority
                     />
                   </div>
                 ))}
