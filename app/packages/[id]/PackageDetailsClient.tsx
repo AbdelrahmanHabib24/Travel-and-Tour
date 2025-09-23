@@ -65,9 +65,7 @@ async function fetchComments(id: string): Promise<Comment[]> {
   return res.json();
 }
 
-export default function PackageDetailsClient({
-  id,
-}: PackageDetailsClientProps) {
+export default function PackageDetailsClient({ id }: PackageDetailsClientProps) {
   const router = useRouter();
   const [newComment, setNewComment] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
@@ -110,24 +108,24 @@ export default function PackageDetailsClient({
     },
   });
 
-  const handleReserveClick = async () => {
-    try {
-      const res = await fetch("/api/auth/user", {
-        method: "GET",
-        credentials: "include",
-      });
+ const handleReserveClick = async () => {
+  try {
+    const res = await fetch("/api/auth/user", {
+      method: "GET",
+      credentials: "include", 
+    });
 
-      if (res.ok) {
-        router.push("/payment");
-      } else {
-        toast.error("You must be logged in to reserve");
-        router.push("/Login");
-      }
-    } catch (error) {
-      console.error("Error checking auth:", error);
-      toast.error("Something went wrong, please try again");
+    if (res.ok) {
+      router.push("/payment");
+    } else {
+      toast.error("You must be logged in to reserve");
+      router.push("/Login");
     }
-  };
+  } catch (error) {
+    console.error("Error checking auth:", error);
+    toast.error("Something went wrong, please try again");
+  }
+};
 
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -231,7 +229,7 @@ export default function PackageDetailsClient({
             {/* Slider */}
             {packageDetails.images && packageDetails.images.length > 0 ? (
               <Slider {...sliderSettings}>
-                {packageDetails.images.map((img, index) => (
+                {packageDetails.images.map((img) => (
                   <div key={img.id} className="px-1 sm:px-2">
                     <Image
                       src={img.url}
