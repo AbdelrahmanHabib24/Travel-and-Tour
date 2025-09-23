@@ -16,14 +16,13 @@ const Feature = () => {
     infinite: true,
     speed: 500,
     slidesToScroll: 1,
+    arrows: false,
     slidesToShow: 3,
     responsive: [
-      { breakpoint: 1536, settings: { slidesToShow: 3 } }, // ≥2xl
       { breakpoint: 1280, settings: { slidesToShow: 3 } }, // ≥xl
       { breakpoint: 1024, settings: { slidesToShow: 2 } }, // ≥lg
-      { breakpoint: 768,  settings: { slidesToShow: 1 } }, // ≥md
-      { breakpoint: 640,  settings: { slidesToShow: 1 } }, // ≥sm
-      { breakpoint: 0,    settings: { slidesToShow: 1 } }, // extra-small <640
+      { breakpoint: 768, settings: { slidesToShow: 1 } }, // ≥md
+      { breakpoint: 640, settings: { slidesToShow: 1 } }, // ≥sm
     ],
   };
 
@@ -31,40 +30,27 @@ const Feature = () => {
     initial: { opacity: 0, y: 20 },
     whileInView: { opacity: 1, y: 0 },
     transition: { duration: 0.8, ease: "easeInOut", delay },
+    viewport: { once: true },
   });
 
   return (
-    <section
-      id="feature"
-      className="
-        mx-auto
-        w-full
-        max-w-[1290px]     
-        sm:max-w-[1330px] 
-        px-4 sm:px-6 lg:px-8  
-        py-16 sm:py-20 xl:py-24
-      "
-    >
-      {/* Title & Description */}
-      <div className="text-left mb-12">
+    <section id="feature" className="py-10 xl:py-12">
+      {/* النصوص جوه max_padd_container */}
+      <div className="max_padd_container text-left mb-8 sm:mb-10 md:mb-12">
         <motion.h4
-          className="bold-16 text-secondary text-sm md:text-base"
+          className="font-bold text-secondary text-sm sm:text-base md:text-lg max-w-full sm:max-w-md"
           {...fadeInUp(0)}
         >
           WHAT WE SERVE
         </motion.h4>
         <motion.h3
-          className="
-            bold-28 sm:text-xl md:text-2xl max-w-lg
-          "
+          className="font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl max-w-full sm:max-w-md"
           {...fadeInUp(0.2)}
         >
           We Provide Top Destinations
         </motion.h3>
         <motion.p
-          className="
-           max-w-lg text-gray-700
-          "
+          className="mt-2 text-gray-700 text-sm sm:text-base md:text-lg max-w-full sm:max-w-lg"
           {...fadeInUp(0.4)}
         >
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti eum
@@ -72,20 +58,23 @@ const Feature = () => {
           voluptatum itaque repellendus voluptas error quasi deserunt modi,
           obcaecati aliquam. Ullam, eligendi.
         </motion.p>
+
+         <div className="overflow-hidden mx-auto  py-10">
+        <Slider {...settings} className="overflow-visible">
+          {FEATURE.map((item, idx) => (
+            <motion.div
+              key={idx}
+              {...fadeInUp(0.5)}
+            >
+              <FeatureItem URL={item.URL} title={item.title} />
+            </motion.div>
+          ))}
+        </Slider>
+      </div>
       </div>
 
-      {/* Slider */}
-      <Slider {...settings}>
-        {FEATURE.map(({ URL, title }) => (
-          <motion.div
-            key={URL}
-            className="px-2 sm:px-3 lg:px-4"
-            {...fadeInUp(0.5)}
-          >
-            <FeatureItem URL={URL} title={title} />
-          </motion.div>
-        ))}
-      </Slider>
+      {/* السلايدر full width مع تعويض الـ padding */}
+     
     </section>
   );
 };

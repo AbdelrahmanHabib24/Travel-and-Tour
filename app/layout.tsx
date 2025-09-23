@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
+import { Suspense } from "react";
+import GlobalLoading from "./loading";
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -18,7 +20,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`bg-primary text-tertiary ${nunito.variable}`}>
-        <Providers>{children}</Providers>
+        <Providers>
+          {/* Suspense هنا */}
+          <Suspense fallback={<GlobalLoading/>}>
+            {children}
+          </Suspense>
+        </Providers>
       </body>
     </html>
   );
