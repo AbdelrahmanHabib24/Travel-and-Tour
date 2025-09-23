@@ -83,17 +83,21 @@ const Listing: React.FC = () => {
 
   return (
     <section className="max_padd_container xl:py-10 py-10" id="listing">
-      <header className="w-[90%] mb-10">
-        <h4 className="bold-16 text-secondary text-sm md:text-base">
-          TAKE A LOOK AT THESE OFFERS
-        </h4>
-        <h3 className="bold-28 sm:text-xl md:text-2xl max-w-lg">
-          We Provide Top Destinations
-        </h3>
-        <p className="max-w-lg text-gray-700">
-          Discover amazing destinations with top-notch facilities. Explore the world with unbeatable offers and excellent services.
-        </p>
-      </header>
+      <header className="w-full mb-4 sm:mb-8 md:mb-10 max-w-full">
+  <h4 className="font-bold text-secondary text-sm sm:text-base md:text-lg">
+    TAKE A LOOK AT THESE OFFERS
+  </h4>
+
+  <h3 className="font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl max-w-full sm:max-w-md">
+    We Provide Top Destinations
+  </h3>
+
+  <p className="mt-2 text-gray-700 text-sm sm:text-base md:text-lg max-w-full sm:max-w-md">
+    Discover amazing destinations with top-notch facilities. Explore the world
+    with unbeatable offers and excellent services.
+  </p>
+</header>
+
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {packages.map(

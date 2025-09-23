@@ -34,9 +34,8 @@ const Feature = () => {
   });
 
   return (
-    <section id="feature" className="py-10 xl:py-12">
-      {/* النصوص جوه max_padd_container */}
-      <div className="max_padd_container text-left mb-8 sm:mb-10 md:mb-12">
+    <section id="feature" className="py-10  xl:py-12">
+      <div className="max_padd_container text-left  ">
         <motion.h4
           className="font-bold text-secondary text-sm sm:text-base md:text-lg max-w-full sm:max-w-md"
           {...fadeInUp(0)}
@@ -50,31 +49,24 @@ const Feature = () => {
           We Provide Top Destinations
         </motion.h3>
         <motion.p
-          className="mt-2 text-gray-700 text-sm sm:text-base md:text-lg max-w-full sm:max-w-lg"
+          className="mt-2 text-gray-700 text-sm sm:text-base md:text-lg max-w-full sm:max-w-md"
           {...fadeInUp(0.4)}
         >
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti eum
-          tempora illum laboriosam corporis possimus ipsum, est reprehenderit,
-          voluptatum itaque repellendus voluptas error quasi deserunt modi,
-          obcaecati aliquam. Ullam, eligendi.
+          Enjoy the best travel destinations with flexible plans, competitive
+          prices, and 24/7 customer support to make your journey easier and more
+          comfortable.
         </motion.p>
-
-         <div className="overflow-hidden mx-auto  py-10">
-        <Slider {...settings} className="overflow-visible">
-          {FEATURE.map((item, idx) => (
-            <motion.div
-              key={idx}
-              {...fadeInUp(0.5)}
-            >
-              <FeatureItem URL={item.URL} title={item.title} />
-            </motion.div>
-          ))}
-        </Slider>
-      </div>
+        <div className="overflow-hidden mx-auto pt-10 ">
+          <Slider {...settings} className="overflow-visible">
+            {FEATURE.map((item, idx) => (
+              <motion.div key={idx} {...fadeInUp(0.5)}>
+                <FeatureItem URL={item.URL} title={item.title} />
+              </motion.div>
+            ))}
+          </Slider>
+        </div>
       </div>
 
-      {/* السلايدر full width مع تعويض الـ padding */}
-     
     </section>
   );
 };
