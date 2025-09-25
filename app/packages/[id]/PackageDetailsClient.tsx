@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Slider from "react-slick";
@@ -65,7 +65,9 @@ async function fetchComments(id: string): Promise<Comment[]> {
   return res.json();
 }
 
-export default function PackageDetailsClient({ id }: PackageDetailsClientProps) {
+export default function PackageDetailsClient({
+  id,
+}: PackageDetailsClientProps) {
   const router = useRouter();
   const [newComment, setNewComment] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
@@ -108,30 +110,51 @@ export default function PackageDetailsClient({ id }: PackageDetailsClientProps) 
     },
   });
 
- const handleReserveClick = async () => {
-  try {
-    const res = await fetch("/api/auth/user", {
-      method: "GET",
-      credentials: "include", 
-    });
-
-    if (res.ok) {
-      router.push("/payment");
-    } else {
-      toast.error("You must be logged in to reserve");
-      router.push("/Login");
+  const handleReserveClick = useCallback(async () => {
+    if (!packageDetails?.id) {
+      toast.error("Trip ID missing");
+      return;
     }
-  } catch (error) {
-    console.error("Error checking auth:", error);
-    toast.error("Something went wrong, please try again");
-  }
-};
+    try {
+      const res = await fetch("/api/auth/user", {
+        method: "GET",
+        credentials: "include",
+      });
 
-  const handleCommentSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newComment.trim()) return;
-    mutation.mutate(newComment);
-  };
+      if (res.ok) {
+        router.push(`/payment?id=${packageDetails.id}`);
+      } else {
+        toast.error("You must be logged in to reserve");
+        router.push("/Login");
+      }
+    } catch (error) {
+      console.error("Error checking auth:", error);
+      toast.error("Something went wrong, please try again");
+    }
+  }, [router, packageDetails?.id]);
+
+  const handleCommentSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!newComment.trim()) return;
+      mutation.mutate(newComment);
+    },
+    [newComment, mutation]
+  );
+
+  const sliderSettings = useMemo(
+    () => ({
+      dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 3500,
+      arrows: true,
+    }),
+    []
+  );
 
   if (isLoading)
     return (
@@ -149,17 +172,6 @@ export default function PackageDetailsClient({ id }: PackageDetailsClientProps) 
 
   if (!packageDetails)
     return <p className="text-center mt-10">Package not found</p>;
-
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 3500,
-    arrows: true,
-  };
 
   return (
     <div className="bg-gradient-to-b  from-orange-50 to-white mt-14">
