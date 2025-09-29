@@ -3,10 +3,12 @@ import { prisma } from "@/app/ulits/prisma";
 
 export async function GET(
   req: Request,
-  { params }: { params: Promise<{ sessionId: string }> } // 🟢 params دلوقتي Promise
+  paramsPromise: { params: Promise<{ sessionId: string }> }
 ) {
   try {
-    const { sessionId } = await params; // 🟢 لازم await
+    const { params } = paramsPromise;
+    const { sessionId } = await params;
+
     const session = await prisma.paymentSession.findUnique({
       where: { id: sessionId },
       select: { paymentToken: true, amount: true },

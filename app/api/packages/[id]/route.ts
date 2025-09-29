@@ -15,8 +15,6 @@ export async function GET(
     include: { images: true, comments: true },
   });
 
-  console.log("Fetched package:", pkg);
-
   if (!pkg)
     return NextResponse.json({ error: "Package not found" }, { status: 404 });
 

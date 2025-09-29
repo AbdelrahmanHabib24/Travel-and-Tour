@@ -4,7 +4,6 @@ import {  PACKAGE } from "@/app/ulits/type";
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Seeding packages...");
 
   const allPackages = [ ...PACKAGE];
 

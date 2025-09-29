@@ -4,7 +4,7 @@ import { prisma } from "@/app/ulits/prisma";
 // GET Comments
 export async function GET(
   req: Request,
-  { params }: { params: Promise<{ id: string }> } // ⚡ params نوعه Promise
+  { params }: { params: Promise<{ id: string }> } 
 ) {
   const { id } = await params;
   if (!id) return NextResponse.json({ error: "ID missing" }, { status: 400 });
@@ -20,7 +20,7 @@ export async function GET(
 // POST Comment
 export async function POST(
   req: Request,
-  { params }: { params: Promise<{ id: string }> } // ⚡ params نوعه Promise
+  { params }: { params: Promise<{ id: string }> } 
 ) {
   const { id } = await params;
   if (!id) return NextResponse.json({ error: "ID missing" }, { status: 400 });
@@ -30,7 +30,7 @@ export async function POST(
     data: {
       text: body.text,
       userName: body.userName,
-      avatarUrl: body.avatarUrl || "",
+      avatarUrl: body.avatarUrl ,
       packageId: Number(id),
     },
   });

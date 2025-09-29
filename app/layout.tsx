@@ -19,11 +19,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`bg-primary text-tertiary ${nunito.variable}`}>
+      <body className={`bg-primary text-tertiary flex flex-col min-h-screen ${nunito.variable}`}>
         <Providers>
-          {/* Suspense هنا */}
           <Suspense fallback={<GlobalLoading/>}>
-            {children}
+            <main className="flex-1">{children}</main>
           </Suspense>
         </Providers>
       </body>

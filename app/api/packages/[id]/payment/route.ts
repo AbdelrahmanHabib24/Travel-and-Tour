@@ -6,13 +6,11 @@ const USD_TO_EGP = 48;
 
 export async function POST(
   req: Request,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // ✅ انتظار params إذا كانت Promise
-    const { id } = await context.params;
+    const { id } = await params;
     const packageId = Number(id);
-    if (!packageId) throw new Error("Invalid package ID");
 
     const body = await req.json();
     const { amount, currency, billing_data } = body;
@@ -29,7 +27,6 @@ export async function POST(
     });
     const authData = await authRes.json();
     const paymobAuthToken = authData.token;
-    if (!paymobAuthToken) throw new Error("Failed to get Paymob auth token");
 
     // 🔹 Order creation
     const orderRes = await fetch(
@@ -47,8 +44,6 @@ export async function POST(
       }
     );
     const orderData = await orderRes.json();
-    if (!orderData.id) throw new Error("Failed to create order");
-    console.log("Order Data:", orderData);
 
     // 🔹 Payment key creation
     const fullBillingData = {
@@ -82,10 +77,6 @@ export async function POST(
     );
 
     const paymentKeyData = await paymentKeyRes.json();
-    console.log("Payment Key Data:", paymentKeyData);
-
-    if (!paymentKeyData.token)
-      throw new Error("Payment key not returned from Paymob");
 
     // 🔹 Save session in DB
     const session = await prisma.paymentSession.create({

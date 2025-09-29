@@ -143,11 +143,10 @@ export default function PackageDetailsClient({
       });
 
       const data = await res.json();
-      console.log("Payment API response:", data);
 
+      // paymentToken
       if (res.ok && data.sessionId && data.paymentToken) {
         dispatch(setPaymentToken(data.paymentToken));
-
         router.push(`/payment/${data.sessionId}`);
       } else {
         toast.error("Failed to create payment session");
