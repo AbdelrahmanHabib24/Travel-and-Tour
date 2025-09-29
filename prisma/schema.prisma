@@ -7,6 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// 🟢 حزم الرحلات
 model Package {
   id                 Int       @id @default(autoincrement())
   URL                String
@@ -23,10 +24,13 @@ model Package {
   startTimeInfo      String?
   mobileTicket       Boolean
   liveGuideLanguages String[]
-  comments           Comment[]
-  images             Image[]
+  
+  images   Image[]
+  comments Comment[]
+  orders   Order[]
 }
 
+// 🟢 صور الحزم
 model Image {
   id        Int     @id @default(autoincrement())
   url       String
@@ -34,6 +38,7 @@ model Image {
   package   Package @relation(fields: [packageId], references: [id])
 }
 
+// 🟢 تعليقات المستخدمين على الحزم
 model Comment {
   id        Int      @id @default(autoincrement())
   text      String
@@ -44,11 +49,55 @@ model Comment {
   package   Package  @relation(fields: [packageId], references: [id])
 }
 
-
+// 🟢 مستخدمين
 model User {
-  id        Int     @id @default(autoincrement())
-  username  String  @unique   
-  email     String  @unique
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
   password  String
   createdAt DateTime @default(now())
+  
+  orders Order[]
+}
+
+// 🟢 الطلبات
+model Order {
+  id          Int      @id @default(autoincrement())
+  amountCents Int
+  currency    String
+  paymobId    Int?
+  status      String   @default("pending")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  packageId Int
+  package   Package @relation(fields: [packageId], references: [id])
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  payments Payment[]
+  sessions PaymentSession[]
+}
+
+// 🟢 عمليات الدفع (Payment)
+model Payment {
+  id         Int      @id @default(autoincrement())
+  orderId    Int
+  paymentKey String
+  status     String   @default("initialized")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id])
+}
+
+// 🟢 جلسة الدفع (PaymentSession)
+model PaymentSession {
+  id           String   @id @default(cuid())
+  paymentToken String
+  createdAt    DateTime @default(now())
+  orderId      Int
+  order        Order @relation(fields: [orderId], references: [id])
+   amount       Int?  
 }

@@ -48,22 +48,41 @@ export async function POST(req: Request) {
         { status: 401 }
       );
     }
-    // ✅ Generate JWT
-    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
+
+    // ✅ Generate Access Token
+    const accessToken = jwt.sign(
+      { id: user.id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    // ✅ Generate Refresh Token
+    const refreshToken = jwt.sign({ id: user.id }, JWT_SECRET, {
       expiresIn: "7d",
     });
 
-    // ✅ Send response with cookie
+    // ✅ Prepare response
     const res = NextResponse.json({
       message: "Login successful.",
       user: { id: user.id, email: user.email, username: user.username },
+      accessToken,
     });
 
-    res.cookies.set("authToken", token, {
+    // Store accessToken in httpOnly cookie
+    res.cookies.set("authToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60, 
+      maxAge: 15 * 60, // 15 دقيقة
+      path: "/",
+    });
+
+    // ✅ Store refresh token in httpOnly cookie
+    res.cookies.set("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60,
       path: "/",
     });
 

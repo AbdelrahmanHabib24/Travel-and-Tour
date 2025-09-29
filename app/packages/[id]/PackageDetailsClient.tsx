@@ -19,10 +19,13 @@ import {
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import GlobalLoading from "@/app/loading";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/store/store";
+import { useDispatch } from "react-redux";
+import { setPaymentToken } from "@/store/paymentslice";
 
 type PackageType = {
   id: number;
-  URL: string;
   title1: string;
   title2: string;
   price: number;
@@ -47,9 +50,7 @@ type Comment = {
   createdAt: string;
 };
 
-type PackageDetailsClientProps = {
-  id: string;
-};
+type PackageDetailsClientProps = { id: string };
 
 async function fetchPackage(id: string): Promise<PackageType> {
   const res = await fetch(`/api/packages/${id}`, { cache: "no-store" });
@@ -69,9 +70,13 @@ export default function PackageDetailsClient({
   id,
 }: PackageDetailsClientProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [newComment, setNewComment] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
-  const queryClient = useQueryClient();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const dispatch = useDispatch();
+
+  const user = useSelector((state: RootState) => state.user);
 
   const {
     data: packageDetails,
@@ -92,14 +97,17 @@ export default function PackageDetailsClient({
 
   const mutation = useMutation({
     mutationFn: async (text: string) => {
+      if (!user.accessToken) {
+        toast.error("Please log in to comment");
+        throw new Error("Unauthorized");
+      }
       const res = await fetch(`/api/packages/${id}/comments`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text,
-          userName: "Traveler",
-          avatarUrl: `https://i.pravatar.cc/150?u=${Date.now()}`,
-        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+        body: JSON.stringify({ text, userName: user.username || "Traveler" }),
       });
       if (!res.ok) throw new Error("Failed to add comment");
       return res.json();
@@ -109,29 +117,48 @@ export default function PackageDetailsClient({
       setNewComment("");
     },
   });
-
   const handleReserveClick = useCallback(async () => {
-    if (!packageDetails?.id) {
-      toast.error("Trip ID missing");
+    if (!user.isLoggedIn) {
+      toast.error("You must login before booking");
       return;
     }
+
+    if (!packageDetails) return;
+
+    setIsProcessing(true);
+
     try {
-      const res = await fetch("/api/auth/user", {
-        method: "GET",
+      const res = await fetch(`/api/packages/${packageDetails.id}/payment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
+        body: JSON.stringify({
+          amount: packageDetails.price,
+          currency: "USD",
+          billing_data: {
+            first_name: user.username || "John",
+            email: user.email || "test@example.com",
+          },
+        }),
       });
 
-      if (res.ok) {
-        router.push(`/payment?id=${packageDetails.id}`);
+      const data = await res.json();
+      console.log("Payment API response:", data);
+
+      if (res.ok && data.sessionId && data.paymentToken) {
+        dispatch(setPaymentToken(data.paymentToken));
+
+        router.push(`/payment/${data.sessionId}`);
       } else {
-        toast.error("You must be logged in to reserve");
-        router.push("/Login");
+        toast.error("Failed to create payment session");
       }
-    } catch (error) {
-      console.error("Error checking auth:", error);
-      toast.error("Something went wrong, please try again");
+    } catch (err) {
+      console.error(err);
+      toast.error("Error initializing payment");
+    } finally {
+      setIsProcessing(false);
     }
-  }, [router, packageDetails?.id]);
+  }, [packageDetails, user, router, dispatch]);
 
   const handleCommentSubmit = useCallback(
     (e: React.FormEvent) => {
@@ -156,34 +183,29 @@ export default function PackageDetailsClient({
     []
   );
 
-  if (isLoading)
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <GlobalLoading />
-      </div>
-    );
-
+  if (isLoading) return <GlobalLoading />;
   if (error)
     return (
       <p className="text-center mt-10 text-red-500">
         Error loading package details
       </p>
     );
-
   if (!packageDetails)
     return <p className="text-center mt-10">Package not found</p>;
 
   return (
-    <div className="bg-gradient-to-b  from-orange-50 to-white mt-14">
+    <div className="bg-gradient-to-b from-orange-50 to-white mt-14">
       {/* Hero Section */}
       <div className="relative h-[350px] sm:h-[450px] md:h-[500px] w-full">
-        <Image
-          src={packageDetails.images[0].url}
-          alt={packageDetails.title1}
-          fill
-          className="object-cover brightness-75"
-          priority
-        />
+        {packageDetails.images[0] && (
+          <Image
+            src={packageDetails.images[0].url}
+            alt={packageDetails.title1}
+            fill
+            className="object-cover brightness-75"
+            priority
+          />
+        )}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4 sm:px-6 text-center">
           <motion.h1
             initial={{ y: 30, opacity: 0 }}
@@ -194,9 +216,14 @@ export default function PackageDetailsClient({
           </motion.h1>
           <button
             onClick={handleReserveClick}
-            className="mt-4 sm:mt-6 px-6 sm:px-10 py-2 sm:py-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-full text-base sm:text-lg font-semibold shadow-lg hover:scale-105 transition"
+            disabled={isProcessing}
+            className={`mt-4 sm:mt-6 px-6 sm:px-10 py-2 sm:py-3 rounded-full text-base sm:text-lg font-semibold shadow-lg transition ${
+              isProcessing
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-gradient-to-r from-orange-500 to-red-500 hover:scale-105"
+            }`}
           >
-            Reserve Now
+            {isProcessing ? "Processing..." : "Reserve Now"}
           </button>
         </div>
       </div>
@@ -234,12 +261,11 @@ export default function PackageDetailsClient({
         </div>
       </div>
 
-      {/* Content */}
+      {/* Tab Content */}
       <div className="max-w-6xl mx-auto px-4 sm:px-0 py-6 sm:py-10">
         {activeTab === "overview" && (
           <>
-            {/* Slider */}
-            {packageDetails.images && packageDetails.images.length > 0 ? (
+            {packageDetails.images?.length ? (
               <Slider {...sliderSettings}>
                 {packageDetails.images.map((img) => (
                   <div key={img.id} className="px-1 sm:px-2">
@@ -258,7 +284,6 @@ export default function PackageDetailsClient({
               <p className="text-center text-gray-500">No images available</p>
             )}
 
-            {/* Info Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mt-6 md:mt-10">
               <motion.div
                 whileHover={{ scale: 1.03 }}
@@ -382,6 +407,7 @@ export default function PackageDetailsClient({
           </motion.section>
         )}
       </div>
+
       <ToastContainer position="top-center" />
     </div>
   );
