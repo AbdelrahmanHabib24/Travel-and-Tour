@@ -14,7 +14,6 @@ export async function POST(
 
     const body = await req.json();
     const { amount, currency, billing_data } = body;
-
     const amountEGP = Math.round(
       amount * (currency === "USD" ? USD_TO_EGP : 1) * 100
     );
@@ -92,10 +91,10 @@ export async function POST(
       paymentToken: session.paymentToken,
       amount: amountEGP,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(err);
     return NextResponse.json(
-      { error: "Payment initialization failed", details: err.message },
+      { error: "Payment initialization failed" },
       { status: 500 }
     );
   }

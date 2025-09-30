@@ -1,8 +1,4 @@
 import Header from "@/app/component/Header";
-import Footer from "@/app/component/Footer";
-import { Suspense } from "react";
-import GlobalLoading from "@/app/loading";
-
 export default function PaymentLayout({
   children,
 }: {

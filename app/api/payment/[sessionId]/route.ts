@@ -19,10 +19,10 @@ export async function GET(
     }
 
     return NextResponse.json(session);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("API error:", err);
     return NextResponse.json(
-      { error: "Failed to fetch payment session", details: err.message },
+      { error: "Failed to fetch payment session" },
       { status: 500 }
     );
   }
