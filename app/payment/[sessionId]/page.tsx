@@ -5,11 +5,13 @@ interface Props {
   params:  Promise<{ sessionId: string }>;
 }
 
+const baseUrl = process.env.BASE_URL;
+
 export default async function PaymentPage({ params }: Props) {
   const { sessionId } = await params;
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/${sessionId}`,
+    `${baseUrl}/api/payment/${sessionId}`,
     {
       cache: "no-store",
     }
