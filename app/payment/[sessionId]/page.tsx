@@ -1,23 +1,20 @@
-import PaymentIframe from "./PaymentIframe";
-
+// app/payment/[sessionId]/page.tsx
+import PaymentPageClient from './PaymentIframe';
+import { prisma } from '@/app/ulits/prisma';
 
 interface Props {
-  params:  Promise<{ sessionId: string }>;
+  params: Promise<{ sessionId: string }>;
 }
-
-const baseUrl = process.env.BASE_URL;
 
 export default async function PaymentPage({ params }: Props) {
   const { sessionId } = await params;
 
-  const res = await fetch(
-    `${baseUrl}/api/payment/${sessionId}`,
-    {
-      cache: "no-store",
-    }
-  );
+  const session = await prisma.paymentSession.findUnique({
+    where: { id: sessionId },
+    select: { paymentToken: true },
+  });
 
-  const data = await res.json();
+  if (!session) return <p>Payment session not found</p>;
 
-  return <PaymentIframe token={data.paymentToken} />;
+  return <PaymentPageClient token={session.paymentToken} />;
 }

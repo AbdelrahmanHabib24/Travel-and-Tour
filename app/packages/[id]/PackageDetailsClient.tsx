@@ -144,7 +144,6 @@ export default function PackageDetailsClient({
 
       const data = await res.json();
 
-      // paymentToken
       if (res.ok && data.sessionId && data.paymentToken) {
         dispatch(setPaymentToken(data.paymentToken));
         router.push(`/payment/${data.sessionId}`);
