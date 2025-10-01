@@ -5,10 +5,13 @@ interface Props {
 }
 
 export default function PaymentIframe({ token }: Props) {
+
+    const iframeId = process.env.PAYMOB_IFRAME_ID;
+
   return (
      <div className="flex items-center overflow-hidden justify-center min-h-screen">
       <iframe
-        src={`https://accept.paymob.com/api/acceptance/iframes/963685?payment_token=${token}`}
+        src={`https://accept.paymob.com/api/acceptance/iframes/${iframeId}?payment_token=${token}`}
         width="100%"
         height="100%"
         className="border-0 w-full h-screen pt-10 overflow-hidden "
