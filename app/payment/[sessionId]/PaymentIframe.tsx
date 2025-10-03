@@ -6,7 +6,7 @@ interface Props {
 
 export default function PaymentIframe({ token }: Props) {
 
-    const iframeId = process.env.PAYMOB_IFRAME_ID;
+const iframeId = process.env.NEXT_PUBLIC_PAYMOB_IFRAME_ID;
 
   return (
      <div className="flex items-center overflow-hidden justify-center min-h-screen">
