@@ -26,6 +26,8 @@ export async function POST(
     });
     const authData = await authRes.json();
     const paymobAuthToken = authData.token;
+    console.log("PAYMOB_API_KEY:", process.env.PAYMOB_API_KEY ? "Loaded" : "Missing");
+
 
     // 🔹 Order creation
     const orderRes = await fetch(
@@ -74,6 +76,9 @@ export async function POST(
         }),
       }
     );
+
+    console.log("PAYMOB_CASH_INTEGRATION_ID:", process.env.PAYMOB_CASH_INTEGRATION_ID);
+
 
     const paymentKeyData = await paymentKeyRes.json();
 
