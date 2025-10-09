@@ -1,4 +1,5 @@
-/* ---------------------- Hero.tsx (Super Optimized) ---------------------- */
+/* eslint-disable react/display-name */
+
 "use client";
 
 import React, { useEffect, useState, useRef, useCallback, memo } from "react";
@@ -30,13 +31,11 @@ const Hero: React.FC = memo(() => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
-  // refs لتقليل الـ re-render
   const fullText = useRef("Travel To Any Corner In The World");
   const iRef = useRef(0);
   const forwardRef = useRef(true);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  /* 🔹 Typing Animation — محسّنة */
   useEffect(() => {
     let mounted = true;
 
@@ -46,7 +45,6 @@ const Hero: React.FC = memo(() => {
       const i = iRef.current;
       const forward = forwardRef.current;
 
-      // تحديث محدود جداً لتقليل re-renders
       setTypedText((prev) => {
         const newText = text.slice(0, i);
         return prev === newText ? prev : newText;
@@ -57,7 +55,7 @@ const Hero: React.FC = memo(() => {
       if (iRef.current >= text.length) forwardRef.current = false;
       else if (iRef.current <= 0) forwardRef.current = true;
 
-      timerRef.current = setTimeout(typeLoop, 65); // أسرع وأخف
+      timerRef.current = setTimeout(typeLoop, 65);
     };
 
     timerRef.current = setTimeout(typeLoop, 80);
@@ -67,7 +65,6 @@ const Hero: React.FC = memo(() => {
     };
   }, []);
 
-  /* 🔹 Handlers (useCallback لتثبيت الدوال) */
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       const { id, value } = e.target;
@@ -85,7 +82,7 @@ const Hero: React.FC = memo(() => {
       const { city, maxPrice } = form;
       if (!city) return;
       setIsSubmitting(true);
-      await new Promise((r) => setTimeout(r, 800)); // أسرع 40%
+      await new Promise((r) => setTimeout(r, 800));
       router.push(`/results?city=${encodeURIComponent(city)}&maxPrice=${maxPrice}`);
       setIsSubmitting(false);
     },

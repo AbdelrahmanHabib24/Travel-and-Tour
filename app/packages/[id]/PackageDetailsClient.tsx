@@ -14,7 +14,6 @@ import {
   FaClock,
   FaMobileAlt,
   FaLanguage,
-  FaStar,
 } from "react-icons/fa";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
