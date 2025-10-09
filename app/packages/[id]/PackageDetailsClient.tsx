@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Slider from "react-slick";
@@ -19,10 +19,9 @@ import {
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import GlobalLoading from "@/app/loading";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/store/store";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { setPaymentToken } from "@/store/paymentslice";
+import type { RootState } from "@/store/store";
 
 type PackageType = {
   id: number;
@@ -47,10 +46,7 @@ type Comment = {
   text: string;
   userName: string;
   avatarUrl?: string;
-  createdAt: string;
 };
-
-type PackageDetailsClientProps = { id: string };
 
 async function fetchPackage(id: string): Promise<PackageType> {
   const res = await fetch(`/api/packages/${id}`, { cache: "no-store" });
@@ -59,30 +55,22 @@ async function fetchPackage(id: string): Promise<PackageType> {
 }
 
 async function fetchComments(id: string): Promise<Comment[]> {
-  const res = await fetch(`/api/packages/${id}/comments`, {
-    cache: "no-store",
-  });
+  const res = await fetch(`/api/packages/${id}/comments`, { cache: "no-store" });
   if (!res.ok) throw new Error("Failed to fetch comments");
   return res.json();
 }
 
-export default function PackageDetailsClient({
-  id,
-}: PackageDetailsClientProps) {
+export default function PackageDetailsClient({ id }: { id: string }) {
   const router = useRouter();
+  const dispatch = useDispatch();
   const queryClient = useQueryClient();
+  const user = useSelector((state: RootState) => state.user);
+
   const [newComment, setNewComment] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
   const [isProcessing, setIsProcessing] = useState(false);
-  const dispatch = useDispatch();
 
-  const user = useSelector((state: RootState) => state.user);
-
-  const {
-    data: packageDetails,
-    error,
-    isLoading,
-  } = useQuery({
+  const { data: packageDetails, isLoading, error } = useQuery({
     queryKey: ["package", id],
     queryFn: () => fetchPackage(id),
     enabled: !!id,
@@ -117,16 +105,12 @@ export default function PackageDetailsClient({
       setNewComment("");
     },
   });
-  const handleReserveClick = useCallback(async () => {
-    if (!user.isLoggedIn) {
-      toast.error("You must login before booking");
-      return;
-    }
 
+  const handleReserveClick = useCallback(async () => {
+    if (!user.isLoggedIn) return toast.error("You must login before booking");
     if (!packageDetails) return;
 
     setIsProcessing(true);
-
     try {
       const res = await fetch(`/api/packages/${packageDetails.id}/payment`, {
         method: "POST",
@@ -141,17 +125,12 @@ export default function PackageDetailsClient({
           },
         }),
       });
-
       const data = await res.json();
-
       if (res.ok && data.sessionId && data.paymentToken) {
         dispatch(setPaymentToken(data.paymentToken));
         router.push(`/payment/${data.sessionId}`);
-      } else {
-        toast.error("Failed to create payment session");
-      }
-    } catch (err) {
-      console.error(err);
+      } else toast.error("Failed to create payment session");
+    } catch {
       toast.error("Error initializing payment");
     } finally {
       setIsProcessing(false);
@@ -176,46 +155,58 @@ export default function PackageDetailsClient({
       slidesToScroll: 1,
       autoplay: true,
       autoplaySpeed: 3500,
-      arrows: true,
     }),
     []
   );
 
   if (isLoading) return <GlobalLoading />;
-  if (error)
-    return (
-      <p className="text-center mt-10 text-red-500">
-        Error loading package details
-      </p>
-    );
-  if (!packageDetails)
-    return <p className="text-center mt-10">Package not found</p>;
+  if (error) return <p className="text-center mt-10 text-red-500">Error loading package details</p>;
+  if (!packageDetails) return <p className="text-center mt-10">Package not found</p>;
+
+  const {
+    title1,
+    title2,
+    des,
+    price,
+    duration,
+    images,
+    rating,
+    count,
+    ageRange,
+    maxGroupSize,
+    travelDuration,
+    startTimeInfo,
+    mobileTicket,
+    liveGuideLanguages,
+  } = packageDetails;
 
   return (
     <div className="bg-gradient-to-b from-orange-50 to-white mt-14">
-      {/* Hero Section */}
-      <div className="relative h-[350px] sm:h-[450px] md:h-[500px] w-full">
-        {packageDetails.images[0] && (
+      <ToastContainer position="top-center" />
+
+      {/* Hero */}
+      <div className="relative h-[400px] w-full">
+        {images[0] && (
           <Image
-            src={packageDetails.images[0].url}
-            alt={packageDetails.title1}
+            src={images[0].url}
+            alt={title1}
             fill
             className="object-cover brightness-75"
             priority
           />
         )}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4 sm:px-6 text-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4 text-center">
           <motion.h1
-            initial={{ y: 30, opacity: 0 }}
+            initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold drop-shadow-2xl"
+            className="text-4xl sm:text-5xl font-extrabold drop-shadow-2xl"
           >
-            {packageDetails.title1}, {packageDetails.title2}
+            {title1}, {title2}
           </motion.h1>
           <button
             onClick={handleReserveClick}
             disabled={isProcessing}
-            className={`mt-4 sm:mt-6 px-6 sm:px-10 py-2 sm:py-3 rounded-full text-base sm:text-lg font-semibold shadow-lg transition ${
+            className={`mt-6 px-8 py-3 rounded-full font-semibold shadow-lg transition ${
               isProcessing
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-gradient-to-r from-orange-500 to-red-500 hover:scale-105"
@@ -226,28 +217,24 @@ export default function PackageDetailsClient({
         </div>
       </div>
 
-      {/* Description Section */}
+      {/* Description */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl p-6 sm:p-8 mt-8 sm:mt-10 text-center"
+        className="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl p-6 mt-10 text-center"
       >
-        <h2 className="text-2xl font-bold text-orange-600 mb-4">
-          About this Trip
-        </h2>
-        <p className="text-gray-700 leading-relaxed text-sm sm:text-lg">
-          {packageDetails.des}
-        </p>
+        <h2 className="text-2xl font-bold text-orange-600 mb-4">About this Trip</h2>
+        <p className="text-gray-700 leading-relaxed">{des}</p>
       </motion.div>
 
       {/* Tabs */}
-      <div className="max-w-6xl mx-auto mt-6 sm:mt-10 px-4 overflow-x-auto">
-        <div className="flex justify-start sm:justify-center gap-4 sm:gap-6 border-b relative">
+      <div className="max-w-6xl mx-auto mt-10 px-4">
+        <div className="flex justify-center gap-6 border-b">
           {["overview", "details", "reviews"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`pb-2 sm:pb-3 text-sm sm:text-lg font-semibold transition ${
+              className={`pb-2 text-lg font-semibold ${
                 activeTab === tab
                   ? "text-orange-600 border-b-2 border-orange-600"
                   : "text-gray-500 hover:text-gray-800"
@@ -260,20 +247,20 @@ export default function PackageDetailsClient({
       </div>
 
       {/* Tab Content */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-0 py-6 sm:py-10">
+      <div className="max-w-6xl mx-auto px-4 py-10">
         {activeTab === "overview" && (
           <>
-            {packageDetails.images?.length ? (
+            {images.length ? (
               <Slider {...sliderSettings}>
-                {packageDetails.images.map((img) => (
-                  <div key={img.id} className="px-1 sm:px-2">
+                {images.map((img) => (
+                  <div key={img.id} className="px-2">
                     <Image
                       src={img.url}
-                      alt={packageDetails.title1}
+                      alt={title1}
                       width={1200}
                       height={700}
                       className="rounded-2xl shadow-lg"
-                      priority
+                      loading="lazy"
                     />
                   </div>
                 ))}
@@ -282,43 +269,23 @@ export default function PackageDetailsClient({
               <p className="text-center text-gray-500">No images available</p>
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mt-6 md:mt-10">
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                className="p-4 sm:p-6 bg-white rounded-xl shadow-xl text-center"
-              >
-                <h3 className="text-sm sm:text-lg font-semibold text-gray-600">
-                  Price
-                </h3>
-                <p className="text-xl sm:text-2xl font-bold text-orange-600">
-                  ${packageDetails.price}
-                </p>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                className="p-4 sm:p-6 bg-white rounded-xl shadow-xl text-center"
-              >
-                <h3 className="text-sm sm:text-lg font-semibold text-gray-600">
-                  Duration
-                </h3>
-                <p className="text-lg sm:text-xl">{packageDetails.duration}</p>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                className="p-4 sm:p-6 bg-white rounded-xl shadow-xl text-center"
-              >
-                <h3 className="text-sm sm:text-lg font-semibold text-gray-600">
-                  Rating
-                </h3>
-                <p className="text-lg sm:text-xl text-yellow-500 flex items-center justify-center gap-2">
-                  <FaStar /> {packageDetails.rating ?? "N/A"}
-                </p>
-                {packageDetails.count && (
-                  <p className="text-xs sm:text-sm text-gray-500">
-                    ({packageDetails.count} reviews)
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-10">
+              {[
+                { label: "Price", value: `$${price}`, color: "text-orange-600" },
+                { label: "Duration", value: duration },
+                { label: "Rating", value: `${rating ?? "N/A"} ⭐ (${count ?? 0})` },
+              ].map((item) => (
+                <motion.div
+                  key={item.label}
+                  whileHover={{ scale: 1.03 }}
+                  className="p-6 bg-white rounded-xl shadow-xl text-center"
+                >
+                  <h3 className="text-lg font-semibold text-gray-600">{item.label}</h3>
+                  <p className={`text-xl font-bold ${item.color || "text-gray-800"}`}>
+                    {item.value}
                   </p>
-                )}
-              </motion.div>
+                </motion.div>
+              ))}
             </div>
           </>
         )}
@@ -327,64 +294,57 @@ export default function PackageDetailsClient({
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-6 sm:mt-8"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8"
           >
-            <div className="bg-gradient-to-r from-white to-orange-50 shadow-lg rounded-xl p-4 sm:p-6">
-              <FaRegUser className="inline text-orange-500 mr-2" />
-              Ages: {packageDetails.ageRange || "N/A"}
-            </div>
-            <div className="bg-gradient-to-r from-white to-orange-50 shadow-lg rounded-xl p-4 sm:p-6">
-              <FaUsers className="inline text-orange-500 mr-2" />
-              Max Group Size: {packageDetails.maxGroupSize || "N/A"}
-            </div>
-            <div className="bg-gradient-to-r from-white to-orange-50 shadow-lg rounded-xl p-4 sm:p-6">
-              <FaHourglassHalf className="inline text-orange-500 mr-2" />
-              Travel Duration: {packageDetails.travelDuration || "N/A"}
-            </div>
-            <div className="bg-gradient-to-r from-white to-orange-50 shadow-lg rounded-xl p-4 sm:p-6">
-              <FaClock className="inline text-orange-500 mr-2" />
-              Start Time: {packageDetails.startTimeInfo || "N/A"}
-            </div>
-            <div className="bg-gradient-to-r from-white to-orange-50 shadow-lg rounded-xl p-4 sm:p-6">
-              <FaMobileAlt className="inline text-orange-500 mr-2" />
-              Mobile Ticket: {packageDetails.mobileTicket ? "Yes" : "No"}
-            </div>
-            <div className="bg-gradient-to-r from-white to-orange-50 shadow-lg rounded-xl p-4 sm:p-6">
-              <FaLanguage className="inline text-orange-500 mr-2" />
-              Languages:{" "}
-              {packageDetails.liveGuideLanguages?.join(", ") || "N/A"}
-            </div>
+            {[
+              { icon: <FaRegUser />, label: "Ages", value: ageRange },
+              { icon: <FaUsers />, label: "Max Group Size", value: maxGroupSize },
+              { icon: <FaHourglassHalf />, label: "Travel Duration", value: travelDuration },
+              { icon: <FaClock />, label: "Start Time", value: startTimeInfo },
+              { icon: <FaMobileAlt />, label: "Mobile Ticket", value: mobileTicket ? "Yes" : "No" },
+              {
+                icon: <FaLanguage />,
+                label: "Languages",
+                value: liveGuideLanguages?.join(", "),
+              },
+            ].map((d) => (
+              <div
+                key={d.label}
+                className="bg-gradient-to-r from-white to-orange-50 shadow-lg rounded-xl p-6"
+              >
+                <div className="flex items-center text-orange-500 gap-2 mb-2">
+                  {d.icon}
+                  <span className="font-semibold text-gray-700">{d.label}:</span>
+                </div>
+                <p>{d.value || "N/A"}</p>
+              </div>
+            ))}
           </motion.div>
         )}
 
         {activeTab === "reviews" && (
           <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <h2 className="text-xl sm:text-2xl font-bold text-orange-600 mb-4 sm:mb-6">
-              Traveler Reviews
-            </h2>
-            <form
-              onSubmit={handleCommentSubmit}
-              className="flex flex-col space-y-2 sm:space-y-3 mb-4 sm:mb-6"
-            >
+            <h2 className="text-2xl font-bold text-orange-600 mb-6">Traveler Reviews</h2>
+            <form onSubmit={handleCommentSubmit} className="mb-6 space-y-3">
               <textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Share your experience..."
-                className="border rounded-xl p-2 sm:p-3 w-full shadow-md focus:ring-2 focus:ring-orange-400 outline-none resize-none"
+                className="border rounded-xl p-3 w-full shadow-md focus:ring-2 focus:ring-orange-400 resize-none"
                 rows={3}
               />
               <button
                 type="submit"
-                className="self-start px-4 sm:px-6 py-2 sm:py-3 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition text-sm sm:text-base"
+                className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition"
               >
                 Submit
               </button>
             </form>
-            <ul className="space-y-3 sm:space-y-4">
+            <ul className="space-y-4">
               {comments.map((c) => (
                 <li
                   key={c.id}
-                  className="bg-orange-50 border-l-4 border-orange-400 px-3 sm:px-4 py-2 sm:py-3 rounded-lg shadow-sm flex gap-2 sm:gap-3 items-start"
+                  className="bg-orange-50 border-l-4 border-orange-400 px-4 py-3 rounded-lg shadow-sm flex gap-3 items-start"
                 >
                   <Image
                     src={c.avatarUrl || "/default-avatar.png"}
@@ -394,10 +354,8 @@ export default function PackageDetailsClient({
                     className="rounded-full"
                   />
                   <div>
-                    <p className="font-semibold text-gray-800 text-sm sm:text-base">
-                      {c.userName}
-                    </p>
-                    <p className="text-gray-600 text-xs sm:text-sm">{c.text}</p>
+                    <p className="font-semibold text-gray-800">{c.userName}</p>
+                    <p className="text-gray-600 text-sm">{c.text}</p>
                   </div>
                 </li>
               ))}
@@ -405,8 +363,6 @@ export default function PackageDetailsClient({
           </motion.section>
         )}
       </div>
-
-      <ToastContainer position="top-center" />
     </div>
   );
 }
