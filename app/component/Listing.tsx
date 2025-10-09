@@ -23,20 +23,24 @@ type PackageType = {
   count?: number;
 };
 
-const StarRating = React.memo(({ rating = 0, count = 0 }: { rating?: number; count?: number }) => {
-  const fullStars = Math.floor(rating);
-  const hasHalf = rating % 1 !== 0;
+const StarRating = React.memo(
+  ({ rating = 0, count = 0 }: { rating?: number; count?: number }) => {
+    const fullStars = Math.floor(rating);
+    const hasHalf = rating % 1 !== 0;
 
-  return (
-    <div className="text-secondary flex items-center gap-3">
-      {[...Array(fullStars)].map((_, i) => (
-        <TbStarFilled key={i} />
-      ))}
-      {hasHalf && <TbStarHalfFilled />}
-      <span className="text-tertiary">({count})</span>
-    </div>
-  );
-});
+    return (
+      <div className="text-secondary flex items-center gap-3">
+        {[...Array(fullStars)].map((_, i) => (
+          <TbStarFilled key={i} />
+        ))}
+        {hasHalf && <TbStarHalfFilled />}
+        <span className="text-tertiary">({count})</span>
+      </div>
+    );
+  }
+);
+
+StarRating.displayName = "StarRating"; 
 
 const Listing: React.FC = () => {
   const [packages, setPackages] = useState<PackageType[]>([]);
@@ -75,7 +79,8 @@ const Listing: React.FC = () => {
           We Provide Top Destinations
         </h3>
         <p className="mt-2 text-gray-700 text-sm sm:text-base md:text-lg max-w-md">
-          Discover amazing destinations with top-notch facilities. Explore the world with unbeatable offers.
+          Discover amazing destinations with top-notch facilities. Explore the
+          world with unbeatable offers.
         </p>
       </header>
 
@@ -113,7 +118,9 @@ const Listing: React.FC = () => {
                 ${pkg.price.toFixed(2)}
               </span>
 
-              <h4 className="text-lg lg:text-xl font-bold mb-1">{pkg.title1}</h4>
+              <h4 className="text-lg lg:text-xl font-bold mb-1">
+                {pkg.title1}
+              </h4>
               <div className="flex items-center gap-1">
                 <SlLocationPin className="text-gray-500" />
                 <h5 className="text-gray-600 text-sm">{pkg.title2}</h5>

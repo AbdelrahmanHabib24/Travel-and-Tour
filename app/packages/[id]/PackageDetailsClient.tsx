@@ -1,3 +1,5 @@
+// eslint-disable-next-line react/display-name
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
