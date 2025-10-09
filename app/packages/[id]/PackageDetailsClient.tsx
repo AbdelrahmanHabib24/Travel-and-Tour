@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Slider from "react-slick";
@@ -22,43 +22,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { setPaymentToken } from "@/store/paymentslice";
 import type { RootState } from "@/store/store";
 
-type PackageType = {
-  id: number;
-  title1: string;
-  title2: string;
-  price: number;
-  duration: string;
-  des: string;
-  rating?: number;
-  count?: number;
-  images: { id: number; url: string }[];
-  ageRange?: string;
-  maxGroupSize?: number;
-  travelDuration?: string;
-  startTimeInfo?: string;
-  mobileTicket?: boolean;
-  liveGuideLanguages?: string[];
-};
-
-type Comment = {
-  id: number;
-  text: string;
-  userName: string;
-  avatarUrl?: string;
-};
-
-async function fetchPackage(id: string): Promise<PackageType> {
-  const res = await fetch(`/api/packages/${id}`, { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to fetch package");
-  return res.json();
-}
-
-async function fetchComments(id: string): Promise<Comment[]> {
-  const res = await fetch(`/api/packages/${id}/comments`, { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to fetch comments");
-  return res.json();
-}
-
 export default function PackageDetailsClient({ id }: { id: string }) {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -66,28 +29,51 @@ export default function PackageDetailsClient({ id }: { id: string }) {
   const user = useSelector((state: RootState) => state.user);
 
   const [newComment, setNewComment] = useState("");
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "details" | "reviews"
+  >("overview");
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const { data: packageDetails, isLoading, error } = useQuery({
+  const {
+    data: packageDetails,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["package", id],
-    queryFn: () => fetchPackage(id),
+    queryFn: async () => {
+      const res = await fetch(`/api/packages/${id}`, {
+        cache: "force-cache", 
+      });
+      if (!res.ok) throw new Error("Failed to fetch package");
+      return res.json();
+    },
     enabled: !!id,
-    staleTime: 1000 * 60 * 5,
+    staleTime: Infinity, 
+    gcTime: Infinity, 
+    retry: false, 
+    placeholderData: () => queryClient.getQueryData(["package", id]),
   });
 
   const { data: comments = [] } = useQuery({
     queryKey: ["comments", id],
-    queryFn: () => fetchComments(id),
+    queryFn: async () => {
+      const res = await fetch(`/api/packages/${id}/comments`, {
+        cache: "no-store",
+      });
+      if (!res.ok) throw new Error("Failed to fetch comments");
+      return res.json();
+    },
     enabled: !!id,
   });
 
+  /* -------------------- Mutations -------------------- */
   const mutation = useMutation({
     mutationFn: async (text: string) => {
       if (!user.accessToken) {
         toast.error("Please log in to comment");
         throw new Error("Unauthorized");
       }
+
       const res = await fetch(`/api/packages/${id}/comments`, {
         method: "POST",
         headers: {
@@ -96,6 +82,7 @@ export default function PackageDetailsClient({ id }: { id: string }) {
         },
         body: JSON.stringify({ text, userName: user.username || "Traveler" }),
       });
+
       if (!res.ok) throw new Error("Failed to add comment");
       return res.json();
     },
@@ -105,6 +92,7 @@ export default function PackageDetailsClient({ id }: { id: string }) {
     },
   });
 
+  /* -------------------- Handlers -------------------- */
   const handleReserveClick = useCallback(async () => {
     if (!user.isLoggedIn) return toast.error("You must login before booking");
     if (!packageDetails) return;
@@ -124,6 +112,7 @@ export default function PackageDetailsClient({ id }: { id: string }) {
           },
         }),
       });
+
       const data = await res.json();
       if (res.ok && data.sessionId && data.paymentToken) {
         dispatch(setPaymentToken(data.paymentToken));
@@ -139,8 +128,7 @@ export default function PackageDetailsClient({ id }: { id: string }) {
   const handleCommentSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      if (!newComment.trim()) return;
-      mutation.mutate(newComment);
+      if (newComment.trim()) mutation.mutate(newComment);
     },
     [newComment, mutation]
   );
@@ -153,14 +141,19 @@ export default function PackageDetailsClient({ id }: { id: string }) {
       slidesToShow: 1,
       slidesToScroll: 1,
       autoplay: true,
-      autoplaySpeed: 3500,
+      autoplaySpeed: 3000,
     }),
     []
   );
 
+  /* -------------------- Render -------------------- */
   if (isLoading) return <GlobalLoading />;
-  if (error) return <p className="text-center mt-10 text-red-500">Error loading package details</p>;
-  if (!packageDetails) return <p className="text-center mt-10">Package not found</p>;
+  if (error)
+    return (
+      <p className="text-center mt-10 text-red-500">Error loading package</p>
+    );
+  if (!packageDetails)
+    return <p className="text-center mt-10">Package not found</p>;
 
   const {
     title1,
@@ -183,15 +176,17 @@ export default function PackageDetailsClient({ id }: { id: string }) {
     <div className="bg-gradient-to-b from-orange-50 to-white mt-14">
       <ToastContainer position="top-center" />
 
-      {/* Hero */}
+      {/* Hero Section */}
       <div className="relative h-[400px] w-full">
-        {images[0] && (
+        {images?.[0] && (
           <Image
             src={images[0].url}
             alt={title1}
             fill
             className="object-cover brightness-75"
             priority
+            placeholder="blur"
+            blurDataURL="/placeholder.jpg"
           />
         )}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4 text-center">
@@ -222,7 +217,9 @@ export default function PackageDetailsClient({ id }: { id: string }) {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl p-6 mt-10 text-center"
       >
-        <h2 className="text-2xl font-bold text-orange-600 mb-4">About this Trip</h2>
+        <h2 className="text-2xl font-bold text-orange-600 mb-4">
+          About this Trip
+        </h2>
         <p className="text-gray-700 leading-relaxed">{des}</p>
       </motion.div>
 
@@ -232,8 +229,8 @@ export default function PackageDetailsClient({ id }: { id: string }) {
           {["overview", "details", "reviews"].map((tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`pb-2 text-lg font-semibold ${
+              onClick={() => setActiveTab(tab as any)}
+              className={`pb-2 text-lg font-semibold transition ${
                 activeTab === tab
                   ? "text-orange-600 border-b-2 border-orange-600"
                   : "text-gray-500 hover:text-gray-800"
@@ -249,38 +246,47 @@ export default function PackageDetailsClient({ id }: { id: string }) {
       <div className="max-w-6xl mx-auto px-4 py-10">
         {activeTab === "overview" && (
           <>
-            {images.length ? (
-              <Slider {...sliderSettings}>
-                {images.map((img) => (
-                  <div key={img.id} className="px-2">
-                    <Image
-                      src={img.url}
-                      alt={title1}
-                      width={1200}
-                      height={700}
-                      className="rounded-2xl shadow-lg"
-                      loading="lazy"
-                    />
-                  </div>
-                ))}
-              </Slider>
-            ) : (
-              <p className="text-center text-gray-500">No images available</p>
-            )}
+            <Slider {...sliderSettings}>
+              {images.map((img: any) => (
+                <div key={img.id} className="px-2">
+                  <Image
+                    src={img.url}
+                    alt={title1}
+                    width={1200}
+                    height={700}
+                    className="rounded-2xl shadow-lg"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </Slider>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-10">
               {[
-                { label: "Price", value: `$${price}`, color: "text-orange-600" },
+                {
+                  label: "Price",
+                  value: `$${price}`,
+                  color: "text-orange-600",
+                },
                 { label: "Duration", value: duration },
-                { label: "Rating", value: `${rating ?? "N/A"} ⭐ (${count ?? 0})` },
+                {
+                  label: "Rating",
+                  value: `${rating ?? "N/A"} ⭐ (${count ?? 0})`,
+                },
               ].map((item) => (
                 <motion.div
                   key={item.label}
                   whileHover={{ scale: 1.03 }}
                   className="p-6 bg-white rounded-xl shadow-xl text-center"
                 >
-                  <h3 className="text-lg font-semibold text-gray-600">{item.label}</h3>
-                  <p className={`text-xl font-bold ${item.color || "text-gray-800"}`}>
+                  <h3 className="text-lg font-semibold text-gray-600">
+                    {item.label}
+                  </h3>
+                  <p
+                    className={`text-xl font-bold ${
+                      item.color || "text-gray-800"
+                    }`}
+                  >
                     {item.value}
                   </p>
                 </motion.div>
@@ -297,10 +303,22 @@ export default function PackageDetailsClient({ id }: { id: string }) {
           >
             {[
               { icon: <FaRegUser />, label: "Ages", value: ageRange },
-              { icon: <FaUsers />, label: "Max Group Size", value: maxGroupSize },
-              { icon: <FaHourglassHalf />, label: "Travel Duration", value: travelDuration },
+              {
+                icon: <FaUsers />,
+                label: "Max Group Size",
+                value: maxGroupSize,
+              },
+              {
+                icon: <FaHourglassHalf />,
+                label: "Travel Duration",
+                value: travelDuration,
+              },
               { icon: <FaClock />, label: "Start Time", value: startTimeInfo },
-              { icon: <FaMobileAlt />, label: "Mobile Ticket", value: mobileTicket ? "Yes" : "No" },
+              {
+                icon: <FaMobileAlt />,
+                label: "Mobile Ticket",
+                value: mobileTicket ? "Yes" : "No",
+              },
               {
                 icon: <FaLanguage />,
                 label: "Languages",
@@ -313,7 +331,9 @@ export default function PackageDetailsClient({ id }: { id: string }) {
               >
                 <div className="flex items-center text-orange-500 gap-2 mb-2">
                   {d.icon}
-                  <span className="font-semibold text-gray-700">{d.label}:</span>
+                  <span className="font-semibold text-gray-700">
+                    {d.label}:
+                  </span>
                 </div>
                 <p>{d.value || "N/A"}</p>
               </div>
@@ -323,7 +343,9 @@ export default function PackageDetailsClient({ id }: { id: string }) {
 
         {activeTab === "reviews" && (
           <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <h2 className="text-2xl font-bold text-orange-600 mb-6">Traveler Reviews</h2>
+            <h2 className="text-2xl font-bold text-orange-600 mb-6">
+              Traveler Reviews
+            </h2>
             <form onSubmit={handleCommentSubmit} className="mb-6 space-y-3">
               <textarea
                 value={newComment}
@@ -339,8 +361,9 @@ export default function PackageDetailsClient({ id }: { id: string }) {
                 Submit
               </button>
             </form>
+
             <ul className="space-y-4">
-              {comments.map((c) => (
+              {comments.map((c: any) => (
                 <li
                   key={c.id}
                   className="bg-orange-50 border-l-4 border-orange-400 px-4 py-3 rounded-lg shadow-sm flex gap-3 items-start"
