@@ -1,20 +1,22 @@
-// app/loading.tsx
 "use client";
 
-import loadingAnimation from "@/app/loading.json";
 import dynamic from "next/dynamic";
 
-const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
+const DotLottiePlayer = dynamic(
+  () => import("@dotlottie/react-player").then((mod) => mod.DotLottiePlayer),
+  { ssr: false }
+);
+
+import "@dotlottie/react-player/dist/index.css";
 
 export default function GlobalLoading() {
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center">
-      <div className="absolute inset-0 bg-white"></div>
-      <Lottie
-        animationData={loadingAnimation}
-        loop
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-b from-orange-50 to-white">
+      <DotLottiePlayer
+        src="/loading.lottie"
         autoplay
-        className="w-40 h-40"
+        loop
+        style={{ width: 160, height: 160 }}
       />
     </div>
   );

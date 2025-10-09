@@ -226,4 +226,15 @@ body {
 }
 
 
+@keyframes cloudMove {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(400px); }
+}
 
+.animate-cloud {
+  animation: cloudMove 16s linear infinite;
+}
+
+.animate-cloud-slow {
+  animation: cloudMove 25s linear infinite;
+}
