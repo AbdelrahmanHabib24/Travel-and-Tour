@@ -1,19 +1,13 @@
-/* eslint-disable react/display-name */
-
+/* ---------------------- Hero.tsx ---------------------- */
 "use client";
 
-import React, { useEffect, useState, useRef, useCallback, memo } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { IoLocation } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
+import BackgroundVideo from "./BackgroundVideo";
 
-const BackgroundVideo = dynamic(() => import("./BackgroundVideo"), {
-  ssr: false,
-  loading: () => <div className="absolute inset-0 bg-[#2f6a7f2f]" />,
-});
-
-const cities = Object.freeze([
+const cities = [
   "Italy",
   "France",
   "Australia",
@@ -23,45 +17,67 @@ const cities = Object.freeze([
   "Indonesia",
   "Switzerland",
   "India",
-]);
+];
 
-const Hero: React.FC = memo(() => {
+const Hero: React.FC = () => {
   const [typedText, setTypedText] = useState("");
   const [form, setForm] = useState({ city: "", date: "", maxPrice: 1000 });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const router = useRouter();
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const fullText = useRef("Travel To Any Corner In The World");
-  const iRef = useRef(0);
-  const forwardRef = useRef(true);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fullText = "Travel To Any Corner In The World";
+  const typingSpeed = 100;
+  const backspacingSpeed = 50;
 
+  const animatedRefs = useRef<(HTMLElement | null)[]>([]);
+
+  // Intersection animations
   useEffect(() => {
-    let mounted = true;
+    const observer = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        }),
+      { threshold: 0.1 }
+    );
 
-    const typeLoop = () => {
-      if (!mounted) return;
-      const text = fullText.current;
-      const i = iRef.current;
-      const forward = forwardRef.current;
+    animatedRefs.current.forEach((el) => {
+      if (el) observer.observe(el);
+    });
 
-      setTypedText((prev) => {
-        const newText = text.slice(0, i);
-        return prev === newText ? prev : newText;
-      });
+    return () => observer.disconnect();
+  }, []);
 
-      iRef.current = forward ? i + 1 : i - 1;
-
-      if (iRef.current >= text.length) forwardRef.current = false;
-      else if (iRef.current <= 0) forwardRef.current = true;
-
-      timerRef.current = setTimeout(typeLoop, 65);
+  // Typing effect
+  useEffect(() => {
+    const type = (i: number) => {
+      if (i <= fullText.length) {
+        setTypedText(fullText.slice(0, i));
+        timerRef.current = setTimeout(() => type(i + 1), typingSpeed);
+      } else {
+        timerRef.current = setTimeout(() => backspace(fullText.length), 1000);
+      }
     };
 
-    timerRef.current = setTimeout(typeLoop, 80);
+    const backspace = (i: number) => {
+      if (i >= 0) {
+        setTypedText(fullText.slice(0, i));
+        timerRef.current = setTimeout(() => backspace(i - 1), backspacingSpeed);
+      } else {
+        timerRef.current = setTimeout(() => type(0), 500);
+      }
+    };
+
+    type(0);
     return () => {
-      mounted = false;
-      if (timerRef.current) clearTimeout(timerRef.current);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
     };
   }, []);
 
@@ -79,17 +95,18 @@ const Hero: React.FC = memo(() => {
   const handleSearch = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      const { city, maxPrice } = form;
-      if (!city) return;
+      const { city,  maxPrice } = form;
       setIsSubmitting(true);
-      await new Promise((r) => setTimeout(r, 800));
-      router.push(`/results?city=${encodeURIComponent(city)}&maxPrice=${maxPrice}`);
-      setIsSubmitting(false);
+      try {
+        await new Promise((res) => setTimeout(res, 2000));
+        router.push(`/results?city=${city}&maxPrice=${maxPrice}`);
+      } finally {
+        setIsSubmitting(false);
+      }
     },
     [form, router]
   );
 
-  /* ---------------------- JSX ---------------------- */
   return (
     <section
       className="relative w-full min-h-screen flex items-center justify-center"
@@ -98,7 +115,7 @@ const Hero: React.FC = memo(() => {
       <div className="absolute inset-0 bg-[#2f6a7f2f] z-10" />
       <BackgroundVideo />
 
-      <div className="relative z-20 text-white flex flex-col items-center gap-6 text-center px-4 sm:px-6 lg:px-10 w-full">
+      <div className="relative z-20 text-white flex flex-col items-center gap-6 text-center px-4 sm:px-6 lg:px-10 w-full  ">
         <p className="text-orange-400 text-base sm:text-lg md:text-2xl fade-down">
           {typedText}
         </p>
@@ -107,14 +124,24 @@ const Hero: React.FC = memo(() => {
           Make Your Tour Amazing With Us
         </h1>
 
-        <div className="w-full sm:flex flex-col items-center">
+        <div
+          ref={(el) => {
+            animatedRefs.current[2] = el;
+          }}
+          className="w-full  sm:flex flex-col   items-center "
+        >
+          {/* Title Label */}
+          {/* Search Section */}{" "}
           <div className="zoom-in">
+            {" "}
             <span className="bg-white text-tertiary px-4 py-2 rounded-lg text-sm sm:text-base font-medium">
-              Search For Your Trip
-            </span>
-
+              {" "}
+              Search For Your Trip{" "}
+            </span>{" "}
+            {/* Search Form */}{" "}
             <form
-              className="bg-white p-4 sm:p-6 rounded-lg text-start shadow-lg flex flex-col md:flex-row gap-4 form-fade-up"
+              className="bg-white p-4 sm:p-6 rounded-lg text-start shadow-lg 
+             flex flex-col md:flex-row gap-4 form-fade-up"
               role="form"
               aria-labelledby="search-form"
               onSubmit={handleSearch}
@@ -122,12 +149,11 @@ const Hero: React.FC = memo(() => {
               <h2 id="search-form" className="sr-only">
                 Search for your trip
               </h2>
-
               {/* Destination */}
               <div className="flex flex-col text-left">
                 <label
                   htmlFor="city"
-                  className="text-gray-700 font-semibold text-sm mb-1"
+                  className="text-gray-700 font-semibold text-sm mb-1 text-left"
                 >
                   Select your destination:
                 </label>
@@ -149,12 +175,11 @@ const Hero: React.FC = memo(() => {
                   <IoLocation className="text-gray-500 mx-2" />
                 </div>
               </div>
-
               {/* Date */}
               <div className="flex flex-col text-left">
                 <label
                   htmlFor="date"
-                  className="text-gray-700 font-semibold text-sm mb-1"
+                  className="text-gray-700 font-semibold text-sm mb-1 text-left"
                 >
                   Select your date:
                 </label>
@@ -168,12 +193,11 @@ const Hero: React.FC = memo(() => {
                   className="w-full h-11 px-3 bg-gray-100 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 transition"
                 />
               </div>
-
               {/* Max Price */}
               <div className="flex flex-col text-left">
                 <label
                   htmlFor="maxPrice"
-                  className="text-gray-700 font-semibold text-sm mb-1"
+                  className="text-gray-700 font-semibold text-sm mb-1 text-left"
                 >
                   Max Price:
                 </label>
@@ -187,17 +211,16 @@ const Hero: React.FC = memo(() => {
                   onChange={handleChange}
                   className="w-full accent-blue-500"
                 />
-                <span className="text-gray-600 text-sm mt-1">
+                <span className="text-gray-600 text-sm mt-1 text-left">
                   ${form.maxPrice.toLocaleString()}
                 </span>
               </div>
-
               {/* Button */}
-              <div className="flex items-center justify-center sm:mt-5">
+              <div className="flex items-center justify-center sm:mt-5 ">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full h-11 flex items-center justify-center gap-2 bg-blue-500 text-white px-6 rounded-md text-sm sm:text-base font-medium hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 ${
+                  className={`w-full h-11 flex items-center justify-center py gap-2 bg-blue-500 text-white px-6 rounded-md text-sm sm:text-base font-medium hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 ${
                     isSubmitting ? "opacity-70 cursor-wait" : ""
                   }`}
                 >
@@ -234,6 +257,6 @@ const Hero: React.FC = memo(() => {
       </div>
     </section>
   );
-});
+};
 
 export default Hero;
