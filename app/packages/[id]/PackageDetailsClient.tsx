@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useCallback, useMemo, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Slider from "react-slick";
 import { motion } from "framer-motion";
@@ -29,6 +30,7 @@ export default function PackageDetailsClient({ id }: { id: string }) {
   const user = useSelector((state: RootState) => state.user);
   const [newComment, setNewComment] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  
   const [activeTab, setActiveTab] = useState<
     "overview" | "details" | "reviews"
   >("overview");
