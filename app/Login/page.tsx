@@ -9,9 +9,11 @@ import { z } from "zod";
 import { loginSchema } from "@/app/ulits/zod";
 import SubmitButton from "@/app/component/SubmitButton";
 
+
 type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login: React.FC = () => {
+
   const router = useRouter();
 
   const {
@@ -35,6 +37,7 @@ const Login: React.FC = () => {
       });
 
       const result = await res.json();
+      console.log("Result from login API:", result);
 
       if (!res.ok) {
         if (result.errors?.email) {
@@ -51,6 +54,8 @@ const Login: React.FC = () => {
         }
         return;
       }
+
+      
 
       router.push("/");
     } catch (err) {

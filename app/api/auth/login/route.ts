@@ -51,7 +51,7 @@ export async function POST(req: Request) {
 
     // ✅ Generate Access Token
     const accessToken = jwt.sign(
-      { id: user.id, email: user.email },
+      { id: user.id, email: user.email, username: user.username },
       JWT_SECRET,
       { expiresIn: "15m" }
     );
@@ -64,7 +64,11 @@ export async function POST(req: Request) {
     // ✅ Prepare response
     const res = NextResponse.json({
       message: "Login successful.",
-      user: { id: user.id, email: user.email, username: user.username },
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+      },
       accessToken,
     });
 
@@ -73,7 +77,7 @@ export async function POST(req: Request) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 15 * 60, 
+      maxAge: 15 * 60,
       path: "/",
     });
 

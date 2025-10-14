@@ -4,7 +4,7 @@ import { prisma } from "@/app/ulits/prisma";
 // GET Comments
 export async function GET(
   req: Request,
-  { params }: { params: Promise<{ id: string }> } 
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
   if (!id) return NextResponse.json({ error: "ID missing" }, { status: 400 });
@@ -36,4 +36,44 @@ export async function POST(
   });
 
   return NextResponse.json(newComment);
+}
+
+
+// PATCH Comment (edit)
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  if (!id) return NextResponse.json({ error: "ID missing" }, { status: 400 });
+
+  const body = await req.json();
+  if (!body.commentId || !body.text)
+    return NextResponse.json({ error: "Missing data" }, { status: 400 });
+
+  const updatedComment = await prisma.comment.update({
+    where: { id: Number(body.commentId) },
+    data: { text: body.text },
+  });
+
+  return NextResponse.json(updatedComment);
+}
+
+// DELETE Comment
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const url = new URL(req.url);
+  const commentId = url.searchParams.get("commentId");
+
+  if (!id || !commentId)
+    return NextResponse.json({ error: "Missing data" }, { status: 400 });
+
+  await prisma.comment.delete({
+    where: { id: Number(commentId) },
+  });
+
+  return NextResponse.json({ message: "Comment deleted successfully" });
 }

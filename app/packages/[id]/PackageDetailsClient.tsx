@@ -1,9 +1,7 @@
-// eslint-disable-next-line react/display-name
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useCallback, useMemo, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Slider from "react-slick";
 import { motion } from "framer-motion";
@@ -29,13 +27,25 @@ export default function PackageDetailsClient({ id }: { id: string }) {
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
   const user = useSelector((state: RootState) => state.user);
-
   const [newComment, setNewComment] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
   const [activeTab, setActiveTab] = useState<
     "overview" | "details" | "reviews"
   >("overview");
-  const [isProcessing, setIsProcessing] = useState(false);
 
+  useEffect(() => {
+    const savedTab = localStorage.getItem("activeTab") as
+      | "overview"
+      | "details"
+      | "reviews";
+    if (savedTab) setActiveTab(savedTab);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("activeTab", activeTab);
+  }, [activeTab]);
+
+  /* -------------------- Fetch Package -------------------- */
   const {
     data: packageDetails,
     isLoading,
@@ -43,16 +53,14 @@ export default function PackageDetailsClient({ id }: { id: string }) {
   } = useQuery({
     queryKey: ["package", id],
     queryFn: async () => {
-      const res = await fetch(`/api/packages/${id}`, {
-        cache: "force-cache", 
-      });
+      const res = await fetch(`/api/packages/${id}`, { cache: "force-cache" });
       if (!res.ok) throw new Error("Failed to fetch package");
       return res.json();
     },
     enabled: !!id,
-    staleTime: Infinity, 
-    gcTime: Infinity, 
-    retry: false, 
+    staleTime: Infinity,
+    gcTime: Infinity,
+    retry: false,
     placeholderData: () => queryClient.getQueryData(["package", id]),
   });
 
@@ -68,29 +76,72 @@ export default function PackageDetailsClient({ id }: { id: string }) {
     enabled: !!id,
   });
 
-  /* -------------------- Mutations -------------------- */
-  const mutation = useMutation({
+  const addCommentMutation = useMutation({
     mutationFn: async (text: string) => {
-      if (!user.accessToken) {
-        toast.error("Please log in to comment");
+      if (!user.isLoggedIn) {
         throw new Error("Unauthorized");
       }
-
       const res = await fetch(`/api/packages/${id}/comments`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.accessToken}`,
-        },
-        body: JSON.stringify({ text, userName: user.username || "Traveler" }),
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ text, userName: user.username }),
       });
-
       if (!res.ok) throw new Error("Failed to add comment");
       return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", id] });
       setNewComment("");
+      toast.success("Comment added!");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Failed to add comment");
+    },
+  });
+
+  const editCommentMutation = useMutation({
+    mutationFn: async ({
+      commentId,
+      text,
+    }: {
+      commentId: number;
+      text: string;
+    }) => {
+      const res = await fetch(`/api/packages/${id}/comments`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ commentId, text }),
+      });
+      if (!res.ok) throw new Error("Failed to edit comment");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", id] });
+      toast.info("Comment updated!");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Failed to update comment");
+    },
+  });
+
+  const deleteCommentMutation = useMutation({
+    mutationFn: async (commentId: number) => {
+      const res = await fetch(
+        `/api/packages/${id}/comments?commentId=${commentId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!res.ok) throw new Error("Failed to delete comment");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", id] });
+      toast.error("Comment deleted!");
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Failed to delete comment");
     },
   });
 
@@ -114,7 +165,6 @@ export default function PackageDetailsClient({ id }: { id: string }) {
           },
         }),
       });
-
       const data = await res.json();
       if (res.ok && data.sessionId && data.paymentToken) {
         dispatch(setPaymentToken(data.paymentToken));
@@ -130,9 +180,9 @@ export default function PackageDetailsClient({ id }: { id: string }) {
   const handleCommentSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      if (newComment.trim()) mutation.mutate(newComment);
+      if (newComment.trim()) addCommentMutation.mutate(newComment);
     },
-    [newComment, mutation]
+    [newComment, addCommentMutation]
   );
 
   const sliderSettings = useMemo(
@@ -187,8 +237,6 @@ export default function PackageDetailsClient({ id }: { id: string }) {
             fill
             className="object-cover brightness-75"
             priority
-            placeholder="blur"
-            blurDataURL="/placeholder.jpg"
           />
         )}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4 text-center">
@@ -365,24 +413,69 @@ export default function PackageDetailsClient({ id }: { id: string }) {
             </form>
 
             <ul className="space-y-4">
-              {comments.map((c: any) => (
-                <li
-                  key={c.id}
-                  className="bg-orange-50 border-l-4 border-orange-400 px-4 py-3 rounded-lg shadow-sm flex gap-3 items-start"
-                >
-                  <Image
-                    src={c.avatarUrl || "/default-avatar.png"}
-                    alt={c.userName}
-                    width={30}
-                    height={30}
-                    className="rounded-full"
-                  />
-                  <div>
-                    <p className="font-semibold text-gray-800">{c.userName}</p>
-                    <p className="text-gray-600 text-sm">{c.text}</p>
-                  </div>
-                </li>
-              ))}
+              {comments.map((c: any) => {
+                const isOwner = c.userName === user.username;
+
+                return (
+                  <li
+                    key={c.id}
+                    className="bg-orange-50 border-l-4 border-orange-400 px-4 py-3 rounded-lg shadow-sm flex flex-col gap-2"
+                  >
+                    <div className="flex gap-3 items-start">
+                      <Image
+                        src={
+                          c.avatarUrl ||
+                          `https://i.pravatar.cc/150?u=${c.userName}`
+                        }
+                        alt={c.userName}
+                        width={30}
+                        height={30}
+                        className="rounded-full"
+                      />
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-800">
+                          {c.userName}
+                        </p>
+                        <p className="text-gray-600 text-sm">{c.text}</p>
+                      </div>
+                      {isOwner && (
+                        <div className="flex gap-2">
+                          <button
+                            className="text-sm text-blue-500 hover:underline"
+                            onClick={() => {
+                              const newText = prompt(
+                                "Edit your comment:",
+                                c.text
+                              );
+                              if (!newText) return;
+                              editCommentMutation.mutate({
+                                commentId: c.id,
+                                text: newText,
+                              });
+                            }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="text-sm text-red-500 hover:underline"
+                            onClick={() => {
+                              if (
+                                !confirm(
+                                  "Are you sure you want to delete this comment?"
+                                )
+                              )
+                                return;
+                              deleteCommentMutation.mutate(c.id);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </motion.section>
         )}
