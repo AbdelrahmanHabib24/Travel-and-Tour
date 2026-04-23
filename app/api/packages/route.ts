@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/ulits/prisma";
 
 export async function GET(req: NextRequest) {
-  console.log("API: Fetching packages...");
   try {
     const { searchParams } = new URL(req.url);
     const city = searchParams.get("city") || "";
