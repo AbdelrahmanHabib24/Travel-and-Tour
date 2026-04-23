@@ -126,15 +126,24 @@ export const SessionView = ({
     await localParticipant.setMicrophoneEnabled(!newMuted);
   };
 
-  const handleStop = () => {
+  const handleStop = async () => {
     if (!audioTrack?.publication?.track) return;
     const track = audioTrack.publication.track;
-    const attachedElements = track.detach();
-    attachedElements.forEach((el) => {
+    track.attachedElements.forEach((el) => {
       el.pause();
       el.currentTime = 0;
     });
+    // Send a message to interrupt the AI generation gracefully
+    await send("Please pause.");
   };
+
+  useEffect(() => {
+    if (agentState === 'speaking' && audioTrack?.publication?.track) {
+      audioTrack.publication.track.attachedElements.forEach((el) => {
+        el.play().catch((e) => console.log('Audio resume error:', e));
+      });
+    }
+  }, [agentState, audioTrack]);
 
   useEffect(() => {
     if (sessionStarted) {
@@ -169,12 +178,37 @@ export const SessionView = ({
     }
   }, [agentState, sessionStarted, room]);
 
+  if (!showCard) return null;
+
+  if (!isAgentAvailable(agentState)) {
+    return (
+      <div className="fixed top-0 right-0 h-full w-full sm:max-w-sm md:w-96 
+        bg-gradient-to-b from-white to-orange-50 border-l border-orange-100 
+        shadow-2xl rounded-none sm:rounded-l-2xl z-50 flex flex-col justify-center items-center">
+        <button
+          onClick={() => {
+            setShowCard(false);
+            onEndSession();
+          }}
+          className="absolute top-4 right-4 bg-orange-100 hover:bg-orange-200 
+          p-3 rounded-full shadow-md transition-all"
+        >
+          <X size={22} weight="bold" className="text-orange-600" />
+        </button>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mb-4"></div>
+        <p className="text-orange-600 font-medium">Connecting to AI Agent...</p>
+        <p className="text-gray-500 text-sm mt-2 text-center px-6">
+          Waking up the agent. If offline, this will close automatically.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <>
-      {showCard && (
-     <div className="fixed top-0 right-0 h-full w-full sm:max-w-sm md:w-96 
-  bg-gradient-to-b from-white to-orange-50 border-l border-orange-100 
-  shadow-2xl rounded-none sm:rounded-l-2xl z-50 flex flex-col">
+      <div className="fixed top-0 right-0 h-full w-full sm:max-w-sm md:w-96 
+        bg-gradient-to-b from-white to-orange-50 border-l border-orange-100 
+        shadow-2xl rounded-none sm:rounded-l-2xl z-50 flex flex-col">
 
   {/* Close button */}
   <button
@@ -264,7 +298,7 @@ export const SessionView = ({
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
-          {messages.map((message) => (
+          {messages.filter(m => m.message !== "Please pause.").map((message) => (
             <div
               key={message.id}
               className={cn(
@@ -305,8 +339,6 @@ export const SessionView = ({
     )}
   </AnimatePresence>
 </div>
-
-      )}
     </>
   );
 };

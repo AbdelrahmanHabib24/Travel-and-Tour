@@ -108,6 +108,22 @@ const AppRoot = ({ appConfig, autoStartSession = false }: AppRootProps) => {
     room,
   ]);
 
+  // Pre-warm the connection
+  useEffect(() => {
+    if (connectionDetails && room.state === "disconnected") {
+      room.prepareConnection(connectionDetails.serverUrl, connectionDetails.participantToken);
+    }
+  }, [connectionDetails, room]);
+
+  // Disconnect when session ends completely
+  useEffect(() => {
+    if (!sessionStarted && room.state !== "disconnected") {
+      room.localParticipant.setMicrophoneEnabled(false);
+      room.disconnect();
+      setReady(false);
+    }
+  }, [sessionStarted, room]);
+
   return (
     <>
       <RoomContext.Provider value={room}>
