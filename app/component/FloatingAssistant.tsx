@@ -1,7 +1,7 @@
 "use client";
 import { forwardRef } from "react";
 import { motion } from "framer-motion";
-import { FaRobot } from "react-icons/fa";
+import { FaHeadset } from "react-icons/fa";
 
 type FloatingAssistantProps = {
   disabled?: boolean;
@@ -16,30 +16,40 @@ const FloatingAssistant = forwardRef<HTMLDivElement, FloatingAssistantProps>(
         ref={ref}
         aria-disabled={disabled}
         animate={{
-          scale: disabled ? 1 : [1, 1.1, 1],
-          rotate: disabled ? 0 : [0, 10, -10, 0],
+          y: disabled ? 0 : [0, -8, 0],
         }}
         transition={{
           repeat: disabled ? 0 : Infinity,
           duration: 3,
           ease: "easeInOut",
         }}
-        className={`fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50`}
+        className={`fixed bottom-6 sm:bottom-8 right-6 sm:right-8 z-50`}
       >
-        <button
-          onClick={onStartCall}
-          disabled={disabled}
-          className={`bg-blue-500 text-white p-3 sm:p-4 rounded-full shadow-lg flex items-center gap-1 sm:gap-2 
-            ${disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"}
-          `}
-        >
-          <FaRobot className="text-xl sm:text-2xl" />
-          {startButtonText && (
-            <span className="text-xs sm:text-sm font-medium">
-              {startButtonText}
-            </span>
+        <div className="relative group">
+          {/* Subtle glowing pulse behind the button */}
+          {!disabled && (
+            <div className="absolute inset-0 rounded-full bg-orange-400 opacity-20 blur-xl group-hover:opacity-40 transition-opacity duration-500"></div>
           )}
-        </button>
+          
+          <button
+            onClick={onStartCall}
+            disabled={disabled}
+            className={`relative flex items-center gap-2 sm:gap-3 px-5 py-3 sm:px-7 sm:py-4 rounded-full shadow-xl backdrop-blur-md border border-white/20 transition-all duration-300
+              ${disabled 
+                ? "opacity-0 pointer-events-none translate-y-4" 
+                : "bg-gradient-to-r from-orange-500 to-rose-500 hover:shadow-orange-500/40 hover:scale-105"
+              }
+              text-white
+            `}
+          >
+            <FaHeadset className="text-xl sm:text-2xl drop-shadow-md" />
+            {startButtonText && (
+              <span className="text-sm sm:text-base font-semibold tracking-wide drop-shadow-md">
+                {startButtonText}
+              </span>
+            )}
+          </button>
+        </div>
       </motion.div>
     );
   }
