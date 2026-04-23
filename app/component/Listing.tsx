@@ -54,8 +54,13 @@ const Listing: React.FC = () => {
   const fetchPackages = useCallback(async () => {
     try {
       const res = await fetch("/api/packages", { cache: "force-cache" });
-      const data: PackageType[] = await res.json();
-      setPackages(data);
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setPackages(data);
+      } else {
+        console.error("Failed to fetch packages. API response:", data);
+        setPackages([]);
+      }
     } catch (err) {
       console.error(err);
     } finally {
