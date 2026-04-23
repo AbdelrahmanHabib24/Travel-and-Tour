@@ -37,10 +37,10 @@ const StarRating = React.memo(
         <span className="text-tertiary">({count})</span>
       </div>
     );
-  }
+  },
 );
 
-StarRating.displayName = "StarRating"; 
+StarRating.displayName = "StarRating";
 
 const Listing: React.FC = () => {
   const [packages, setPackages] = useState<PackageType[]>([]);
@@ -54,13 +54,8 @@ const Listing: React.FC = () => {
   const fetchPackages = useCallback(async () => {
     try {
       const res = await fetch("/api/packages", { cache: "force-cache" });
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        setPackages(data);
-      } else {
-        console.error("API Error or non-array data:", data);
-        setPackages([]);
-      }
+      const data: PackageType[] = await res.json();
+      setPackages(data);
     } catch (err) {
       console.error(err);
     } finally {
