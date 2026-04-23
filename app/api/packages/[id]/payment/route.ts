@@ -97,26 +97,45 @@ export async function POST(
 
     const paymentKeyData = await paymentKeyRes.json();
 
-    // 🔹 Save session in DB (Optional for testing, wrapped in try/catch to prevent 500)
-    let sessionId = "temp_session";
-    try {
-      // NOTE: In production, you MUST have a real Order ID here.
-      // For now, we attempt to save it but won't crash if it fails.
-      const session = await prisma.paymentSession.create({
+    // 🔹 1. Find or create a User for this order
+    let dbUser = await prisma.user.findUnique({
+      where: { email: fullBillingData.email }
+    });
+
+    if (!dbUser) {
+      dbUser = await prisma.user.create({
         data: {
-          paymentToken: paymentKeyData.token,
-          orderId: packageId, // Warning: this might fail if no Order exists with this ID
-        },
+          email: fullBillingData.email,
+          username: fullBillingData.first_name,
+          password: "placeholder_password", // In a real app, users should be pre-registered
+        }
       });
-      sessionId = session.id;
-    } catch (dbErr) {
-      console.warn("DB Session creation skipped/failed:", dbErr);
     }
+
+    // 🔹 2. Create a real Order in our DB
+    const dbOrder = await prisma.order.create({
+      data: {
+        packageId: packageId,
+        userId: dbUser.id,
+        amountCents: amountEGP,
+        currency: "EGP",
+        status: "pending",
+      }
+    });
+
+    // 🔹 3. Create the PaymentSession linked to the REAL Order ID
+    const session = await prisma.paymentSession.create({
+      data: {
+        paymentToken: paymentKeyData.token,
+        orderId: dbOrder.id,
+        amount: amountEGP,
+      },
+    });
 
     return NextResponse.json({
       success: true,
-      sessionId: sessionId,
-      paymentToken: paymentKeyData.token,
+      sessionId: session.id,
+      paymentToken: session.paymentToken,
       amount: amountEGP,
     });
   } catch (err: any) {
