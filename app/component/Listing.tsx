@@ -53,7 +53,7 @@ const Listing: React.FC = () => {
 
   const fetchPackages = useCallback(async () => {
     try {
-      const res = await fetch("/api/packages", { cache: "force-cache" });
+      const res = await fetch("/api/packages", { cache: "no-store" });
       const data = await res.json();
       if (Array.isArray(data)) {
         setPackages(data);
