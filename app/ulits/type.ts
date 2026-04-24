@@ -20,7 +20,7 @@ export const FEATURE = [
   { title: "Australia", URL: "/australia.jpg" },  
   { title: "California", URL: "/california.jpg" },  
   { title: "Germany", URL: "/germany.jpg" },  
-  { title: "HongKong", URL: "/hong-Kong.jpg" },  
+  { title: "HongKong", URL: "/hong-kong.jpg" },  
   { title: "India", URL: "/india.jpg" },  
 ];
 
