@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "./providers";
 import { Suspense } from "react";
 import GlobalLoading from "./loading";
+import SplashScreen from "./component/SplashScreen";
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`bg-primary text-tertiary flex flex-col min-h-screen ${nunito.variable}`}>
         <Providers>
+          <SplashScreen />
           <Suspense fallback={<GlobalLoading/>}>
             <main className="flex-1">{children}</main>
           </Suspense>
