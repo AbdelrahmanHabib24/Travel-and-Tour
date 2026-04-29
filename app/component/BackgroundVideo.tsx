@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 
-
 const BackgroundVideo: React.FC = () => {
   const [hasError, setHasError] = useState(false);
 
@@ -16,8 +15,6 @@ const BackgroundVideo: React.FC = () => {
 
   return (
     <div className="absolute inset-0 w-full h-full">
-      
-
       <video
         autoPlay
         loop
