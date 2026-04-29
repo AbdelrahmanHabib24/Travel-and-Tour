@@ -238,3 +238,23 @@ body {
 .animate-cloud-slow {
   animation: cloudMove 25s linear infinite;
 }
+
+.plane-orbit {
+  animation: plane-spin 6s linear infinite;
+}
+
+.globe-rotate {
+  animation: globe-spin 25s linear infinite;
+}
+
+@keyframes plane-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes globe-spin {
+  to {
+    transform: rotate(-360deg);
+  }
+}
