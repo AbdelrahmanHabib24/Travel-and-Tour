@@ -13,7 +13,7 @@ export default function PaymentIframe({ token }: Props) {
   const [loaded, setLoaded] = useState(false);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-white">
+    <div className="fixed inset-x-0 bottom-0 top-8 flex items-center justify-center bg-white">
       {!loaded && (
         <div className="absolute inset-0 flex items-center justify-center bg-white z-10">
           <GlobalLoading />

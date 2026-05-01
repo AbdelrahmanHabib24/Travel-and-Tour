@@ -8,6 +8,7 @@ export const signupSchema = z.object({
   email: z
     .string()
     .trim()
+    .toLowerCase()
     .email("Please provide a valid email address"),
   password: z
     .string()
@@ -24,10 +25,12 @@ export const loginSchema = z.object({
   email: z
     .string()
     .trim()
-    .email("Invalid email address"),
+    .toLowerCase()
+    .min(1, "Please enter your email address")
+    .email("This email address is not valid"),
   password: z
     .string()
-    .min(6, "Password is too short"),
+    .min(1, "Please enter your password"),
 });
 
 export const serverSignupSchema = signupSchema

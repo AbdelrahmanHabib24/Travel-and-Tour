@@ -9,11 +9,15 @@ import { z } from "zod";
 import { loginSchema } from "@/app/ulits/zod";
 import SubmitButton from "@/app/component/SubmitButton";
 
-
 type LoginFormData = z.infer<typeof loginSchema>;
+type LoginField = keyof LoginFormData;
+
+type LoginApiResponse = {
+  message?: string;
+  errors?: Partial<Record<LoginField, string[]>>;
+};
 
 const Login: React.FC = () => {
-
   const router = useRouter();
 
   const {
@@ -21,13 +25,38 @@ const Login: React.FC = () => {
     handleSubmit,
     formState: { errors, isSubmitting, isValid },
     setError,
+    clearErrors,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     mode: "onChange",
     defaultValues: { email: "", password: "" },
   });
 
+  const setServerErrors = (result: LoginApiResponse) => {
+    const fieldErrors = result.errors;
+
+    if (fieldErrors?.email?.[0]) {
+      setError("email", { type: "server", message: fieldErrors.email[0] });
+    }
+
+    if (fieldErrors?.password?.[0]) {
+      setError("password", {
+        type: "server",
+        message: fieldErrors.password[0],
+      });
+    }
+
+    if (!fieldErrors?.email?.[0] && !fieldErrors?.password?.[0]) {
+      setError("root.server", {
+        type: "server",
+        message: result.message || "There was a problem. Please try again.",
+      });
+    }
+  };
+
   const onSubmit = async (data: LoginFormData) => {
+    clearErrors("root.server");
+
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
@@ -36,33 +65,19 @@ const Login: React.FC = () => {
         credentials: "include",
       });
 
-      const result = await res.json();
-      console.log("Result from login API:", result);
+      const result: LoginApiResponse = await res.json();
 
       if (!res.ok) {
-        if (result.errors?.email) {
-          setError("email", {
-            type: "server",
-            message: result.errors.email[0],
-          });
-        }
-        if (result.errors?.password) {
-          setError("password", {
-            type: "server",
-            message: result.errors.password[0],
-          });
-        }
+        setServerErrors(result);
         return;
       }
-
-      
 
       router.push("/");
     } catch (err) {
       console.error(err);
-      setError("email", {
+      setError("root.server", {
         type: "server",
-        message: "Server error. Please try again later.",
+        message: "There was a problem. Please try again later.",
       });
     }
   };
@@ -79,12 +94,17 @@ const Login: React.FC = () => {
           Login
         </h1>
 
+        {errors.root?.server && (
+          <p className="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+            {errors.root.server.message}
+          </p>
+        )}
+
         <form
           onSubmit={handleSubmit(onSubmit)}
           noValidate
           className="space-y-5"
         >
-          {/* Email */}
           <div>
             <label htmlFor="email" className="block mb-1 font-medium">
               Email
@@ -92,12 +112,15 @@ const Login: React.FC = () => {
             <input
               id="email"
               type="email"
+              autoComplete="email"
               className={`w-full border rounded-md p-2 focus:outline-none focus:ring ${
                 errors.email
                   ? "border-red-500 focus:ring-red-300"
                   : "border-gray-300 focus:ring-blue-300"
               }`}
-              {...register("email")}
+              {...register("email", {
+                onChange: () => clearErrors("root.server"),
+              })}
             />
             {errors.email && (
               <p className="text-sm text-red-500 mt-1">
@@ -106,7 +129,6 @@ const Login: React.FC = () => {
             )}
           </div>
 
-          {/* Password */}
           <div>
             <label htmlFor="password" className="block mb-1 font-medium">
               Password
@@ -114,12 +136,15 @@ const Login: React.FC = () => {
             <input
               id="password"
               type="password"
+              autoComplete="current-password"
               className={`w-full border rounded-md p-2 focus:outline-none focus:ring ${
                 errors.password
                   ? "border-red-500 focus:ring-red-300"
                   : "border-gray-300 focus:ring-blue-300"
               }`}
-              {...register("password")}
+              {...register("password", {
+                onChange: () => clearErrors("root.server"),
+              })}
             />
             {errors.password && (
               <p className="text-sm text-red-500 mt-1">
@@ -128,7 +153,6 @@ const Login: React.FC = () => {
             )}
           </div>
 
-          {/* Submit */}
           <SubmitButton
             type="submit"
             loading={isSubmitting}

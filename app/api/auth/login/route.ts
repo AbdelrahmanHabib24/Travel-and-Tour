@@ -9,14 +9,14 @@ const JWT_SECRET = process.env.JWT_SECRET as string;
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const body = await req.json().catch(() => null);
 
     // ✅ Validate request body
     const result = loginSchema.safeParse(body);
     if (!result.success) {
       return NextResponse.json(
         {
-          message: "Enter a valid email and password.",
+          message: "There was a problem",
           errors: result.error.flatten().fieldErrors,
         },
         { status: 400 }
@@ -30,8 +30,10 @@ export async function POST(req: Request) {
     if (!user) {
       return NextResponse.json(
         {
-          errors: { email: ["No account found. Please sign up first."] },
-          message: "No account found",
+          errors: {
+            email: ["No account is registered with this email address."],
+          },
+          message: "There was a problem",
         },
         { status: 404 }
       );
@@ -42,8 +44,8 @@ export async function POST(req: Request) {
     if (!isMatch) {
       return NextResponse.json(
         {
-          errors: { password: ["Incorrect password."] },
-          message: "Incorrect password",
+          errors: { password: ["The password you entered is incorrect."] },
+          message: "There was a problem",
         },
         { status: 401 }
       );
@@ -94,7 +96,7 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error("Login error:", err);
     return NextResponse.json(
-      { message: "Server error. Please try again later." },
+      { message: "There was a problem. Please try again later." },
       { status: 500 }
     );
   }
