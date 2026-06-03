@@ -133,8 +133,6 @@ export const SessionView = ({
       el.pause();
       el.currentTime = 0;
     });
-    // Send a message to interrupt the AI generation gracefully
-    await send("Please pause.");
   };
 
   useEffect(() => {
@@ -222,10 +220,38 @@ export const SessionView = ({
     <X size={22} weight="bold" className="text-orange-600" />
   </button>
 
-  {/* Agent Section */}
-  <div className="flex-1 flex justify-center items-center p-6">
-    {audioTrack ? (
-      <AgentTile state={agentState} audioTrack={audioTrack} className="max-h-56" />
+  {/* Agent Section / Visual State Indicators */}
+  <div className="flex-1 flex flex-col justify-center items-center p-6 space-y-4">
+    {isMuted ? (
+      <div className="flex flex-col items-center animate-pulse">
+        <div className="h-16 w-16 bg-gray-300 rounded-full flex items-center justify-center">
+          <MicrophoneSlash size={32} className="text-gray-600" weight="fill" />
+        </div>
+        <p className="mt-4 text-gray-500 font-medium">Session Paused</p>
+      </div>
+    ) : audioTrack ? (
+      <>
+        <AgentTile state={agentState} audioTrack={audioTrack} className="max-h-56" />
+        
+        {/* State Label */}
+        <div className="text-center mt-4">
+          {agentState === "listening" && (
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full ">
+              <p className="text-gray-500 text-sm font-medium">Listening...</p>
+            </span>
+          )}
+          {agentState === "thinking" && (
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full  ">
+              <p className="text-orange-600 text-sm font-medium">Processing...</p>
+            </span>
+          )}
+          {agentState === "speaking" && (
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full  ">
+              <p className="text-[#ff813f] text-sm font-semibold">Speaking</p>
+            </span>
+          )}
+        </div>
+      </>
     ) : (
       <p className="text-center text-gray-500 text-sm italic">
         Waiting for agent audio...
@@ -246,28 +272,35 @@ export const SessionView = ({
       <ChatDots size={22} weight="fill" />
     </button>
 
-    {/* Mic Button */}
+    {/* Mic Button (Pause / Resume) */}
     <button
       onClick={toggleMute}
       className={cn(
-        "p-3 rounded-full shadow-md transition-all",
+        "flex items-center gap-2 px-6 py-3 rounded-full shadow-md transition-all font-medium",
         isMuted
           ? "bg-red-500 hover:bg-red-600 text-white"
           : "bg-orange-500 hover:bg-orange-600 text-white"
       )}
     >
       {isMuted ? (
-        <MicrophoneSlash size={22} weight="fill" />
+        <>
+          <MicrophoneSlash size={22} weight="fill" />
+          <span>Resume</span>
+        </>
       ) : (
-        <Microphone size={22} weight="fill" />
+        <>
+          <Microphone size={22} weight="fill" />
+          <span>Pause</span>
+        </>
       )}
     </button>
 
-    {/* Stop Button */}
+    {/* Stop Agent Audio Button */}
     <button
       onClick={handleStop}
-      className="bg-gray-800 hover:bg-black p-3 rounded-full text-white 
-      shadow-sm transition-all"
+      className="bg-orange-100 hover:bg-orange-200 
+      p-3 rounded-full text-orange-600 shadow-sm transition-all"
+      title="Stop Audio"
     >
       <StopCircle size={22} weight="fill" />
     </button>
@@ -319,6 +352,12 @@ export const SessionView = ({
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleSendMessage(inputValue);
+              }
+            }}
             disabled={!isAgentAvailable(agentState)}
             placeholder="Type a message..."
             className="flex-1 border border-orange-200 
