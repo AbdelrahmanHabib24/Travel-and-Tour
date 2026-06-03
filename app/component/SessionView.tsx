@@ -126,15 +126,6 @@ export const SessionView = ({
     await localParticipant.setMicrophoneEnabled(!newMuted);
   };
 
-  const handleStop = async () => {
-    if (!audioTrack?.publication?.track) return;
-    const track = audioTrack.publication.track;
-    track.attachedElements.forEach((el) => {
-      el.pause();
-      el.currentTime = 0;
-    });
-  };
-
   useEffect(() => {
     if (agentState === 'speaking' && audioTrack?.publication?.track) {
       audioTrack.publication.track.attachedElements.forEach((el) => {
@@ -293,16 +284,6 @@ export const SessionView = ({
           <span>Pause</span>
         </>
       )}
-    </button>
-
-    {/* Stop Agent Audio Button */}
-    <button
-      onClick={handleStop}
-      className="bg-orange-100 hover:bg-orange-200 
-      p-3 rounded-full text-orange-600 shadow-sm transition-all"
-      title="Stop Audio"
-    >
-      <StopCircle size={22} weight="fill" />
     </button>
   </div>
 
