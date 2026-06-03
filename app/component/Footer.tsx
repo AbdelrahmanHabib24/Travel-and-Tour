@@ -183,7 +183,7 @@ const Footer: React.FC = () => {
       {/* Back to Top Button */}
       <button
         onClick={scrollToTop}
-        className="fixed bottom-4 right-4 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 hover:scale-110 transition-all duration-300"
+        className="fixed bottom-32 sm:bottom-[120px] right-6 sm:right-8 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 hover:scale-110 transition-all duration-300 z-40"
         aria-label="Scroll to top"
       >
         <FaArrowUp />
