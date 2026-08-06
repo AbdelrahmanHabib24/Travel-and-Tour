@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import React, { useEffect, useState, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -19,7 +19,7 @@ const Header: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user);
 
-  const toggleMenu = useCallback(() => setMenuOpened(prev => !prev), []);
+  const toggleMenu = useCallback(() => setMenuOpened((prev) => !prev), []);
 
   const handleLogout = async () => {
     await dispatch(logoutUser());
@@ -42,8 +42,8 @@ const Header: React.FC = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        active ? "bg-white shadow-lg py-3" : "bg-opacity-70 py-4"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        active ? "bg-white shadow-md py-3" : "bg-transparent py-4"
       }`}
     >
       <div className="max_padd_container flex justify-between items-center gap-x-6">
@@ -55,7 +55,7 @@ const Header: React.FC = () => {
         {/* Desktop Navigation */}
         <Nav
           containerStyles="hidden lg:flex items-center gap-x-10"
-          linkStyles="hover:text-secondary cursor-pointer text-tertiary"
+          linkStyles="hover:text-secondary cursor-pointer text-tertiary font-medium"
         />
 
         {/* Actions */}

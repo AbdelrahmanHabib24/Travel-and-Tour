@@ -227,21 +227,25 @@ export default function PackageDetailsClient({ id }: { id: string }) {
   } = packageDetails;
 
   return (
-    <div className="bg-gradient-to-b from-orange-50 to-white mt-14">
+    <div className="bg-gradient-to-b from-orange-50 to-white">
       <ToastContainer position="top-center" />
 
-      {/* Hero Section */}
-      <div className="relative h-[400px] w-full">
+      {/* Hero Section - extends behind transparent header */}
+      <div className="relative h-[500px] w-full">
         {images?.[0] && (
           <Image
             src={images[0].url}
             alt={title1}
             fill
+            sizes="100vw"
             className="object-cover brightness-75"
+            quality={90}
             priority
           />
         )}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4 text-center">
+        {/* gradient overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4 text-center pt-16">
           <motion.h1
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -301,14 +305,16 @@ export default function PackageDetailsClient({ id }: { id: string }) {
             <Slider {...sliderSettings}>
               {images.map((img: any) => (
                 <div key={img.id} className="px-2">
-                  <Image
-                    src={img.url}
-                    alt={title1}
-                    width={1200}
-                    height={700}
-                    className="rounded-2xl shadow-lg"
-                    loading="lazy"
-                  />
+                  <div className="relative w-full h-[420px] rounded-2xl overflow-hidden shadow-lg">
+                    <Image
+                      src={img.url}
+                      alt={title1}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 80vw"
+                      className="object-cover"
+                      loading="lazy"
+                    />
+                  </div>
                 </div>
               ))}
             </Slider>

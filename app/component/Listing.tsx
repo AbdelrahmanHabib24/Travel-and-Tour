@@ -112,7 +112,9 @@ const Listing: React.FC = () => {
                   alt={pkg.title1}
                   width={640}
                   height={366}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="rounded-lg group-hover:scale-105 transition-transform duration-300"
+                  quality={90}
                   priority={index < 3}
                   loading={index < 3 ? undefined : "lazy"}
                   placeholder="blur"
