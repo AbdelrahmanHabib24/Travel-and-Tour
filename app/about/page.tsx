@@ -15,7 +15,7 @@ const AboutData: DataType[] = [
   {
     id: 1,
     heading: "Discover destinations",
-    imgSrc: "/destination.jpg",
+    imgSrc: "/destination.webp",
     paragraph:
       "Explore breathtaking destinations around the world, from vibrant cities to serene natural landscapes. We offer tailored itineraries that suit your travel desires.",
     link: "Learn More",
@@ -24,7 +24,7 @@ const AboutData: DataType[] = [
   {
     id: 2,
     heading: "Personalized Tours",
-    imgSrc: "/tours.jpg",
+    imgSrc: "/tours.webp",
     paragraph:
       "Experience the thrill of travel with our personalized tour packages designed just for you. Discover hidden gems and local cultures in every journey.",
     link: "Learn More",
@@ -33,7 +33,7 @@ const AboutData: DataType[] = [
   {
     id: 3,
     heading: "Luxury Travel",
-    imgSrc: "/Travel.jpg",
+    imgSrc: "/luxury-travel.webp",
     paragraph:
       "Indulge in luxury travel experiences that go beyond expectations. Enjoy first-class accommodations, gourmet dining, and exclusive access to the best attractions.",
     link: "Learn More",
@@ -48,10 +48,10 @@ const AboutCard = ({ item }: { item: DataType }) => (
       <Image
         src={item.imgSrc}
         alt={item.heading}
-        width={800}
-        height={600}
+        fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
-        priority
+        loading="lazy"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
     </div>
@@ -63,9 +63,8 @@ const AboutCard = ({ item }: { item: DataType }) => (
 
     {/* Paragraph */}
     <p className="text-lg font-normal text-gray-700 group-hover:text-gray-900 mb-5 text-center line-clamp-4">
-  {item.paragraph}
-</p>
-
+      {item.paragraph}
+    </p>
 
     {/* Link */}
     <Link
@@ -83,30 +82,27 @@ export default function AboutUs() {
   return (
     <div
       id="aboutus-section"
-      className="min-h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-blue-700"
+      className="min-h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-blue-700 relative overflow-hidden"
     >
-      <div
-        className="relative"
-        style={{
-          backgroundImage: `url('/travel.webp')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          height: "100%",
-        }}
-      >
-        <div className="max_padd_container p-24 relative z-10">
-          <h3 className="text-center text-white text-lg tracking-widest">
-            ABOUT US
-          </h3>
-          <h4 className="text-center text-4xl lg:text-5xl font-bold text-white mt-2">
-            Know More About Us
-          </h4>
+      <Image
+        src="/travel.webp"
+        alt="About Us Background"
+        fill
+        className="object-cover opacity-80"
+        priority
+      />
+      <div className="relative z-10 max_padd_container p-12 sm:p-24">
+        <h3 className="text-center text-white text-lg tracking-widest">
+          ABOUT US
+        </h3>
+        <h4 className="text-center text-4xl lg:text-5xl font-bold text-white mt-2">
+          Know More About Us
+        </h4>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 my-16 gap-x-12 lg:gap-x-24 gap-y-12">
-            {AboutData.map((item) => (
-              <AboutCard key={item.id} item={item} />
-            ))}
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 my-16 gap-x-12 lg:gap-x-24 gap-y-12">
+          {AboutData.map((item) => (
+            <AboutCard key={item.id} item={item} />
+          ))}
         </div>
       </div>
     </div>

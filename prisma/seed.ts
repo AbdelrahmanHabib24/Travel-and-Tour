@@ -10,7 +10,7 @@ async function main() {
   for (const pkg of allPackages) {
     await prisma.package.create({
       data: {
-        URL: pkg.URL,
+        URL: pkg.URL.replace(/\.(jpg|jpeg|png)$/i, '.webp'),
         title1: pkg.title1,
         title2: pkg.title2,
         price: Number(pkg.price),
@@ -25,7 +25,7 @@ async function main() {
         mobileTicket: (pkg as any).mobileTicket ?? false, 
         liveGuideLanguages: (pkg as any).liveGuideLanguages ?? [],
         images: pkg.images
-          ? { create: pkg.images.map((url: string) => ({ url })) }
+          ? { create: pkg.images.map((url: string) => ({ url: url.replace(/\.(jpg|jpeg|png)$/i, '.webp') })) }
           : undefined,
       },
     });

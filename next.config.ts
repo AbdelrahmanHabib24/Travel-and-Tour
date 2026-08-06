@@ -8,6 +8,22 @@ const nextConfig = {
       { protocol: "https", hostname: "your-image-host.com", pathname: "/path/to/image/**" },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/:path*.jpg',
+        destination: '/:path*.webp',
+      },
+      {
+        source: '/:path*.jpeg',
+        destination: '/:path*.webp',
+      },
+      {
+        source: '/:path*.png',
+        destination: '/:path*.webp',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

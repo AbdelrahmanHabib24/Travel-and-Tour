@@ -17,7 +17,7 @@ async function getPosts(): Promise<Post[]> {
       title: "Exploring the Hidden Gems of Bali",
       excerpt:
         "Discover the serene beaches and lush jungles of Bali. This post covers off-the-beaten-path destinations.",
-      image: "/i1.jpeg",
+      image: "/i1.webp",
       path: "https://www.tripadvisor.com/Attraction_Products-g294226-a_contentId.1186373408924765+268450243-Bali.html",
     },
     {
@@ -25,7 +25,7 @@ async function getPosts(): Promise<Post[]> {
       title: "Top 15 Must-Visit Destinations in Europe",
       excerpt:
         "From the Eiffel Tower in Paris to the canals of Venice, here are the top 10 destinations every traveler should experience.",
-      image: "/E.jpeg",
+      image: "/e.webp",
       path: "https://travellersworldwide.com/best-places-to-visit-in-europe",
     },
     {
@@ -33,7 +33,7 @@ async function getPosts(): Promise<Post[]> {
       title: "A Guide to Sustainable Travel",
       excerpt:
         "Sustainable travel is the future. Learn how you can reduce your carbon footprint while exploring the world.",
-      image: "/G1.jpg",
+      image: "/g1.webp",
       path: "https://www.nationalgeographic.com/travel/article/how-to-travel-better-a-beginners-guide-to-sustainable-travel-in-2023-and-beyond",
     },
   ];
@@ -47,7 +47,7 @@ export default async function BlogPage() {
       {/* Featured Post */}
       <section className="relative w-full h-[50vh]">
         <Image
-          src="/de.jpeg"
+          src="/de.webp"
           alt="Featured Post"
           fill
           className="object-cover"
@@ -83,8 +83,9 @@ export default async function BlogPage() {
                     src={post.image}
                     alt={post.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover"
-                    priority
+                    loading="lazy"
                   />
                 </div>
               </Link>

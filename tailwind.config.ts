@@ -33,8 +33,8 @@ const config: Config = {
       backgroundImage: {
         hero: "url('/src/assets/bgecom.png')",
         banneroffer: "url('/src/assets/banneroffer.png')",
-        pattern: "url('/pattern.png')",
-        "footer-pattern": "url('/footer-pattern.png')",
+        pattern: "url('/pattern.webp')",
+        "footer-pattern": "url('/footer-pattern.webp')",
       },
       screens: {
         xs: '400px',

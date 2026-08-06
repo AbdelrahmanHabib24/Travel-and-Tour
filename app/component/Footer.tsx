@@ -12,7 +12,7 @@ import {
   FaPlane,
 } from "react-icons/fa";
 
-const Banner = "/footer-pattern.jpg";
+const Banner = "/footer-pattern.webp";
 
 const footerLinks = [
   { title: "Home", href: "/#" },

@@ -112,7 +112,6 @@ export const TestimonialsItem = ({
         alt={title}  
         width={100}  
         height={100}  
-        layout="intrinsic" 
         priority  
       />  
       <h4 className="bold-22 text-secondary mt-2">{title}</h4>  

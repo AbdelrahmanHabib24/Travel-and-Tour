@@ -116,7 +116,7 @@ const Listing: React.FC = () => {
                   priority={index < 3}
                   loading={index < 3 ? undefined : "lazy"}
                   placeholder="blur"
-                  blurDataURL="/placeholder.jpg"
+                  blurDataURL="/placeholder.webp"
                 />
               </div>
               <span className="absolute bottom-56 left-1/2 transform -translate-x-1/2 bg-tertiary group-hover:bg-secondary text-white px-3 py-1 rounded-2xl text-sm font-semibold">
