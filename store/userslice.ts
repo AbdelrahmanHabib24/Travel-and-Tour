@@ -12,19 +12,19 @@ const initialState: UserState = {
   isLoggedIn: false,
 };
 
-// 🔹 Fetch user
-export const fetchUser = createAsyncThunk("user/fetchUser", async (_, { rejectWithValue }) => {
+// Fetch user
+export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
   try {
     const res = await fetch("/api/auth/user", { credentials: "include" });
-    if (!res.ok) throw new Error("Not authenticated");
+    if (!res.ok) return null;
     const data = await res.json();
-    return data.user as Partial<UserState>;
+    return data.user as Partial<UserState> | null;
   } catch {
-    return rejectWithValue(null);
+    return null;
   }
 });
 
-// 🔹 Logout user
+// Logout user
 export const logoutUser = createAsyncThunk("user/logoutUser", async () => {
   await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
   return null;

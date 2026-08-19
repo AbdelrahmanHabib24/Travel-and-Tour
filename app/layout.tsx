@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "./providers";
 import { Suspense } from "react";
 import GlobalLoading from "./loading";
+import AppRoot from "@/app/component/AppRoot";
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -21,8 +22,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`bg-primary text-tertiary flex flex-col min-h-screen ${nunito.variable}`}>
         <Providers>
-          <Suspense fallback={<GlobalLoading/>}>
+          <Suspense fallback={<GlobalLoading />}>
             <main className="flex-1">{children}</main>
+            <AppRoot
+              appConfig={{
+                startButtonText: "Travel Assistant",
+                isPreConnectBufferEnabled: true,
+              }}
+            />
           </Suspense>
         </Providers>
       </body>

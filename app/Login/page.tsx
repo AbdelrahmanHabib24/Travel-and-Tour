@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { z } from "zod";
 import { loginSchema } from "@/app/ulits/zod";
 import SubmitButton from "@/app/component/SubmitButton";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 type LoginField = keyof LoginFormData;
@@ -19,6 +20,7 @@ type LoginApiResponse = {
 
 const Login: React.FC = () => {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -106,17 +108,18 @@ const Login: React.FC = () => {
           className="space-y-5"
         >
           <div>
-            <label htmlFor="email" className="block mb-1 font-medium">
+            <label htmlFor="email" className="block mb-1 font-medium text-gray-700">
               Email
             </label>
             <input
               id="email"
               type="email"
               autoComplete="email"
-              className={`w-full border rounded-md p-2 focus:outline-none focus:ring ${
+              placeholder="you@example.com"
+              className={`w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-orange-400 ${
                 errors.email
-                  ? "border-red-500 focus:ring-red-300"
-                  : "border-gray-300 focus:ring-blue-300"
+                  ? "border-red-500"
+                  : "border-gray-300"
               }`}
               {...register("email", {
                 onChange: () => clearErrors("root.server"),
@@ -130,22 +133,33 @@ const Login: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="password" className="block mb-1 font-medium">
+            <label htmlFor="password" className="block mb-1 font-medium text-gray-700">
               Password
             </label>
-            <input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              className={`w-full border rounded-md p-2 focus:outline-none focus:ring ${
-                errors.password
-                  ? "border-red-500 focus:ring-red-300"
-                  : "border-gray-300 focus:ring-blue-300"
-              }`}
-              {...register("password", {
-                onChange: () => clearErrors("root.server"),
-              })}
-            />
+            <div className="relative flex items-center">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                placeholder="••••••••"
+                className={`w-full border rounded-xl p-3 pr-10 focus:outline-none focus:ring-2 focus:ring-orange-400 ${
+                  errors.password
+                    ? "border-red-500"
+                    : "border-gray-300"
+                }`}
+                {...register("password", {
+                  onChange: () => clearErrors("root.server"),
+                })}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 text-gray-400 hover:text-gray-600 focus:outline-none"
+                tabIndex={-1}
+              >
+                {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+              </button>
+            </div>
             {errors.password && (
               <p className="text-sm text-red-500 mt-1">
                 {errors.password.message}

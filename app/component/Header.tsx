@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import Link from "next/link";
 import React, { useEffect, useState, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -36,7 +36,7 @@ const Header: React.FC = () => {
     if (!user.isLoggedIn) {
       dispatch(fetchUser());
     }
-  }, [dispatch, user.isLoggedIn, pathname]);
+  }, [dispatch]);
 
   const handleNavigate = (path: string) => router.push(path);
 
@@ -49,7 +49,7 @@ const Header: React.FC = () => {
       <div className="max_padd_container flex justify-between items-center gap-x-6">
         {/* Logo */}
         <Link href="/">
-          <Image src="/logo.svg" alt="Go to homepage" width={133} height={99} />
+          <Image src="/logo.svg" alt="Go to homepage" width={133} height={99} priority />
         </Link>
 
         {/* Desktop Navigation */}
@@ -107,6 +107,16 @@ const Header: React.FC = () => {
               containerStyles="flex flex-col items-center py-8 gap-y-6 px-6"
               linkStyles="hover:text-secondary cursor-pointer text-tertiary"
             />
+            {user.isLoggedIn && (
+              <div className="flex flex-col items-center gap-y-3 pb-6 px-6 border-t pt-4">
+                <button
+                  onClick={handleLogout}
+                  className="text-sm text-red-500 hover:text-red-700"
+                >
+                  Log Out
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
