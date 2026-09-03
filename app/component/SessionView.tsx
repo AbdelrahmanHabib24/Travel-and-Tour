@@ -24,6 +24,7 @@ import {
   MicrophoneSlash,
   StopCircle,
   X,
+  ArrowClockwise,
 } from "phosphor-react";
 import { AgentTile } from "./Agent-tile";
 
@@ -134,42 +135,95 @@ export const SessionView = ({
     }
   }, [agentState, audioTrack]);
 
+  const [connectionElapsed, setConnectionElapsed] = useState(0);
+  const [hasTimedOut, setHasTimedOut] = useState(false);
+
+  // Track elapsed seconds while waiting for the agent to join
   useEffect(() => {
-    if (sessionStarted) {
+    if (!sessionStarted || isAgentAvailable(agentState) || hasTimedOut) {
+      if (isAgentAvailable(agentState)) {
+        setConnectionElapsed(0);
+        setHasTimedOut(false);
+      }
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setConnectionElapsed((prev) => prev + 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [sessionStarted, agentState, hasTimedOut]);
+
+  // Cold-start timeout: 45 seconds to accommodate waking Hugging Face Space
+  useEffect(() => {
+    if (sessionStarted && !isAgentAvailable(agentState)) {
       const timeout = setTimeout(() => {
         if (!isAgentAvailable(agentState)) {
-          const reason =
-            agentState === "connecting"
-              ? "Agent did not join the room."
-              : "Agent connected but did not complete initializing.";
-
-          toastAlert({
-            title: "Session ended",
-            description: (
-              <p className="w-full">
-                {reason}{" "}
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://docs.livekit.io/agents/start/voice-ai/"
-                  className="underline font-medium ml-1 text-blue-200"
-                >
-                  Quickstart guide
-                </a>
-                .
-              </p>
-            ),
-          });
+          setHasTimedOut(true);
           room.disconnect();
         }
-      }, 10_000);
+      }, 45_000);
       return () => clearTimeout(timeout);
     }
   }, [agentState, sessionStarted, room]);
 
   if (!showCard) return null;
 
+  // Render friendly timeout error state if the agent took too long
+  if (hasTimedOut) {
+    return (
+      <div className="fixed top-0 right-0 h-full w-full sm:max-w-sm md:w-96 
+        bg-gradient-to-b from-white to-orange-50 border-l border-orange-100 
+        shadow-2xl rounded-none sm:rounded-l-2xl z-50 flex flex-col justify-center items-center p-6 text-center">
+        <button
+          onClick={() => {
+            setHasTimedOut(false);
+            setConnectionElapsed(0);
+            setShowCard(false);
+            onEndSession();
+          }}
+          className="absolute top-4 right-4 bg-orange-100 hover:bg-orange-200 
+          p-3 rounded-full shadow-md transition-all"
+        >
+          <X size={22} weight="bold" className="text-orange-600" />
+        </button>
+        <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center mb-4 text-orange-600">
+          <Warning size={36} weight="duotone" />
+        </div>
+        <p className="text-gray-900 font-bold text-lg mb-1">Sunny AI is in Standby</p>
+        <p className="text-gray-600 text-sm mb-6 leading-relaxed">
+          The cloud agent was in standby and took longer than expected to initialize. The wake signal has been sent — please try connecting once more!
+        </p>
+        <button
+          onClick={() => {
+            setHasTimedOut(false);
+            setConnectionElapsed(0);
+            setShowCard(false);
+            onEndSession();
+          }}
+          className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-gradient-to-r from-orange-500 to-rose-500 text-white font-medium rounded-xl shadow-lg hover:shadow-orange-500/30 hover:scale-[1.02] transition-all cursor-pointer"
+        >
+          <ArrowClockwise size={18} weight="bold" />
+          <span>Try Again</span>
+        </button>
+      </div>
+    );
+  }
+
+  // Render phased loading state while waiting for agent
   if (!isAgentAvailable(agentState)) {
+    let headline = "Connecting to Sunny AI...";
+    let subline = "Setting up secure audio channel...";
+
+    if (connectionElapsed >= 5 && connectionElapsed < 20) {
+      headline = "Waking up Sunny AI...";
+      subline = "Waking voice engine from cloud standby (~15s)...";
+    } else if (connectionElapsed >= 20) {
+      headline = "Almost ready...";
+      subline = "Sunny AI is joining your room now...";
+    }
+
     return (
       <div className="fixed top-0 right-0 h-full w-full sm:max-w-sm md:w-96 
         bg-gradient-to-b from-white to-orange-50 border-l border-orange-100 
@@ -184,10 +238,13 @@ export const SessionView = ({
         >
           <X size={22} weight="bold" className="text-orange-600" />
         </button>
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mb-4"></div>
-        <p className="text-orange-600 font-medium">Connecting to AI Agent...</p>
-        <p className="text-gray-500 text-sm mt-2 text-center px-6">
-          Waking up the agent. If offline, this will close automatically.
+        <div className="relative flex items-center justify-center mb-5">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-200 border-t-orange-500"></div>
+          <span className="absolute text-xs font-bold text-orange-600">{connectionElapsed}s</span>
+        </div>
+        <p className="text-orange-600 font-semibold text-base transition-all duration-300">{headline}</p>
+        <p className="text-gray-500 text-xs mt-2 text-center px-6 leading-relaxed transition-all duration-300">
+          {subline}
         </p>
       </div>
     );
