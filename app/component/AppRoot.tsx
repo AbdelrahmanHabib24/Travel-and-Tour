@@ -11,6 +11,7 @@ import {
 import FloatingAssistant from "@/app/component/FloatingAssistant";
 import { SessionView } from "@/app/component/SessionView";
 import { ConnectionDetails } from "@/app/api/connection-details/route";
+import { usePathname } from "next/navigation";
 
 interface AppConfig {
   startButtonText: string;
@@ -23,6 +24,21 @@ interface AppRootProps {
 }
 
 const AppRoot = ({ appConfig, autoStartSession = false }: AppRootProps) => {
+  const pathname = usePathname();
+
+  // Hide Sunny AI on authentication pages
+  const isAuthPage = Boolean(
+    pathname && (
+      pathname.toLowerCase().startsWith("/login") ||
+      pathname.toLowerCase().startsWith("/signup") ||
+      pathname.toLowerCase().startsWith("/sign-up") ||
+      pathname.toLowerCase().startsWith("/register") ||
+      pathname.toLowerCase().startsWith("/forgot-password") ||
+      pathname.toLowerCase().startsWith("/reset-password") ||
+      pathname.toLowerCase().startsWith("/auth")
+    )
+  );
+
   const roomRef = useRef<Room | null>(null);
   const [sessionStarted, setSessionStarted] = useState(autoStartSession);
   const [showCard, setShowCard] = useState(false);
@@ -141,6 +157,18 @@ const AppRoot = ({ appConfig, autoStartSession = false }: AppRootProps) => {
       room.off(RoomEvent.MediaDevicesError, handleMediaError);
     };
   }, [room]);
+
+  // Cleanly terminate active session if user navigates to an authentication page
+  useEffect(() => {
+    if (isAuthPage && sessionStarted) {
+      handleEndSession();
+    }
+  }, [isAuthPage, sessionStarted, handleEndSession]);
+
+  // Hide Sunny AI completely on authentication pages
+  if (isAuthPage) {
+    return null;
+  }
 
   return (
     <>
