@@ -1,17 +1,16 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Room, RoomEvent } from "livekit-client";
 import {
   RoomAudioRenderer,
   StartAudio,
   RoomContext,
 } from "@livekit/components-react";
-import { toast as sonnerToast } from "sonner";
 
 import FloatingAssistant from "@/app/component/FloatingAssistant";
 import { SessionView } from "@/app/component/SessionView";
-import useConnectionDetails from "@/app/ulits/useConnectionDetails";
+import { ConnectionDetails } from "@/app/api/connection-details/route";
 
 interface AppConfig {
   startButtonText: string;
@@ -23,50 +22,115 @@ interface AppRootProps {
   autoStartSession?: boolean;
 }
 
-function toastAlert(toast: {
-  title: React.ReactNode;
-  description: React.ReactNode;
-}) {
-  return sonnerToast.custom(
-    (id) => (
-      <div
-        onClick={() => sonnerToast.dismiss(id)}
-        className="bg-accent cursor-pointer p-3 rounded-md shadow"
-      >
-        <strong>{toast.title}</strong>
-        <p>{toast.description}</p>
-      </div>
-    ),
-    { duration: 8000 }
-  );
-}
-
 const AppRoot = ({ appConfig, autoStartSession = false }: AppRootProps) => {
   const roomRef = useRef<Room | null>(null);
   const [sessionStarted, setSessionStarted] = useState(autoStartSession);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [loading, setLoading] = useState(false);
   const [showCard, setShowCard] = useState(false);
-  const { connectionDetails, refreshConnectionDetails } =
-    useConnectionDetails();
   const [ready, setReady] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const connectionAbortRef = useRef<boolean>(false);
 
   if (!roomRef.current) {
     roomRef.current = new Room();
   }
   const room = roomRef.current;
 
-  // Room events
+  const handleEndSession = useCallback(() => {
+    connectionAbortRef.current = true;
+    setSessionStarted(false);
+    setShowCard(false);
+    setReady(false);
+    setIsConnecting(false);
+    setHasError(false);
+    if (room.state !== "disconnected") {
+      room.localParticipant.setMicrophoneEnabled(false).catch(() => {});
+      room.disconnect();
+    }
+  }, [room]);
+
+  // Connects only after backend confirms Sunny AI is ready
+  const startConnecting = useCallback(async () => {
+    connectionAbortRef.current = false;
+    setHasError(false);
+    setIsConnecting(true);
+    setReady(false);
+
+    const startTime = Date.now();
+    const maxWaitMs = 45_000;
+
+    try {
+      let details: ConnectionDetails | null = null;
+
+      while (!connectionAbortRef.current) {
+        if (Date.now() - startTime > maxWaitMs) {
+          throw new Error("Connection timeout");
+        }
+
+        try {
+          const res = await fetch("/api/connection-details", { cache: "no-store" });
+          if (res.ok) {
+            const data: ConnectionDetails = await res.json();
+            if (data?.ready && data?.serverUrl && data?.participantToken) {
+              details = data;
+              break;
+            }
+          }
+        } catch {
+          // Keep checking
+        }
+
+        if (connectionAbortRef.current) return;
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      }
+
+      if (connectionAbortRef.current || !details?.serverUrl || !details?.participantToken) {
+        return;
+      }
+
+      // Agent is verified ready on the backend; connect to room now
+      if (room.state !== "disconnected") {
+        room.disconnect();
+      }
+
+      await room.connect(details.serverUrl, details.participantToken);
+      if (connectionAbortRef.current) {
+        room.disconnect();
+        return;
+      }
+
+      await room.localParticipant.setMicrophoneEnabled(true, undefined, {
+        preConnectBuffer: appConfig.isPreConnectBufferEnabled,
+      });
+
+      setReady(true);
+      setIsConnecting(false);
+    } catch (err) {
+      if (!connectionAbortRef.current) {
+        console.error("Connection error:", err);
+        setIsConnecting(false);
+        setHasError(true);
+        room.disconnect();
+      }
+    }
+  }, [room, appConfig.isPreConnectBufferEnabled]);
+
+  // Auto-start session if requested (e.g. /sessionpage)
+  useEffect(() => {
+    if (autoStartSession) {
+      setSessionStarted(true);
+      setShowCard(true);
+      startConnecting();
+    }
+  }, [autoStartSession, startConnecting]);
+
+  // Handle room disconnect
   useEffect(() => {
     const handleDisconnect = () => {
-      setSessionStarted(false);
-      refreshConnectionDetails();
+      setReady(false);
     };
-    const handleMediaError = (error: Error) => {
-      toastAlert({
-        title: "Encountered an error with your media devices",
-        description: `${error.name}: ${error.message}`,
-      });
+    const handleMediaError = () => {
+      setHasError(true);
     };
 
     room.on(RoomEvent.Disconnected, handleDisconnect);
@@ -75,54 +139,8 @@ const AppRoot = ({ appConfig, autoStartSession = false }: AppRootProps) => {
     return () => {
       room.off(RoomEvent.Disconnected, handleDisconnect);
       room.off(RoomEvent.MediaDevicesError, handleMediaError);
-      room.disconnect();
     };
-  }, [room, refreshConnectionDetails]);
-
-  useEffect(() => {
-    if (sessionStarted && room.state === "disconnected" && connectionDetails) {
-      setLoading(true);
-      room
-        .connect(
-          connectionDetails.serverUrl,
-          connectionDetails.participantToken
-        )
-        .then(() =>
-          room.localParticipant.setMicrophoneEnabled(true, undefined, {
-            preConnectBuffer: appConfig.isPreConnectBufferEnabled,
-          })
-        )
-        .then(() => setReady(true))
-        .catch((error) => {
-          toastAlert({
-            title: "Error connecting to the agent",
-            description: `${error.name}: ${error.message}`,
-          });
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [
-    sessionStarted,
-    connectionDetails,
-    appConfig.isPreConnectBufferEnabled,
-    room,
-  ]);
-
-  // Pre-warm the connection
-  useEffect(() => {
-    if (connectionDetails && room.state === "disconnected") {
-      room.prepareConnection(connectionDetails.serverUrl, connectionDetails.participantToken);
-    }
-  }, [connectionDetails, room]);
-
-  // Disconnect when session ends completely
-  useEffect(() => {
-    if (!sessionStarted && room.state !== "disconnected") {
-      room.localParticipant.setMicrophoneEnabled(false);
-      room.disconnect();
-      setReady(false);
-    }
-  }, [sessionStarted, room]);
+  }, [room]);
 
   return (
     <>
@@ -138,17 +156,21 @@ const AppRoot = ({ appConfig, autoStartSession = false }: AppRootProps) => {
           onStartCall={() => {
             setSessionStarted(true);
             setShowCard(true);
+            startConnecting();
           }}
           disabled={sessionStarted && showCard}
         />
 
-        {sessionStarted && ready && showCard && (
+        {sessionStarted && showCard && (
           <SessionView
             disabled={false}
             sessionStarted={sessionStarted}
             showCard={showCard}
             setShowCard={setShowCard}
-            onEndSession={() => setSessionStarted(false)}
+            isConnecting={isConnecting || !ready}
+            hasError={hasError}
+            onRetry={startConnecting}
+            onEndSession={handleEndSession}
           />
         )}
       </RoomContext.Provider>

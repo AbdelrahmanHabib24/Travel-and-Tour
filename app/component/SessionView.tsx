@@ -98,6 +98,9 @@ interface SessionViewProps {
   showCard: boolean;
   setShowCard: React.Dispatch<React.SetStateAction<boolean>>;
   onEndSession: () => void;
+  isConnecting?: boolean;
+  hasError?: boolean;
+  onRetry?: () => void;
 }
 
 export const SessionView = ({
@@ -105,6 +108,9 @@ export const SessionView = ({
   onEndSession,
   setShowCard,
   showCard,
+  isConnecting = false,
+  hasError = false,
+  onRetry,
 }: SessionViewProps) => {
   const { state: agentState, audioTrack } = useVoiceAssistant();
   const { localParticipant } = useLocalParticipant();
@@ -135,51 +141,16 @@ export const SessionView = ({
     }
   }, [agentState, audioTrack]);
 
-  const [connectionElapsed, setConnectionElapsed] = useState(0);
-  const [hasTimedOut, setHasTimedOut] = useState(false);
-
-  // Track elapsed seconds while waiting for the agent to join
-  useEffect(() => {
-    if (!sessionStarted || isAgentAvailable(agentState) || hasTimedOut) {
-      if (isAgentAvailable(agentState)) {
-        setConnectionElapsed(0);
-        setHasTimedOut(false);
-      }
-      return;
-    }
-
-    const timer = setInterval(() => {
-      setConnectionElapsed((prev) => prev + 1);
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [sessionStarted, agentState, hasTimedOut]);
-
-  // Cold-start timeout: 45 seconds to accommodate waking Hugging Face Space
-  useEffect(() => {
-    if (sessionStarted && !isAgentAvailable(agentState)) {
-      const timeout = setTimeout(() => {
-        if (!isAgentAvailable(agentState)) {
-          setHasTimedOut(true);
-          room.disconnect();
-        }
-      }, 45_000);
-      return () => clearTimeout(timeout);
-    }
-  }, [agentState, sessionStarted, room]);
-
   if (!showCard) return null;
 
-  // Render friendly timeout error state if the agent took too long
-  if (hasTimedOut) {
+  // Simple, clean error view
+  if (hasError) {
     return (
       <div className="fixed top-0 right-0 h-full w-full sm:max-w-sm md:w-96 
         bg-gradient-to-b from-white to-orange-50 border-l border-orange-100 
         shadow-2xl rounded-none sm:rounded-l-2xl z-50 flex flex-col justify-center items-center p-6 text-center">
         <button
           onClick={() => {
-            setHasTimedOut(false);
-            setConnectionElapsed(0);
             setShowCard(false);
             onEndSession();
           }}
@@ -188,42 +159,30 @@ export const SessionView = ({
         >
           <X size={22} weight="bold" className="text-orange-600" />
         </button>
-        <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center mb-4 text-orange-600">
-          <Warning size={36} weight="duotone" />
+        <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mb-4 text-orange-600">
+          <Warning size={28} weight="bold" />
         </div>
-        <p className="text-gray-900 font-bold text-lg mb-1">Sunny AI is in Standby</p>
-        <p className="text-gray-600 text-sm mb-6 leading-relaxed">
-          The cloud agent was in standby and took longer than expected to initialize. The wake signal has been sent — please try connecting once more!
-        </p>
+        <p className="text-gray-900 font-semibold text-base mb-1">Something went wrong</p>
+        <p className="text-gray-500 text-sm mb-6">Please try again.</p>
         <button
           onClick={() => {
-            setHasTimedOut(false);
-            setConnectionElapsed(0);
-            setShowCard(false);
-            onEndSession();
+            if (onRetry) onRetry();
+            else {
+              setShowCard(false);
+              onEndSession();
+            }
           }}
-          className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-gradient-to-r from-orange-500 to-rose-500 text-white font-medium rounded-xl shadow-lg hover:shadow-orange-500/30 hover:scale-[1.02] transition-all cursor-pointer"
+          className="flex items-center justify-center gap-2 py-2.5 px-6 bg-gradient-to-r from-orange-500 to-rose-500 text-white text-sm font-medium rounded-xl shadow-md hover:scale-105 transition-all cursor-pointer"
         >
-          <ArrowClockwise size={18} weight="bold" />
+          <ArrowClockwise size={16} weight="bold" />
           <span>Try Again</span>
         </button>
       </div>
     );
   }
 
-  // Render phased loading state while waiting for agent
-  if (!isAgentAvailable(agentState)) {
-    let headline = "Connecting to Sunny AI...";
-    let subline = "Setting up secure audio channel...";
-
-    if (connectionElapsed >= 5 && connectionElapsed < 20) {
-      headline = "Waking up Sunny AI...";
-      subline = "Waking voice engine from cloud standby (~15s)...";
-    } else if (connectionElapsed >= 20) {
-      headline = "Almost ready...";
-      subline = "Sunny AI is joining your room now...";
-    }
-
+  // Simple, clean connecting view - original layout without technical wording or countdowns
+  if (isConnecting || !isAgentAvailable(agentState)) {
     return (
       <div className="fixed top-0 right-0 h-full w-full sm:max-w-sm md:w-96 
         bg-gradient-to-b from-white to-orange-50 border-l border-orange-100 
@@ -238,13 +197,10 @@ export const SessionView = ({
         >
           <X size={22} weight="bold" className="text-orange-600" />
         </button>
-        <div className="relative flex items-center justify-center mb-5">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-200 border-t-orange-500"></div>
-          <span className="absolute text-xs font-bold text-orange-600">{connectionElapsed}s</span>
-        </div>
-        <p className="text-orange-600 font-semibold text-base transition-all duration-300">{headline}</p>
-        <p className="text-gray-500 text-xs mt-2 text-center px-6 leading-relaxed transition-all duration-300">
-          {subline}
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mb-4"></div>
+        <p className="text-orange-600 font-medium">Connecting...</p>
+        <p className="text-gray-500 text-sm mt-2 text-center px-6">
+          Getting Sunny ready...
         </p>
       </div>
     );
@@ -290,19 +246,19 @@ export const SessionView = ({
           )}
           {agentState === "thinking" && (
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full  ">
-              <p className="text-orange-600 text-sm font-medium">Processing...</p>
+              <p className="text-orange-600 text-sm font-medium">Thinking...</p>
             </span>
           )}
           {agentState === "speaking" && (
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full  ">
-              <p className="text-[#ff813f] text-sm font-semibold">Speaking</p>
+              <p className="text-[#ff813f] text-sm font-semibold">Speaking...</p>
             </span>
           )}
         </div>
       </>
     ) : (
       <p className="text-center text-gray-500 text-sm italic">
-        Waiting for agent audio...
+        Connecting audio...
       </p>
     )}
   </div>

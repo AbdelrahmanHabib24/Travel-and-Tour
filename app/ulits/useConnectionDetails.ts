@@ -6,17 +6,17 @@ export default function useConnectionDetails() {
 
   const fetchConnectionDetails = useCallback(async () => {
     try {
-      setConnectionDetails(null);
-
       const endpoint = process.env.NEXT_PUBLIC_CONN_DETAILS_ENDPOINT ?? "/api/connection-details";
       const url = `${window.location.origin}${endpoint}`;
 
-      const res = await fetch(url);
-      const data = await res.json();
+      const res = await fetch(url, { cache: "no-store" });
+      const data: ConnectionDetails = await res.json();
 
       setConnectionDetails(data);
+      return data;
     } catch (error) {
       console.error("Error fetching connection details:", error);
+      return null;
     }
   }, []);
 
@@ -24,5 +24,9 @@ export default function useConnectionDetails() {
     fetchConnectionDetails();
   }, [fetchConnectionDetails]);
 
-  return { connectionDetails, refreshConnectionDetails: fetchConnectionDetails };
+  return {
+    connectionDetails,
+    setConnectionDetails,
+    refreshConnectionDetails: fetchConnectionDetails,
+  };
 }

@@ -1,46 +1,57 @@
 import { NextResponse } from 'next/server';
 import { AccessToken, type AccessTokenOptions, type VideoGrant } from 'livekit-server-sdk';
 
-// NOTE: you are expected to define the following environment variables in `.env.local`:
 const API_KEY = process.env.LIVEKIT_API_KEY;
 const API_SECRET = process.env.LIVEKIT_API_SECRET;
 const LIVEKIT_URL = process.env.LIVEKIT_URL;
 const HF_SPACE_URL = process.env.HF_SPACE_URL || 'https://abdelrahmanhabib-livekit-voice-agent.hf.space';
 
-// don't cache the results
 export const revalidate = 0;
 
 export type ConnectionDetails = {
-  serverUrl: string;
-  roomName: string;
-  participantName: string;
-  participantToken: string;
+  ready: boolean;
+  serverUrl?: string;
+  roomName?: string;
+  participantName?: string;
+  participantToken?: string;
 };
 
-// Fire-and-forget non-blocking pre-warm ping to wake up Hugging Face Space if sleeping
-function prewarmAgentSpace(url: string | undefined) {
-  if (!url) return;
+// Check if the voice agent is active and running, while also triggering wake-up if asleep
+async function checkAgentReady(url: string | undefined): Promise<boolean> {
+  if (!url) return true;
   try {
-    fetch(url, {
+    const res = await fetch(url, {
       method: 'GET',
       headers: {
-        'User-Agent': 'TravelTour-Vercel-Prewarm/1.0',
-        'Accept': '*/*',
+        'User-Agent': 'TravelTour-ReadinessCheck/1.0',
+        'Accept': 'application/json, text/plain, */*',
       },
       cache: 'no-store',
-    }).catch((err) => {
-      // Catch network or cold-start timeouts so token generation is completely unaffected
-      console.log('[pre-warm] Ping dispatched to HF Space:', err?.message || err);
+      signal: AbortSignal.timeout(3500),
     });
-  } catch (err) {
-    console.log('[pre-warm] Failed to initiate pre-warm ping:', err);
+
+    if (res.ok) {
+      try {
+        const data = await res.json();
+        if (data && data.agent_running === true) {
+          return true;
+        }
+      } catch {
+        const text = await res.text();
+        if (text.includes('LiveKit Voice Agent is running')) {
+          return true;
+        }
+      }
+    }
+    return false;
+  } catch {
+    // The wake request was dispatched to HF even if fetch timed out or returned 503
+    return false;
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    // Dispatch non-blocking pre-warm immediately
-    prewarmAgentSpace(HF_SPACE_URL);
     if (LIVEKIT_URL === undefined) {
       throw new Error('LIVEKIT_URL is not defined');
     }
@@ -51,7 +62,21 @@ export async function GET() {
       throw new Error('LIVEKIT_API_SECRET is not defined');
     }
 
-    // Generate participant token
+    const { searchParams } = new URL(request.url);
+    const skipCheck = searchParams.get('skipCheck') === 'true';
+
+    // Verify if agent backend is ready before issuing connection
+    const isReady = skipCheck ? true : await checkAgentReady(HF_SPACE_URL);
+
+    const headers = new Headers({
+      'Cache-Control': 'no-store, no-cache, must-revalidate',
+    });
+
+    if (!isReady) {
+      return NextResponse.json({ ready: false }, { headers });
+    }
+
+    // Generate participant token once agent is confirmed ready
     const participantName = 'user';
     const participantIdentity = `voice_assistant_user_${Math.floor(Math.random() * 10_000)}`;
     const roomName = `voice_assistant_room_${Math.floor(Math.random() * 10_000)}`;
@@ -60,16 +85,14 @@ export async function GET() {
       roomName
     );
 
-    // Return connection details
     const data: ConnectionDetails = {
+      ready: true,
       serverUrl: LIVEKIT_URL,
       roomName,
       participantToken: participantToken,
       participantName,
     };
-    const headers = new Headers({
-      'Cache-Control': 'no-store',
-    });
+
     return NextResponse.json(data, { headers });
   } catch (error) {
     if (error instanceof Error) {
