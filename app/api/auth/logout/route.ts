@@ -1,15 +1,25 @@
-// app/api/auth/logout/route.ts
 import { NextResponse } from "next/server";
+import {
+  clearAuthCookies,
+  getRefreshTokenCookie,
+  isSameOriginRequest,
+  revokeRefreshTokenFromRaw,
+} from "@/lib/server/auth/session";
 
-export async function POST() {
+export async function POST(req: Request) {
+  if (!isSameOriginRequest(req)) {
+    return NextResponse.json(
+      { message: "Invalid request origin." },
+      { status: 403 }
+    );
+  }
+
+  const rawRefresh = await getRefreshTokenCookie();
+  if (rawRefresh) {
+    await revokeRefreshTokenFromRaw(rawRefresh);
+  }
+
   const res = NextResponse.json({ message: "Logged out" }, { status: 200 });
-
-  res.cookies.set("authToken", "", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 0, // expire immediately
-  });
-
+  clearAuthCookies(res);
   return res;
 }

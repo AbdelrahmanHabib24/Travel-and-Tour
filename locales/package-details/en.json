@@ -1,0 +1,81 @@
+{
+  "tabs": {
+    "overview": "Overview",
+    "details": "Trip Details",
+    "reviews": "Reviews"
+  },
+  "overview": {
+    "aboutTrip": "About this Trip",
+    "priceLabel": "Price",
+    "startingFrom": "Starting from",
+    "ratingLabel": "Rating",
+    "sections": "Tour sections",
+    "gallery": "Tour photos"
+  },
+  "booking": {
+    "bookNow": "Book This Package",
+    "reserve": "Reserve Now",
+    "processing": "Processing...",
+    "pricePerPerson": "Price per person",
+    "total": "Total",
+    "selectDate": "Select Departure Date",
+    "guests": "Number of Travelers",
+    "guidedTour": "Guided Tour",
+    "mobileTicket": "Mobile Ticket",
+    "instantConfirmation": "Instant Confirmation",
+    "freeCancellation": "Free cancellation up to 48 hours before departure",
+    "loginRequired": "Please log in to complete your booking.",
+    "paymentFailed": "Payment initiation failed. Please try again.",
+    "summary": "Booking summary",
+    "availabilityUnknown": "Live departure dates and availability are not provided."
+  },
+  "itinerary": {
+    "title": "Day-by-Day Itinerary",
+    "day": "Day {day}",
+    "noItinerary": "Detailed day-by-day itinerary is provided upon booking confirmation.",
+    "viewItinerary": "View Trip Itinerary",
+    "close": "Close"
+  },
+  "highlights": {
+    "title": "Tour Highlights",
+    "ageRange": "Age Range",
+    "maxGroupSize": "Max Group Size",
+    "duration": "Duration",
+    "startTime": "Start Time",
+    "mobileTicket": "Mobile Ticket",
+    "liveGuide": "Live Guide",
+    "allAges": "All ages welcome",
+    "flexible": "Flexible timing",
+    "accepted": "Accepted on mobile",
+    "unavailable": "No",
+    "additionalInfo": "Additional information",
+    "noAdditionalInfo": "No additional details are currently provided for this tour."
+  },
+  "comments": {
+    "title": "Comments",
+    "addedSuccess": "Comment added successfully!",
+    "loginRequired": "Please log in to add a comment.",
+    "updatedSuccess": "Comment updated!",
+    "deletedSuccess": "Comment deleted.",
+    "addFailed": "Failed to add comment.",
+    "editFailed": "Failed to edit comment.",
+    "deleteFailed": "Failed to delete comment.",
+    "editTitle": "Edit your comment:",
+    "editBtn": "Edit",
+    "deleteConfirm": "Are you sure you want to delete this comment?",
+    "deleteBtn": "Delete"
+  },
+  "reviews": {
+    "title": "Traveler Reviews",
+    "noReviews": "No reviews yet. Be the first to share your experience!",
+    "addReview": "Leave a Review",
+    "placeholder": "Write your honest review here...",
+    "submit": "Submit Review",
+    "loginToReview": "Please log in to write a review.",
+    "submitting": "Submitting..."
+  },
+  "errors": {
+    "loadFailed": "Failed to load package details.",
+    "notFound": "Package not found."
+  }
+}

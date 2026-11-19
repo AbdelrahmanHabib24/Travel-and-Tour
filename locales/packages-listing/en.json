@@ -1,0 +1,26 @@
+{
+  "badge": "TAKE A LOOK AT THESE OFFERS",
+  "heading": "Popular Packages",
+  "subheading": "Explore our handpicked travel packages designed for unforgettable adventures.",
+  "startingFrom": "Starting from",
+  "loadingPackages": "Loading travel packages...",
+  "errorLoading": "Failed to load packages. Please try refreshing the page.",
+  "retry": "Try Again",
+  "empty": "No packages found.",
+  "viewDetails": "View Details",
+  "viewDetailsFor": "View details for {title}",
+  "verifiedTrip": "Verified Trip",
+  "packageImage": "Package image",
+  "duration": "{duration}",
+  "resultsFound": "{count, plural, =0 {No packages found} =1 {1 package found} other {# packages found}}",
+  "filter": {
+    "all": "All",
+    "destination": "Destination",
+    "priceRange": "Price Range",
+    "sortBy": "Sort By",
+    "priceLowHigh": "Price: Low to High",
+    "priceHighLow": "Price: High to Low",
+    "rating": "Highest Rated"
+  }
+}
+

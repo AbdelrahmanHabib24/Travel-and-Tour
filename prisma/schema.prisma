@@ -13,7 +13,12 @@ model Package {
   title1             String
   title2             String
   price              Float
+  currency           String    @default("USD")
   duration           String
+  durationDays       Int?      @default(3)
+  durationNights     Int?
+  itinerary          Json?
+  isSampleData       Boolean   @default(true)
   des                String
   rating             Float
   count              Int
@@ -23,7 +28,7 @@ model Package {
   startTimeInfo      String?
   mobileTicket       Boolean
   liveGuideLanguages String[]
-  
+
   images   Image[]
   comments Comment[]
   orders   Order[]
@@ -44,6 +49,11 @@ model Comment {
   avatarUrl String?
   packageId Int
   package   Package  @relation(fields: [packageId], references: [id])
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([packageId])
+  @@index([userId])
 }
 
 model User {
@@ -51,19 +61,43 @@ model User {
   username  String   @unique
   email     String   @unique
   password  String
+  firstName String?
+  lastName  String?
+  phone     String?
+  role      String   @default("customer")
   createdAt DateTime @default(now())
-  
-  orders Order[]
+  updatedAt DateTime @default(now()) @updatedAt
+
+  orders        Order[]
+  comments      Comment[]
+  refreshTokens RefreshToken[]
+}
+
+model RefreshToken {
+  id           String    @id @default(cuid())
+  tokenHash    String    @unique
+  familyId     String
+  userId       Int
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt    DateTime
+  revokedAt    DateTime?
+  replacedById String?
+  createdAt    DateTime  @default(now())
+
+  @@index([userId])
+  @@index([familyId])
 }
 
 model Order {
-  id          Int      @id @default(autoincrement())
-  amountCents Int
-  currency    String
-  paymobId    Int?
-  status      String   @default("pending")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             Int       @id @default(autoincrement())
+  amountCents    Int
+  currency       String
+  paymobId       Int?      @unique
+  idempotencyKey String?   @unique
+  status         String    @default("pending")
+  paidAt         DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   packageId Int
   package   Package @relation(fields: [packageId], references: [id])
@@ -76,12 +110,13 @@ model Order {
 }
 
 model Payment {
-  id         Int      @id @default(autoincrement())
-  orderId    Int
-  paymentKey String
-  status     String   @default("initialized")
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id                  Int      @id @default(autoincrement())
+  orderId             Int
+  paymentKey          String
+  paymobTransactionId Int?     @unique
+  status              String   @default("initialized")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
   order Order @relation(fields: [orderId], references: [id])
 }
@@ -91,6 +126,6 @@ model PaymentSession {
   paymentToken String
   createdAt    DateTime @default(now())
   orderId      Int
-  order        Order @relation(fields: [orderId], references: [id])
-   amount       Int?  
+  order        Order    @relation(fields: [orderId], references: [id])
+  amount       Int?
 }

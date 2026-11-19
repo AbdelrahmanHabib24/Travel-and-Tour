@@ -1,17 +1,28 @@
-// src/app/api/auth/login/route.ts
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { prisma } from "@/app/ulits/prisma";
-import { loginSchema } from "@/app/ulits/zod";
-
-const JWT_SECRET = process.env.JWT_SECRET as string;
+import { prisma } from "@/lib/server/db/prisma";
+import { getJwtSecret } from "@/lib/server/config/env";
+import {
+  issueRefreshTokenSession,
+  signAccessToken,
+} from "@/lib/server/auth/tokens";
+import {
+  isSameOriginRequest,
+  prismaRefreshTokenStore,
+  setAuthCookies,
+} from "@/lib/server/auth/session";
+import { loginSchema } from "@/features/auth/validation/authSchemas";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json().catch(() => null);
+    if (!isSameOriginRequest(req)) {
+      return NextResponse.json(
+        { message: "Invalid request origin." },
+        { status: 403 }
+      );
+    }
 
-    // ✅ Validate request body
+    const body = await req.json().catch(() => null);
     const result = loginSchema.safeParse(body);
     if (!result.success) {
       return NextResponse.json(
@@ -24,8 +35,6 @@ export async function POST(req: Request) {
     }
 
     const { email, password } = result.data;
-
-    // ✅ Find user
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       return NextResponse.json(
@@ -39,7 +48,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return NextResponse.json(
@@ -51,50 +59,27 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ Generate Access Token
-    const accessToken = jwt.sign(
-      { id: user.id, email: user.email, username: user.username },
-      JWT_SECRET,
-      { expiresIn: "15m" }
+    const authUser = {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+    };
+
+    const accessToken = signAccessToken(authUser, getJwtSecret());
+    const { rawRefreshToken } = await issueRefreshTokenSession(
+      prismaRefreshTokenStore,
+      authUser
     );
 
-    // ✅ Generate Refresh Token
-    const refreshToken = jwt.sign({ id: user.id }, JWT_SECRET, {
-      expiresIn: "7d",
-    });
-
-    // ✅ Prepare response
     const res = NextResponse.json({
       message: "Login successful.",
-      user: {
-        id: user.id,
-        email: user.email,
-        username: user.username,
-      },
-      accessToken,
+      user: authUser,
     });
 
-    // Store accessToken in httpOnly cookie
-    res.cookies.set("authToken", accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 15 * 60,
-      path: "/",
-    });
-
-    // ✅ Store refresh token in httpOnly cookie
-    res.cookies.set("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60,
-      path: "/",
-    });
-
+    setAuthCookies(res, accessToken, rawRefreshToken);
     return res;
   } catch (err) {
-    console.error("Login error:", err);
+    console.error("Login error:", err instanceof Error ? err.message : "Unknown error");
     return NextResponse.json(
       { message: "There was a problem. Please try again later." },
       { status: 500 }

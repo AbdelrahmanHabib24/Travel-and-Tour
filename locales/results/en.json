@@ -1,0 +1,17 @@
+{
+  "title": "Search Results",
+  "summary": "Showing tours in {city} under ${maxPrice}",
+  "allDestinations": "All Destinations",
+  "noResults": "No packages found matching your criteria.",
+  "tryAdjusting": "Try adjusting your filters or search destination.",
+  "viewAll": "View All Packages",
+  "loading": "Searching available packages...",
+  "filters": {
+    "title": "Filter Results",
+    "destination": "Destination",
+    "maxPrice": "Max Price",
+    "apply": "Apply Filters",
+    "clear": "Clear Filters"
+  }
+}
+

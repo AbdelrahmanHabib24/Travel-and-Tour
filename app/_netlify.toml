@@ -1,4 +1,0 @@
-[[headers]]
-  for = "/*.lottie"
-  [headers.values]
-    Content-Type = "application/json"

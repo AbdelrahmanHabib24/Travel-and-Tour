@@ -1,0 +1,21 @@
+{
+  "title": "Welcome Back",
+  "emailLabel": "Email Address",
+  "emailPlaceholder": "Enter your email",
+  "passwordLabel": "Password",
+  "passwordPlaceholder": "Enter your password",
+  "submit": "Log In",
+  "submitting": "Logging in...",
+  "noAccount": "Don't have an account?",
+  "signUpLink": "Sign Up",
+  "errors": {
+    "emailRequired": "Please enter your email address",
+    "emailInvalid": "This email address is not valid",
+    "passwordRequired": "Please enter your password",
+    "serverError": "There was a problem. Please try again later.",
+    "invalidCredentials": "The email or password you entered is incorrect.",
+    "userNotFound": "No account is registered with this email address.",
+    "incorrectPassword": "The password you entered is incorrect."
+  }
+}
+

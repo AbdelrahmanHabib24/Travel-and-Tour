@@ -1,0 +1,31 @@
+{
+  "title": "Create an Account",
+  "subtitle": "Join us! Please enter your details below.",
+  "nameLabel": "Username",
+  "namePlaceholder": "your.username",
+  "emailLabel": "Email Address",
+  "emailPlaceholder": "you@example.com",
+  "passwordLabel": "Password",
+  "passwordPlaceholder": "Enter your password",
+  "confirmPasswordLabel": "Confirm Password",
+  "confirmPasswordPlaceholder": "Re-enter your password",
+  "submit": "Create Account",
+  "submitting": "Creating account...",
+  "hasAccount": "Already have an account?",
+  "loginLink": "Log In",
+  "errors": {
+    "usernameMin": "Username must be at least 3 characters long",
+    "emailRequired": "Please enter your email address",
+    "emailInvalid": "Please provide a valid email address",
+    "passwordMin": "Password must be at least 8 characters long",
+    "passwordUppercase": "Password must contain at least one uppercase letter",
+    "passwordNumber": "Password must contain at least one number",
+    "passwordSpecial": "Password must include a special character",
+    "confirmPasswordRequired": "Please confirm your password",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "usernameExists": "Username already exists.",
+    "emailExists": "Email already exists.",
+    "serverError": "Something went wrong. Please try again."
+  }
+}
+

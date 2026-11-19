@@ -1,12 +1,19 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import { prisma } from "@/app/ulits/prisma";
-import { serverSignupSchema } from "@/app/ulits/zod";
+import { prisma } from "@/lib/server/db/prisma";
+import { isSameOriginRequest } from "@/lib/server/auth/session";
+import { serverSignupSchema } from "@/features/auth/validation/authSchemas";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    if (!isSameOriginRequest(req)) {
+      return NextResponse.json(
+        { errors: { general: ["Invalid request origin."] } },
+        { status: 403 }
+      );
+    }
 
+    const body = await req.json().catch(() => null);
     const parsed = serverSignupSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
@@ -16,7 +23,6 @@ export async function POST(req: Request) {
     }
 
     const { username, email, password } = parsed.data;
-
 
     const existingUsername = await prisma.user.findUnique({ where: { username } });
     if (existingUsername) {
@@ -43,7 +49,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ user }, { status: 201 });
   } catch (err) {
-    console.error("Signup error:", err);
+    console.error("Signup error:", err instanceof Error ? err.message : "Unknown error");
     return NextResponse.json(
       { errors: { general: ["Server error."] } },
       { status: 500 }

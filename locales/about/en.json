@@ -1,0 +1,23 @@
+{
+  "badge": "ABOUT US",
+  "title": "Know More About Us",
+  "bgAlt": "About Us Background",
+  "learnMore": "Learn more about {heading}",
+  "cards": {
+    "destinations": {
+      "heading": "Discover Destinations",
+      "paragraph": "Explore breathtaking destinations around the world, from vibrant cities to serene natural landscapes. We offer tailored itineraries that suit your travel desires.",
+      "link": "Learn More"
+    },
+    "tours": {
+      "heading": "Personalized Tours",
+      "paragraph": "Experience the thrill of travel with our personalized tour packages designed just for you. Discover hidden gems and local cultures in every journey.",
+      "link": "Learn More"
+    },
+    "luxury": {
+      "heading": "Luxury Travel",
+      "paragraph": "Indulge in luxury travel experiences that go beyond expectations. Enjoy first-class accommodations, gourmet dining, and exclusive access to the best attractions.",
+      "link": "Learn More"
+    }
+  }
+}

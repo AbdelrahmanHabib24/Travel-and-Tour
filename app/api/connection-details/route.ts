@@ -1,56 +1,67 @@
 import { NextResponse } from 'next/server';
-import { AccessToken, type AccessTokenOptions, type VideoGrant } from 'livekit-server-sdk';
+import { cookies } from 'next/headers';
+import {
+  AccessToken,
+  type AccessTokenOptions,
+  type VideoGrant,
+} from 'livekit-server-sdk';
+import { buildBackendHeaders, getBackendBaseUrls } from '@/lib/server/ai/backend';
 
 const API_KEY = process.env.LIVEKIT_API_KEY;
 const API_SECRET = process.env.LIVEKIT_API_SECRET;
 const LIVEKIT_URL = process.env.LIVEKIT_URL;
-const HF_SPACE_URL = process.env.HF_SPACE_URL || 'https://abdelrahmanhabib-livekit-voice-agent.hf.space';
+const VOICE_AGENT_NAME =
+  process.env.LIVEKIT_AGENT_NAME?.trim() || 'sunny-voice-agent';
 
 export const revalidate = 0;
 
-export type ConnectionDetails = {
-  ready: boolean;
-  serverUrl?: string;
-  roomName?: string;
-  participantName?: string;
-  participantToken?: string;
-};
+import type { ConnectionDetails } from "@/features/sunny/voice/types";
 
-// Check if the voice agent is active and running, while also triggering wake-up if asleep
-async function checkAgentReady(url: string | undefined): Promise<boolean> {
-  if (!url) return true;
-  try {
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'User-Agent': 'TravelTour-ReadinessCheck/1.0',
-        'Accept': 'application/json, text/plain, */*',
-      },
-      cache: 'no-store',
-      signal: AbortSignal.timeout(3500),
-    });
+// Check if the voice agent is active and running on the configured Python backend(s)
+async function checkAgentReady(): Promise<boolean> {
+  const candidateUrls = getBackendBaseUrls();
+  const headers = {
+    ...buildBackendHeaders(),
+    'User-Agent': 'TravelTour-ReadinessCheck/2.0',
+    Accept: 'application/json, text/plain, */*',
+  };
 
-    if (res.ok) {
-      try {
-        const data = await res.json();
-        if (data && data.agent_running === true) {
-          return true;
-        }
-      } catch {
-        const text = await res.text();
-        if (text.includes('LiveKit Voice Agent is running')) {
-          return true;
+  for (const baseUrl of candidateUrls) {
+    try {
+      const res = await fetch(`${baseUrl}/health`, {
+        method: 'GET',
+        headers,
+        cache: 'no-store',
+        signal: AbortSignal.timeout(3500),
+      });
+
+      if (res.ok) {
+        try {
+          const data = await res.json();
+          if (data && (data.voice_ready === true || data.agent_running === true)) {
+            return true;
+          }
+        } catch {
+          const text = await res.text();
+          if (text.includes('LiveKit Voice Agent is running')) {
+            return true;
+          }
         }
       }
+    } catch {
+      // Try next backend candidate
     }
-    return false;
-  } catch {
-    // The wake request was dispatched to HF even if fetch timed out or returned 503
-    return false;
   }
+  return false;
 }
 
-export async function GET(request: Request) {
+async function handleConnectionDetails(
+  request: Request,
+  bodyPayload?: {
+    locale?: string;
+    history?: Array<{ role?: string; content?: string }>;
+  } | null
+) {
   try {
     if (LIVEKIT_URL === undefined) {
       throw new Error('LIVEKIT_URL is not defined');
@@ -66,7 +77,7 @@ export async function GET(request: Request) {
     const skipCheck = searchParams.get('skipCheck') === 'true';
 
     // Verify if agent backend is ready before issuing connection
-    const isReady = skipCheck ? true : await checkAgentReady(HF_SPACE_URL);
+    const isReady = skipCheck ? true : await checkAgentReady();
 
     const headers = new Headers({
       'Cache-Control': 'no-store, no-cache, must-revalidate',
@@ -76,21 +87,59 @@ export async function GET(request: Request) {
       return NextResponse.json({ ready: false }, { headers });
     }
 
-    // Generate participant token once agent is confirmed ready
+    // Determine session language from body, query parameter, or cookie
+    const cookieStore = await cookies();
+    const cookieLocale = cookieStore.get('NEXT_LOCALE')?.value;
+    const requestedLocale =
+      bodyPayload?.locale || searchParams.get('locale') || cookieLocale || 'en';
+    const normalizedLocale = requestedLocale === 'ar' ? 'ar' : 'en';
+
+    // Sanitize compact recent conversation history (up to 6 turns) so Voice Mode shares context with Chat Mode
+    const compactHistory = Array.isArray(bodyPayload?.history)
+      ? bodyPayload!.history
+          .filter(
+            (m) =>
+              m &&
+              (m.role === 'user' || m.role === 'assistant') &&
+              typeof m.content === 'string' &&
+              m.content.trim().length > 0
+          )
+          .slice(-6)
+          .map((m) => ({
+            role: m.role as 'user' | 'assistant',
+            content: m.content!.trim().slice(0, 220),
+          }))
+      : [];
+
+    // Generate participant token with session language & compact history attached
     const participantName = 'user';
-    const participantIdentity = `voice_assistant_user_${Math.floor(Math.random() * 10_000)}`;
-    const roomName = `voice_assistant_room_${Math.floor(Math.random() * 10_000)}`;
+    const randomSuffix = Math.floor(Math.random() * 10_000);
+    const participantIdentity = `voice_assistant_user_${normalizedLocale}_${randomSuffix}`;
+    const roomName = `voice_assistant_room_${normalizedLocale}_${randomSuffix}`;
+    const metadataJson = JSON.stringify({
+      language: normalizedLocale,
+      ...(compactHistory.length > 0 ? { history: compactHistory } : {}),
+    });
+
     const participantToken = await createParticipantToken(
-      { identity: participantIdentity, name: participantName },
-      roomName
+      {
+        identity: participantIdentity,
+        name: participantName,
+        metadata: metadataJson,
+        attributes: { language: normalizedLocale },
+      },
+      roomName,
+      VOICE_AGENT_NAME,
+      metadataJson
     );
 
     const data: ConnectionDetails = {
       ready: true,
       serverUrl: LIVEKIT_URL,
       roomName,
-      participantToken: participantToken,
+      participantToken,
       participantName,
+      agentName: VOICE_AGENT_NAME,
     };
 
     return NextResponse.json(data, { headers });
@@ -102,7 +151,21 @@ export async function GET(request: Request) {
   }
 }
 
-function createParticipantToken(userInfo: AccessTokenOptions, roomName: string) {
+export async function GET(request: Request) {
+  return handleConnectionDetails(request, null);
+}
+
+export async function POST(request: Request) {
+  const body = await request.json().catch(() => null);
+  return handleConnectionDetails(request, body);
+}
+
+function createParticipantToken(
+  userInfo: AccessTokenOptions,
+  roomName: string,
+  agentName: string,
+  metadataJson: string
+) {
   const at = new AccessToken(API_KEY, API_SECRET, {
     ...userInfo,
     ttl: '15m',
@@ -115,5 +178,14 @@ function createParticipantToken(userInfo: AccessTokenOptions, roomName: string) 
     canSubscribe: true,
   };
   at.addGrant(grant);
+  // Also attach roomConfig agent dispatch on the token itself
+  (at as unknown as { roomConfig: unknown }).roomConfig = {
+    agents: [
+      {
+        agentName,
+        metadata: metadataJson,
+      },
+    ],
+  };
   return at.toJwt();
 }

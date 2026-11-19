@@ -1,147 +1,228 @@
-// app/api/packages/[id]/payment/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "@/app/ulits/prisma";
+import { prisma } from "@/lib/server/db/prisma";
+import { getPaymobConfig } from "@/lib/server/config/env";
+import {
+  isSameOriginRequest,
+  resolveAuthenticatedSession,
+} from "@/lib/server/auth/session";
+import {
+  createPaymobCheckout,
+  type PaymobBillingData,
+} from "@/lib/server/services/paymob.service";
+import {
+  initiateAuthoritativePayment,
+  type PaymentIdempotencyStore,
+} from "@/lib/server/services/payment-orchestrator";
+import { positiveIntIdSchema } from "@/lib/validations/package";
 
-const USD_TO_EGP = 48;
+const prismaPaymentStore: PaymentIdempotencyStore = {
+  async createPendingOrder(data) {
+    return prisma.order.create({
+      data: {
+        packageId: data.packageId,
+        userId: data.userId,
+        amountCents: data.amountCents,
+        currency: data.currency,
+        idempotencyKey: data.idempotencyKey,
+        status: "pending",
+      },
+      select: { id: true },
+    });
+  },
+
+  async findOrderByIdempotencyKey(idempotencyKey) {
+    return prisma.order.findUnique({
+      where: { idempotencyKey },
+      select: {
+        id: true,
+        userId: true,
+        packageId: true,
+        amountCents: true,
+        status: true,
+        sessions: {
+          orderBy: { createdAt: "desc" },
+          take: 1,
+          select: { id: true, paymentToken: true, amount: true },
+        },
+      },
+    });
+  },
+
+  async completeOrderWithSession({
+    orderId,
+    paymobOrderId,
+    paymentToken,
+    amountCents,
+  }) {
+    return prisma.$transaction(async (tx) => {
+      await tx.order.update({
+        where: { id: orderId },
+        data: { paymobId: paymobOrderId },
+      });
+
+      await tx.payment.create({
+        data: {
+          orderId,
+          paymentKey: paymentToken,
+          status: "initialized",
+        },
+      });
+
+      const session = await tx.paymentSession.create({
+        data: {
+          orderId,
+          paymentToken,
+          amount: amountCents,
+        },
+        select: { id: true, paymentToken: true, amount: true },
+      });
+
+      return {
+        sessionId: session.id,
+        paymentToken: session.paymentToken,
+        amount: session.amount ?? amountCents,
+      };
+    });
+  },
+
+  async releaseFailedOrder(orderId) {
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { status: "failed", idempotencyKey: null },
+    });
+  },
+
+  async markOrderUncertain(orderId) {
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { status: "uncertain" },
+    });
+  },
+};
 
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!isSameOriginRequest(req)) {
+      return NextResponse.json(
+        { error: "Invalid request origin" },
+        { status: 403 }
+      );
+    }
+
+    const { user: authUser, applyCookies } = await resolveAuthenticatedSession();
+    if (!authUser) {
+      return applyCookies(
+        NextResponse.json(
+          { error: "Authentication required" },
+          { status: 401 }
+        )
+      );
+    }
+
     const { id } = await params;
-    const packageId = Number(id);
-
-    const body = await req.json();
-    const { amount, currency, billing_data } = body;
-    const amountEGP = Math.round(
-      amount * (currency === "USD" ? USD_TO_EGP : 1) * 100
-    );
-
-    // 🔹 Auth token
-    const authRes = await fetch("https://accept.paymob.com/api/auth/tokens", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ api_key: process.env.PAYMOB_API_KEY }),
-    });
-    
-    if (!authRes.ok) {
-      const errorText = await authRes.text();
-      console.error("Paymob Auth Error:", errorText);
-      throw new Error("Paymob authentication failed");
+    const parsedId = positiveIntIdSchema.safeParse(id);
+    if (!parsedId.success) {
+      return NextResponse.json(
+        { error: "Invalid package ID" },
+        { status: 400 }
+      );
     }
 
-    const authData = await authRes.json();
-    const paymobAuthToken = authData.token;
-
-    // 🔹 Order creation
-    const orderRes = await fetch(
-      "https://accept.paymob.com/api/ecommerce/orders",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          auth_token: paymobAuthToken,
-          delivery_needed: false,
-          amount_cents: amountEGP,
-          currency: "EGP",
-          items: [],
-        }),
-      }
-    );
-
-    if (!orderRes.ok) {
-      const errorText = await orderRes.text();
-      console.error("Paymob Order Creation Error:", errorText);
-      throw new Error("Paymob order creation failed");
-    }
-
-    const orderData = await orderRes.json();
-
-    // 🔹 Payment key creation
-    const fullBillingData = {
-      first_name: billing_data?.first_name || "Test",
-      last_name: billing_data?.last_name || "User",
-      email: billing_data?.email || "test@example.com",
-      street: billing_data?.street || "N/A",
-      building: billing_data?.building || "N/A",
-      floor: billing_data?.floor || "N/A",
-      apartment: billing_data?.apartment || "N/A",
-      city: billing_data?.city || "Cairo",
-      country: billing_data?.country || "EGY",
-      phone_number: billing_data?.phone_number || "+201234567890",
-    };
-
-    const paymentKeyRes = await fetch(
-      "https://accept.paymob.com/api/acceptance/payment_keys",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          auth_token: paymobAuthToken,
-          amount_cents: amountEGP,
-          expiration: 3600,
-          order_id: orderData.id,
-          currency: "EGP",
-          integration_id: Number(process.env.PAYMOB_CASH_INTEGRATION_ID),
-          billing_data: fullBillingData,
-        }),
-      }
-    );
-
-    if (!paymentKeyRes.ok) {
-      const errorText = await paymentKeyRes.text();
-      console.error("Paymob Payment Key Error:", errorText);
-      throw new Error("Paymob payment key generation failed");
-    }
-
-    const paymentKeyData = await paymentKeyRes.json();
-
-    // 🔹 1. Find or create a User for this order
-    let dbUser = await prisma.user.findUnique({
-      where: { email: fullBillingData.email }
-    });
+    const [pkg, dbUser] = await Promise.all([
+      prisma.package.findUnique({
+        where: { id: parsedId.data },
+        select: { id: true, price: true, currency: true },
+      }),
+      prisma.user.findUnique({
+        where: { id: authUser.id },
+        select: { id: true, username: true, email: true },
+      }),
+    ]);
 
     if (!dbUser) {
-      dbUser = await prisma.user.create({
-        data: {
-          email: fullBillingData.email,
-          username: fullBillingData.first_name,
-          password: "placeholder_password", // In a real app, users should be pre-registered
-        }
-      });
+      return NextResponse.json(
+        { error: "Authenticated user not found" },
+        { status: 401 }
+      );
     }
 
-    // 🔹 2. Create a real Order in our DB
-    const dbOrder = await prisma.order.create({
-      data: {
-        packageId: packageId,
-        userId: dbUser.id,
-        amountCents: amountEGP,
-        currency: "EGP",
-        status: "pending",
-      }
+    if (!pkg) {
+      return NextResponse.json(
+        { error: "Package not found" },
+        { status: 404 }
+      );
+    }
+
+    const body = (await req.json().catch(() => ({}))) as {
+      billing_data?: Partial<PaymobBillingData>;
+      idempotencyKey?: string;
+    };
+    const billing = body?.billing_data ?? {};
+
+    const fullBillingData: PaymobBillingData = {
+      first_name: billing.first_name || dbUser.username || "Customer",
+      last_name: billing.last_name || "User",
+      email: dbUser.email,
+      street: billing.street || "N/A",
+      building: billing.building || "N/A",
+      floor: billing.floor || "N/A",
+      apartment: billing.apartment || "N/A",
+      city: billing.city || "Cairo",
+      country: billing.country || "EGY",
+      phone_number: billing.phone_number || "+201000000000",
+    };
+
+    const rawIdempotencyKey =
+      req.headers.get("idempotency-key") || body?.idempotencyKey || null;
+    const paymobConfig = getPaymobConfig();
+
+    const outcome = await initiateAuthoritativePayment({
+      userId: dbUser.id,
+      packageId: pkg.id,
+      packagePrice: pkg.price,
+      packageCurrency: pkg.currency,
+      usdToEgpRate: paymobConfig.usdToEgpRate,
+      rawIdempotencyKey,
+      billingData: fullBillingData,
+      store: prismaPaymentStore,
+      createPaymobSession: ({ amountCents, currency, billingData }) =>
+        createPaymobCheckout({
+          apiKey: paymobConfig.apiKey,
+          integrationId: paymobConfig.integrationId,
+          amountCents,
+          currency,
+          billingData,
+        }),
     });
 
-    // 🔹 3. Create the PaymentSession linked to the REAL Order ID
-    const session = await prisma.paymentSession.create({
-      data: {
-        paymentToken: paymentKeyData.token,
-        orderId: dbOrder.id,
-        amount: amountEGP,
-      },
-    });
+    if (!outcome.ok) {
+      return applyCookies(
+        NextResponse.json(
+          { error: outcome.error },
+          { status: outcome.statusCode }
+        )
+      );
+    }
 
-    return NextResponse.json({
-      success: true,
-      sessionId: session.id,
-      paymentToken: session.paymentToken,
-      amount: amountEGP,
-    });
-  } catch (err: any) {
-    console.error("Payment API Route Error:", err.message || err);
+    return applyCookies(
+      NextResponse.json({
+        success: true,
+        sessionId: outcome.sessionId,
+        paymentToken: outcome.paymentToken,
+        amount: outcome.amount,
+        reused: outcome.reused,
+      })
+    );
+  } catch (err) {
+    console.error(
+      "Payment API Route Error:",
+      err instanceof Error ? err.message : "Unknown error"
+    );
     return NextResponse.json(
-      { error: err.message || "Payment initialization failed" },
+      { error: "Payment initialization failed" },
       { status: 500 }
     );
   }

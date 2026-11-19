@@ -1,0 +1,398 @@
+{
+  "exported_at": "2026-11-04T21:20:00+02:00",
+  "environment": "development_demo_neon_postgres",
+  "counts": {
+    "Package": 9,
+    "Image": 35,
+    "Order": 0,
+    "Payment": 0,
+    "Comment": 0,
+    "User": 3
+  },
+  "Package": [
+    {
+      "id": 1,
+      "URL": "/package1.webp",
+      "title1": "Florence City",
+      "title2": "Italy",
+      "price": 2400.0,
+      "duration": "2 days",
+      "des": "Discover Florence, the heart of the Italian Renaissance. Explore world-class museums, stunning cathedrals, and the vibrant streets filled with art, fashion, and history.",
+      "rating": 4.5,
+      "count": 20,
+      "ageRange": "0-99",
+      "maxGroupSize": 19,
+      "travelDuration": "3h",
+      "startTimeInfo": "Check availability",
+      "mobileTicket": true,
+      "liveGuideLanguages": [
+        "German",
+        "English",
+        "Italian"
+      ]
+    },
+    {
+      "id": 2,
+      "URL": "/package2.webp",
+      "title1": "Opera House",
+      "title2": "Australia",
+      "price": 1400.0,
+      "duration": "2 days",
+      "des": "Visit the iconic Sydney Opera House, a masterpiece of modern architecture. Experience breathtaking views of Sydney Harbour and immerse yourself in cultural performances.",
+      "rating": 4.0,
+      "count": 15,
+      "ageRange": "0-99",
+      "maxGroupSize": 19,
+      "travelDuration": "3h",
+      "startTimeInfo": "Check availability",
+      "mobileTicket": true,
+      "liveGuideLanguages": [
+        "German",
+        "English",
+        "Portuguese"
+      ]
+    },
+    {
+      "id": 3,
+      "URL": "/package3.webp",
+      "title1": "Eiffel Tower",
+      "title2": "France",
+      "price": 1400.0,
+      "duration": "2 days",
+      "des": "Experience the romance of Paris with a visit to the Eiffel Tower. Capture stunning views of the city and enjoy the charm of France\u2019s most iconic landmark.",
+      "rating": 4.7,
+      "count": 30,
+      "ageRange": "0-99",
+      "maxGroupSize": 19,
+      "travelDuration": "3h",
+      "startTimeInfo": "Check availability",
+      "mobileTicket": true,
+      "liveGuideLanguages": [
+        "German",
+        "English",
+        "French"
+      ]
+    },
+    {
+      "id": 4,
+      "URL": "/package4.webp",
+      "title1": "Victoria Peak",
+      "title2": "Hong Kong",
+      "price": 3400.0,
+      "duration": "2 days",
+      "des": "Enjoy panoramic views of Hong Kong from Victoria Peak. A must-visit spot offering stunning cityscapes, nature trails, and unforgettable sunsets.",
+      "rating": 4.8,
+      "count": 25,
+      "ageRange": "0-99",
+      "maxGroupSize": 19,
+      "travelDuration": "3h",
+      "startTimeInfo": "Check availability",
+      "mobileTicket": true,
+      "liveGuideLanguages": [
+        "Chinese",
+        "English"
+      ]
+    },
+    {
+      "id": 5,
+      "URL": "/package5.webp",
+      "title1": "Amazon Rainforest",
+      "title2": "Brazil",
+      "price": 2000.0,
+      "duration": "2 days",
+      "des": "Explore the breathtaking Amazon Rainforest. Discover exotic wildlife, lush greenery, and the incredible biodiversity of the world\u2019s largest tropical forest.",
+      "rating": 4.2,
+      "count": 18,
+      "ageRange": "0-99",
+      "maxGroupSize": 19,
+      "travelDuration": "3h",
+      "startTimeInfo": "Check availability",
+      "mobileTicket": true,
+      "liveGuideLanguages": [
+        "English",
+        "Portuguese"
+      ]
+    },
+    {
+      "id": 6,
+      "URL": "/package6.webp",
+      "title1": "Camden Market",
+      "title2": "London",
+      "price": 2400.0,
+      "duration": "2 days",
+      "des": "Dive into the vibrant culture of Camden Market. Shop unique crafts, fashion, and street food while enjoying London\u2019s most eclectic marketplace.",
+      "rating": 4.6,
+      "count": 22,
+      "ageRange": "0-99",
+      "maxGroupSize": 19,
+      "travelDuration": "3h",
+      "startTimeInfo": "Check availability",
+      "mobileTicket": true,
+      "liveGuideLanguages": [
+        "English",
+        "French"
+      ]
+    },
+    {
+      "id": 7,
+      "URL": "/package7.webp",
+      "title1": "Komodo Park",
+      "title2": "Indonesia",
+      "price": 2400.0,
+      "duration": "2 days",
+      "des": "Discover the wonders of Komodo National Park. See the legendary Komodo dragons and explore pristine beaches, crystal-clear waters, and rich marine life.",
+      "rating": 4.5,
+      "count": 16,
+      "ageRange": "0-99",
+      "maxGroupSize": 19,
+      "travelDuration": "3h",
+      "startTimeInfo": "Check availability",
+      "mobileTicket": true,
+      "liveGuideLanguages": [
+        "English",
+        "Indonesian"
+      ]
+    },
+    {
+      "id": 8,
+      "URL": "/package8.webp",
+      "title1": "Zurich City",
+      "title2": "Switzerland",
+      "price": 2400.0,
+      "duration": "2 days",
+      "des": "Experience the beauty of Zurich, Switzerland\u2019s cultural and financial hub. Wander through historic streets, enjoy lakeside views, and taste Swiss delights.",
+      "rating": 4.3,
+      "count": 12,
+      "ageRange": "0-99",
+      "maxGroupSize": 19,
+      "travelDuration": "3h",
+      "startTimeInfo": "Check availability",
+      "mobileTicket": true,
+      "liveGuideLanguages": [
+        "German",
+        "English",
+        "French"
+      ]
+    },
+    {
+      "id": 9,
+      "URL": "/package9.webp",
+      "title1": "Taj Mahal",
+      "title2": "India",
+      "price": 1400.0,
+      "duration": "2 days",
+      "des": "Visit the Taj Mahal, one of the Seven Wonders of the World. Marvel at the ivory-white marble and the love story behind this timeless monument.",
+      "rating": 4.9,
+      "count": 35,
+      "ageRange": "0-99",
+      "maxGroupSize": 19,
+      "travelDuration": "3h",
+      "startTimeInfo": "Check availability",
+      "mobileTicket": true,
+      "liveGuideLanguages": [
+        "Hindi",
+        "English"
+      ]
+    }
+  ],
+  "Image": [
+    {
+      "id": 1,
+      "url": "/img.webp",
+      "packageId": 1
+    },
+    {
+      "id": 2,
+      "url": "/img1.webp",
+      "packageId": 1
+    },
+    {
+      "id": 3,
+      "url": "/img2.webp",
+      "packageId": 1
+    },
+    {
+      "id": 4,
+      "url": "/th.webp",
+      "packageId": 1
+    },
+    {
+      "id": 5,
+      "url": "/c.webp",
+      "packageId": 2
+    },
+    {
+      "id": 6,
+      "url": "/c1.webp",
+      "packageId": 2
+    },
+    {
+      "id": 7,
+      "url": "/c2.webp",
+      "packageId": 2
+    },
+    {
+      "id": 8,
+      "url": "/c3.webp",
+      "packageId": 2
+    },
+    {
+      "id": 9,
+      "url": "/r1.webp",
+      "packageId": 3
+    },
+    {
+      "id": 10,
+      "url": "/r.webp",
+      "packageId": 3
+    },
+    {
+      "id": 11,
+      "url": "/r2.webp",
+      "packageId": 3
+    },
+    {
+      "id": 12,
+      "url": "/r4.webp",
+      "packageId": 3
+    },
+    {
+      "id": 13,
+      "url": "/t.webp",
+      "packageId": 4
+    },
+    {
+      "id": 14,
+      "url": "/t1.webp",
+      "packageId": 4
+    },
+    {
+      "id": 15,
+      "url": "/t2.webp",
+      "packageId": 4
+    },
+    {
+      "id": 16,
+      "url": "/a.webp",
+      "packageId": 5
+    },
+    {
+      "id": 17,
+      "url": "/a1.webp",
+      "packageId": 5
+    },
+    {
+      "id": 18,
+      "url": "/a2.webp",
+      "packageId": 5
+    },
+    {
+      "id": 19,
+      "url": "/a3.webp",
+      "packageId": 5
+    },
+    {
+      "id": 20,
+      "url": "/f.webp",
+      "packageId": 6
+    },
+    {
+      "id": 21,
+      "url": "/f1.webp",
+      "packageId": 6
+    },
+    {
+      "id": 22,
+      "url": "/f2.webp",
+      "packageId": 6
+    },
+    {
+      "id": 23,
+      "url": "/f3.webp",
+      "packageId": 6
+    },
+    {
+      "id": 24,
+      "url": "/k.webp",
+      "packageId": 7
+    },
+    {
+      "id": 25,
+      "url": "/k1.webp",
+      "packageId": 7
+    },
+    {
+      "id": 26,
+      "url": "/k2.webp",
+      "packageId": 7
+    },
+    {
+      "id": 27,
+      "url": "/k3.webp",
+      "packageId": 7
+    },
+    {
+      "id": 28,
+      "url": "/s.webp",
+      "packageId": 8
+    },
+    {
+      "id": 29,
+      "url": "/s1.webp",
+      "packageId": 8
+    },
+    {
+      "id": 30,
+      "url": "/s2.webp",
+      "packageId": 8
+    },
+    {
+      "id": 31,
+      "url": "/s3.webp",
+      "packageId": 8
+    },
+    {
+      "id": 32,
+      "url": "/q.webp",
+      "packageId": 9
+    },
+    {
+      "id": 33,
+      "url": "/q1.webp",
+      "packageId": 9
+    },
+    {
+      "id": 34,
+      "url": "/q2.webp",
+      "packageId": 9
+    },
+    {
+      "id": 35,
+      "url": "/q3.webp",
+      "packageId": 9
+    }
+  ],
+  "Order": [],
+  "Payment": [],
+  "Comment": [],
+  "User": [
+    {
+      "id": 1,
+      "username": "Alwakeel",
+      "email": "abdelrahmanhabib961@gmail.com",
+      "createdAt": "2026-04-23 23:30:41.881000"
+    },
+    {
+      "id": 2,
+      "username": "Elwakeel",
+      "email": "abdoalwakeel555@gmail.com",
+      "createdAt": "2026-04-29 16:24:11.742000"
+    },
+    {
+      "id": 3,
+      "username": "Test and",
+      "email": "teat@gmail.com",
+      "createdAt": "2026-05-05 09:35:35.862000"
+    }
+  ]
+}

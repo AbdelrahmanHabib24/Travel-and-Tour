@@ -1,36 +1,69 @@
-import { PrismaClient } from "@prisma/client";
-import {  PACKAGE } from "@/app/ulits/type";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { PACKAGE, type ItineraryItem } from "@/prisma/data/staticPackages";
+
+interface SeedPackage {
+  id: string;
+  URL: string;
+  title1: string;
+  title2: string;
+  price: string | number;
+  currency?: string;
+  duration: string;
+  durationDays?: number;
+  durationNights?: number | null;
+  itinerary?: ItineraryItem[];
+  isSampleData?: boolean;
+  des: string;
+  rating: number;
+  count: number;
+  ageRange?: string | null;
+  maxGroupSize?: number | null;
+  travelDuration?: string | null;
+  startTimeInfo?: string | null;
+  mobileTicket?: boolean;
+  liveGuideLanguages?: string[];
+  images?: string[];
+}
 
 const prisma = new PrismaClient();
 
 async function main() {
-
-  const allPackages = [ ...PACKAGE];
+  const allPackages: SeedPackage[] = [...PACKAGE];
 
   for (const pkg of allPackages) {
     await prisma.package.create({
       data: {
-        URL: pkg.URL.replace(/\.(jpg|jpeg|png)$/i, '.webp'),
+        URL: pkg.URL.replace(/\.(jpg|jpeg|png)$/i, ".webp"),
         title1: pkg.title1,
         title2: pkg.title2,
         price: Number(pkg.price),
+        currency: pkg.currency ?? "USD",
         duration: pkg.duration,
+        durationDays: pkg.durationDays ?? 3,
+        durationNights: pkg.durationNights ?? null,
+        itinerary: pkg.itinerary
+          ? (pkg.itinerary as unknown as Prisma.InputJsonValue)
+          : undefined,
+        isSampleData: pkg.isSampleData ?? true,
         des: pkg.des,
         rating: pkg.rating,
         count: pkg.count,
-        ageRange: (pkg as any).ageRange ?? null,
-        maxGroupSize: (pkg as any).maxGroupSize ?? null,
-        travelDuration: (pkg as any).travelDuration ?? null,
-        startTimeInfo: (pkg as any).startTimeInfo ?? null,
-        mobileTicket: (pkg as any).mobileTicket ?? false, 
-        liveGuideLanguages: (pkg as any).liveGuideLanguages ?? [],
+        ageRange: pkg.ageRange ?? null,
+        maxGroupSize: pkg.maxGroupSize ?? null,
+        travelDuration: pkg.travelDuration ?? null,
+        startTimeInfo: pkg.startTimeInfo ?? null,
+        mobileTicket: pkg.mobileTicket ?? false,
+        liveGuideLanguages: pkg.liveGuideLanguages ?? [],
         images: pkg.images
-          ? { create: pkg.images.map((url: string) => ({ url: url.replace(/\.(jpg|jpeg|png)$/i, '.webp') })) }
+          ? {
+              create: pkg.images.map((url: string) => ({
+                url: url.replace(/\.(jpg|jpeg|png)$/i, ".webp"),
+              })),
+            }
           : undefined,
       },
     });
   }
-
 }
 
 main()

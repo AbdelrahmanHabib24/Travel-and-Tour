@@ -1,5 +1,10 @@
+import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin("./lib/i18n/request.ts");
+
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
   images: {
     qualities: [75, 90],
     unoptimized: true,
@@ -7,7 +12,6 @@ const nextConfig = {
       { protocol: "https", hostname: "i.pravatar.cc" },
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "cdn.pixabay.com" },
-      { protocol: "https", hostname: "your-image-host.com", pathname: "/path/to/image/**" },
     ],
   },
   async rewrites() {
@@ -28,4 +32,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default withNextIntl(nextConfig);

@@ -1,13 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/app/ulits/prisma";
+import { prisma } from "@/lib/server/db/prisma";
+import { packageSearchQuerySchema } from "@/lib/validations/package";
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const city = searchParams.get("city") || "";
-    const maxPrice = parseFloat(searchParams.get("maxPrice") || "5000");
+    const parsed = packageSearchQuerySchema.safeParse({
+      city: searchParams.get("city") ?? undefined,
+      maxPrice: searchParams.get("maxPrice") ?? undefined,
+    });
 
-    const packagesRaw = await prisma.package.findMany({
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Invalid search query parameters" },
+        { status: 400 }
+      );
+    }
+
+    const { city, maxPrice } = parsed.data;
+
+    const packages = await prisma.package.findMany({
       where: {
         OR: [
           { title1: { contains: city, mode: "insensitive" } },
@@ -18,14 +30,12 @@ export async function GET(req: NextRequest) {
       include: { images: true },
     });
 
-    const packages = packagesRaw.filter(
-      (pkg, index, self) => index === self.findIndex((p) => p.id === pkg.id)
-    );
-
     return NextResponse.json(packages);
-
   } catch (err) {
-    console.error(err);
+    console.error(
+      "GET /api/packages error:",
+      err instanceof Error ? err.message : "Unknown error"
+    );
     return NextResponse.json(
       { error: "Failed to fetch packages" },
       { status: 500 }

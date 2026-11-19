@@ -1,0 +1,72 @@
+{
+  "brand": {
+    "name": "Passport",
+    "tagline": "Tour and Travel"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "blog": "Blog",
+    "packages": "Packages",
+    "testimonials": "Testimonials",
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "logoAlt": "Go to homepage",
+    "toggleMenu": "Toggle menu",
+    "mainNavAria": "Main Navigation"
+  },
+  "languageSwitcher": {
+    "ariaLabel": "Switch language",
+    "toggleTooltip": "تغيير اللغة إلى العربية",
+    "currentLanguage": "English",
+    "targetLanguage": "العربية"
+  },
+  "footer": {
+    "description": "Discover unforgettable travel experiences, curated packages, and world-class tours tailored to your dream destinations.",
+    "quickLinks": "Quick Links",
+    "popularDestinations": "Popular Destinations",
+    "newsletterTitle": "Subscribe to our Newsletter",
+    "newsletterSubtitle": "Get weekly updates, travel discounts, and insider itineraries.",
+    "newsletterPlaceholder": "Enter your email",
+    "subscribe": "Subscribe",
+    "subscribing": "Subscribing...",
+    "subscribedSuccess": "Thank you for subscribing with {email}!",
+    "privacyPolicy": "Privacy Policy",
+    "copyright": "All rights reserved.",
+    "homeAria": "Go to homepage",
+    "scrollToTop": "Scroll to top",
+    "newsletterFormAria": "Newsletter subscription form",
+    "followUs": "Follow us on {platform}"
+  },
+  "contactInfo": {
+    "title": "Contact Us",
+    "address": "123 Tourism Street, Suite 400, New York, NY",
+    "phone": "+1 (555) 234-5678",
+    "email": "support@passport-travel.com",
+    "hours": "Mon - Fri: 9:00 AM - 6:00 PM"
+  },
+  "payment": {
+    "sessionNotFound": "Payment session not found or has expired.",
+    "iframeTitle": "Paymob Secure Payment Gateway",
+    "loading": "Loading secure payment checkout...",
+    "backToPackages": "Back to Packages"
+  },
+  "actions": {
+    "submit": "Submit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "search": "Search",
+    "viewDetails": "View Details",
+    "bookNow": "Book Now",
+    "loadMore": "Load More",
+    "loading": "Loading..."
+  },
+  "errors": {
+    "general": "Something went wrong. Please try again.",
+    "network": "Network connection error. Please check your internet.",
+    "notFound": "The requested resource was not found."
+  }
+}
+

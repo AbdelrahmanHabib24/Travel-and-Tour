@@ -1,0 +1,72 @@
+{
+  "brand": {
+    "name": "باسبورت",
+    "tagline": "للسياحة والسفر"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "about": "من نحن",
+    "blog": "المدونة",
+    "packages": "الباقات",
+    "testimonials": "آراء العملاء",
+    "login": "تسجيل الدخول",
+    "signup": "إنشاء حساب",
+    "logout": "تسجيل الخروج",
+    "logoAlt": "الصفحة الرئيسية",
+    "toggleMenu": "القائمة",
+    "mainNavAria": "القائمة الرئيسية"
+  },
+  "languageSwitcher": {
+    "ariaLabel": "تغيير اللغة",
+    "toggleTooltip": "Switch language to English",
+    "currentLanguage": "العربية",
+    "targetLanguage": "English"
+  },
+  "footer": {
+    "description": "اكتشف تجارب سفر لا تُنسى وباقات مميزة وجولات سياحية عالمية مصممة خصيصاً لوجهات أحلامك.",
+    "quickLinks": "روابط سريعة",
+    "popularDestinations": "الوجهات الشهيرة",
+    "newsletterTitle": "اشترك في نشرتنا البريدية",
+    "newsletterSubtitle": "احصل على تحديثات أسبوعية وخصومات حصرية وبرامج سياحية مميزة.",
+    "newsletterPlaceholder": "أدخل بريدك الإلكتروني",
+    "subscribe": "اشتراك",
+    "subscribing": "جاري...",
+    "subscribedSuccess": "شكراً لاشتراكك معنا عبر {email}!",
+    "privacyPolicy": "سياسة الخصوصية",
+    "copyright": "جميع الحقوق محفوظة.",
+    "homeAria": "الصفحة الرئيسية",
+    "scrollToTop": "العودة إلى الأعلى",
+    "newsletterFormAria": "نموذج الاشتراك في النشرة البريدية",
+    "followUs": "تابعنا على {platform}"
+  },
+  "contactInfo": {
+    "title": "تواصل معنا",
+    "address": "123 شارع السياحة، جناح 400، نيويورك",
+    "phone": "+1 (555) 234-5678",
+    "email": "support@passport-travel.com",
+    "hours": "من الإثنين إلى الجمعة: 9:00 ص - 6:00 م"
+  },
+  "payment": {
+    "sessionNotFound": "جلسة الدفع غير موجودة أو انتهت صلاحيتها.",
+    "iframeTitle": "بوابة الدفع الآمنة باي موب",
+    "loading": "جاري تحميل بوابة الدفع الآمنة...",
+    "backToPackages": "العودة إلى الباقات"
+  },
+  "actions": {
+    "submit": "إرسال",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "search": "بحث",
+    "viewDetails": "عرض التفاصيل",
+    "bookNow": "احجز الآن",
+    "loadMore": "تحميل المزيد",
+    "loading": "جاري التحميل..."
+  },
+  "errors": {
+    "general": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+    "network": "خطأ في الاتصال بالشبكة. يرجى التحقق من الإنترنت.",
+    "notFound": "لم يتم العثور على المورد المطلوب."
+  }
+}
+

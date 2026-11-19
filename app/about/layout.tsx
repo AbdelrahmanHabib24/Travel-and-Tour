@@ -1,5 +1,5 @@
-import Header from "@/app/component/Header";
-import Footer from "@/app/component/Footer";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 export default function aboutLayout({ children }: { children: React.ReactNode }) {
   return (

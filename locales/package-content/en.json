@@ -1,0 +1,254 @@
+{
+  "1": {
+    "id": 1,
+    "title1": "Florence City",
+    "title2": "Italy",
+    "des": "Discover Florence, the heart of the Italian Renaissance. Explore world-class museums, stunning cathedrals, and the vibrant streets filled with art, fashion, and history.",
+    "duration": "3 days / 2 nights",
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival & Historic Duomo District",
+        "description": "Guided walk through Piazza del Duomo, Cathedral of Santa Maria del Fiore, and Baptistery of St. John."
+      },
+      {
+        "day": 2,
+        "title": "Renaissance Masterpieces & Ponte Vecchio",
+        "description": "Priority visit to the Uffizi Gallery, Accademia Gallery, and sunset walk across Ponte Vecchio to Oltrarno."
+      },
+      {
+        "day": 3,
+        "title": "Boboli Gardens & Piazzale Michelangelo Departure",
+        "description": "Morning exploration of Palazzo Pitti and Boboli Gardens, panoramic city views from Piazzale Michelangelo, and departure."
+      }
+    ]
+  },
+  "2": {
+    "id": 2,
+    "title1": "Opera House",
+    "title2": "Australia",
+    "des": "Visit the iconic Sydney Opera House, a masterpiece of modern architecture. Experience breathtaking views of Sydney Harbour and immerse yourself in cultural performances.",
+    "duration": "4 days / 3 nights",
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Circular Quay & Sydney Opera House Tour",
+        "description": "Welcome orientation at Circular Quay followed by an architectural guided tour of the Sydney Opera House."
+      },
+      {
+        "day": 2,
+        "title": "Sydney Harbour Bridge & The Rocks",
+        "description": "Guided heritage walk through The Rocks district, Royal Botanic Garden, and afternoon Sydney Harbour cruise."
+      },
+      {
+        "day": 3,
+        "title": "Bondi to Coogee Coastal Walk",
+        "description": "Scenic coastal exploration from Bondi Beach to Coogee with waterfront dining at Darling Harbour."
+      },
+      {
+        "day": 4,
+        "title": "Harbour Ferry & Departure",
+        "description": "Morning ferry across Sydney Harbour for skyline photography and departure transfers."
+      }
+    ]
+  },
+  "3": {
+    "id": 3,
+    "title1": "Eiffel Tower",
+    "title2": "France",
+    "des": "Experience the romance of Paris with a visit to the Eiffel Tower. Capture stunning views of the city and enjoy the charm of France’s most iconic landmark.",
+    "duration": "3 days / 2 nights",
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Champ de Mars, Trocadéro & Eiffel Tower Ascent",
+        "description": "Guided visit to Trocadéro Gardens, access to the Eiffel Tower viewing levels, and evening Seine river cruise."
+      },
+      {
+        "day": 2,
+        "title": "Historic Seine Landmarks & Montmartre",
+        "description": "Morning tour of the Louvre courtyard, Île de la Cité, and the artistic streets of Montmartre."
+      },
+      {
+        "day": 3,
+        "title": "Champs-Élysées, Arc de Triomphe & Departure",
+        "description": "Stroll along Avenue des Champs-Élysées to the Arc de Triomphe before afternoon departure."
+      }
+    ]
+  },
+  "4": {
+    "id": 4,
+    "title1": "Victoria Peak",
+    "title2": "Hong Kong",
+    "des": "Enjoy panoramic views of Hong Kong from Victoria Peak. A must-visit spot offering stunning cityscapes, nature trails, and unforgettable sunsets.",
+    "duration": "4 days / 3 nights",
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Peak Tram Ascent & Sky Terrace 428",
+        "description": "Historic Peak Tram ride to Victoria Peak for panoramic views over Victoria Harbour and Hong Kong Island."
+      },
+      {
+        "day": 2,
+        "title": "Star Ferry, Tsim Sha Tsui & Harbour Lights",
+        "description": "Harbour crossing on the Star Ferry, Kowloon waterfront promenade, and evening harbour light show."
+      },
+      {
+        "day": 3,
+        "title": "Lantau Island & Ngong Ping Highlands",
+        "description": "Cable car journey over Lantau Island, Po Lin Monastery, and scenic mountain walking trails."
+      },
+      {
+        "day": 4,
+        "title": "Central Heritage Markets & Departure",
+        "description": "Morning exploration of Hollywood Road and Central street markets before departure."
+      }
+    ]
+  },
+  "5": {
+    "id": 5,
+    "title1": "Amazon Rainforest",
+    "title2": "Brazil",
+    "des": "Explore the breathtaking Amazon Rainforest. Discover exotic wildlife, lush greenery, and the incredible biodiversity of the world’s largest tropical forest.",
+    "duration": "5 days / 4 nights",
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Manaus Arrival & Riverboat Transfer",
+        "description": "Welcome briefing in Manaus and scenic riverboat journey to the Amazon rainforest lodge."
+      },
+      {
+        "day": 2,
+        "title": "Meeting of the Waters & Canopy Walk",
+        "description": "Witness the confluence of the Rio Negro and Solimões rivers followed by a guided rainforest canopy walk."
+      },
+      {
+        "day": 3,
+        "title": "Flooded Forest Canoeing & Wildlife Spotting",
+        "description": "Canoe excursion through flooded forest channels searching for macaws, sloths, and pink river dolphins."
+      },
+      {
+        "day": 4,
+        "title": "Botanical Trail & Nocturnal River Safari",
+        "description": "Guided ethnobotanical walk learning about rainforest plants and an evening wildlife safari."
+      },
+      {
+        "day": 5,
+        "title": "Sunrise Birdwatching & Return to Manaus",
+        "description": "Early morning birdwatching along the riverbanks before returning to Manaus for departure."
+      }
+    ]
+  },
+  "6": {
+    "id": 6,
+    "title1": "Camden Market",
+    "title2": "London",
+    "des": "Dive into the vibrant culture of Camden Market. Shop unique crafts, fashion, and street food while enjoying London’s most eclectic marketplace.",
+    "duration": "3 days / 2 nights",
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Camden Lock, Stables Market & Regent's Canal",
+        "description": "Guided exploration of Camden's craft stalls, international street food, and a walk along Regent's Canal."
+      },
+      {
+        "day": 2,
+        "title": "Westminster, Big Ben & South Bank",
+        "description": "Classic London landmarks tour covering Westminster, Big Ben, the London Eye, and Millennium Bridge."
+      },
+      {
+        "day": 3,
+        "title": "Tower Bridge, Thames Walk & Departure",
+        "description": "Morning visit to Tower Bridge and the Thames riverside before departure."
+      }
+    ]
+  },
+  "7": {
+    "id": 7,
+    "title1": "Komodo Park",
+    "title2": "Indonesia",
+    "des": "Discover the wonders of Komodo National Park. See the legendary Komodo dragons and explore pristine beaches, crystal-clear waters, and rich marine life.",
+    "duration": "5 days / 4 nights",
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Labuan Bajo Arrival & Sunset Island Cruise",
+        "description": "Harbour check-in at Labuan Bajo and sunset boat excursion across the Flores Sea."
+      },
+      {
+        "day": 2,
+        "title": "Padar Island Sunrise Trek & Pink Beach",
+        "description": "Early hike to Padar Island's panoramic viewpoint followed by snorkeling at Pink Beach."
+      },
+      {
+        "day": 3,
+        "title": "Komodo Island Ranger Walk & Taka Makassar",
+        "description": "Guided ranger trek to observe Komodo dragons in their natural habitat and sandbar visit."
+      },
+      {
+        "day": 4,
+        "title": "Manta Point Snorkeling & Kanawa Island",
+        "description": "Drift snorkeling at Manta Point and relaxing over the coral reefs of Kanawa Island."
+      },
+      {
+        "day": 5,
+        "title": "Labuan Bajo Harbour & Departure",
+        "description": "Morning harbour return and transfer for departure."
+      }
+    ]
+  },
+  "8": {
+    "id": 8,
+    "title1": "Zurich City",
+    "title2": "Switzerland",
+    "des": "Experience the beauty of Zurich, Switzerland’s cultural and financial hub. Wander through historic streets, enjoy lakeside views, and taste Swiss delights.",
+    "duration": "4 days / 3 nights",
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Old Town (Altstadt), Fraumünster & Limmatquai",
+        "description": "Guided walking tour of historic guild houses, Fraumünster, Grossmünster, and Lindenhof hill."
+      },
+      {
+        "day": 2,
+        "title": "Lake Zurich Cruise & Bahnhofstrasse",
+        "description": "Scenic boat cruise on Lake Zurich with a visit to local Swiss chocolatiers and Bahnhofstrasse."
+      },
+      {
+        "day": 3,
+        "title": "Uetliberg Mountain Panorama & Kunsthaus",
+        "description": "Train ride up Uetliberg for sweeping views of Zurich and the Alps, followed by the Kunsthaus museum."
+      },
+      {
+        "day": 4,
+        "title": "Zurich-West Viadukt & Departure",
+        "description": "Morning visit to Zurich-West's historic Viadukt arches before departure."
+      }
+    ]
+  },
+  "9": {
+    "id": 9,
+    "title1": "Taj Mahal",
+    "title2": "India",
+    "des": "Visit the Taj Mahal, one of the Seven Wonders of the World. Marvel at the ivory-white marble and the love story behind this timeless monument.",
+    "duration": "3 days / 2 nights",
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Agra Arrival & Mehtab Bagh Sunset View",
+        "description": "Transfer to Agra and evening views of the Taj Mahal across the Yamuna River from Mehtab Bagh gardens."
+      },
+      {
+        "day": 2,
+        "title": "Sunrise at the Taj Mahal & Agra Fort",
+        "description": "Guided sunrise tour inside the Taj Mahal complex followed by the UNESCO-listed Agra Fort."
+      },
+      {
+        "day": 3,
+        "title": "Fatehpur Sikri Excursion & Departure",
+        "description": "Morning visit to historic Fatehpur Sikri and marble inlay workshops before departure."
+      }
+    ]
+  }
+}
+

@@ -1,0 +1,22 @@
+{
+  "featured": {
+    "title": "Bali: A Hidden Paradise",
+    "readMore": "Read More"
+  },
+  "readMore": "Read More",
+  "posts": {
+    "1": {
+      "title": "Exploring the Hidden Gems of Bali",
+      "excerpt": "Discover the serene beaches and lush jungles of Bali. This post covers off-the-beaten-path destinations."
+    },
+    "2": {
+      "title": "Top 15 Must-Visit Destinations in Europe",
+      "excerpt": "From the Eiffel Tower in Paris to the canals of Venice, here are the top 15 destinations every traveler should experience."
+    },
+    "3": {
+      "title": "A Guide to Sustainable Travel",
+      "excerpt": "Sustainable travel is the future. Learn how you can reduce your carbon footprint while exploring the world."
+    }
+  }
+}
+

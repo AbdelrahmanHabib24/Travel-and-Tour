@@ -1,11 +1,13 @@
 "use client";
+
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Form from "@/app/component/Form";
-import { z } from "zod";
-import { serverSignupSchema } from "@/app/ulits/zod";
+import Form from "@/features/auth/components/SignupForm";
+import { SignupFormValues } from "@/features/auth/validation/authSchemas";
+import { authService } from "@/features/auth/services/auth.service";
+import { useTranslations } from "next-intl";
 
-type SignupFormData = z.infer<typeof serverSignupSchema>;
+type SignupFormData = SignupFormValues;
 
 const Signup: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -13,19 +15,14 @@ const Signup: React.FC = () => {
     Record<string, string[] | undefined>
   >({});
   const router = useRouter();
+  const t = useTranslations("signup");
 
   const handleSignup = async (data: SignupFormData) => {
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const { ok, data: result } = await authService.signup(data);
 
-      const result = await res.json();
-
-      if (!res.ok) {
+      if (!ok) {
         if (result.errors) {
           setServerErrors(result.errors);
         } else if (result.message) {
@@ -37,25 +34,25 @@ const Signup: React.FC = () => {
       router.push("/Login");
     } catch (error) {
       console.error("Error during signup:", error);
-      setServerErrors({ general: ["Something went wrong. Please try again."] });
+      setServerErrors({
+        general: [t("errors.serverError")],
+      });
     } finally {
       setLoading(false);
     }
   };
 
-return (
-  <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-    <div className="w-full max-w-md rounded-2xl  ">
-      <Form
-        onSubmitForm={handleSignup}
-        loading={loading}
-        serverErrors={serverErrors}
-      />
+  return (
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-orange-50 to-white">
+      <div className="w-full max-w-md rounded-2xl">
+        <Form
+          onSubmitForm={handleSignup}
+          loading={loading}
+          serverErrors={serverErrors}
+        />
+      </div>
     </div>
-  </div>
-);
-
-
+  );
 };
 
 export default Signup;

@@ -5,6 +5,7 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./features/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -28,7 +29,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        nunito: ['var(--font-nunito)'],
+        nunito: ['var(--font-nunito)', 'sans-serif'],
+        cairo: ['var(--font-cairo)', 'sans-serif'],
       },
       backgroundImage: {
         hero: "url('/src/assets/bgecom.png')",

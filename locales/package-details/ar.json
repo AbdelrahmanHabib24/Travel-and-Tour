@@ -1,0 +1,82 @@
+{
+  "tabs": {
+    "overview": "نظرة عامة",
+    "details": "تفاصيل الرحلة",
+    "reviews": "التقييمات"
+  },
+  "overview": {
+    "aboutTrip": "عن هذه الرحلة السياحية",
+    "priceLabel": "السعر",
+    "startingFrom": "ابتداءً من",
+    "ratingLabel": "التقييم",
+    "sections": "أقسام الرحلة",
+    "gallery": "صور الرحلة"
+  },
+  "booking": {
+    "bookNow": "احجز هذه الباقة",
+    "reserve": "احجز الآن",
+    "processing": "جاري المعالجة...",
+    "pricePerPerson": "السعر للشخص الواحد",
+    "total": "الإجمالي",
+    "selectDate": "حدد تاريخ المغادرة",
+    "guests": "عدد المسافرين",
+    "instantConfirmation": "تأكيد فوري للحجز",
+    "mobileTicket":"تذكرة إلكترونية",
+    "guidedTour": "جولة بصحبة مرشد",
+    "freeCancellation": "إلغاء مجاني حتى 48 ساعة قبل موعد الرحلة",
+
+    "loginRequired": "يرجى تسجيل الدخول لإتمام الحجز.",
+    "paymentFailed": "تعذر إتمام عملية الدفع حالياً. يرجى المحاولة لاحقاً.",
+    "summary": "ملخص الحجز",
+    "availabilityUnknown": "لا تتوفر معلومات مباشرة عن مواعيد الرحلة والأماكن المتاحة."
+  },
+  "itinerary": {
+    "title": "برنامج الرحلة يوماً بيوم",
+    "day": "اليوم {day}",
+    "noItinerary": "يتم توفير تفاصيل البرنامج اليومي فور تأكيد الحجز.",
+    "viewItinerary": "عرض برنامج الرحلة",
+    "close": "إغلاق"
+  },
+  "highlights": {
+    "title": "أبرز مميزات الرحلة",
+    "ageRange": "الفئة العمرية",
+    "maxGroupSize": "الحد الأقصى للمجموعة",
+    "duration": "المدة",
+    "startTime": "وقت الانطلاق",
+    "mobileTicket": "تذكرة إلكترونية",
+    "liveGuide": "مرشد سياحي مباشر",
+    "allAges": "مناسب لجميع الأعمار",
+    "flexible": "مواعيد مرنة",
+    "accepted": "مقبولة عبر الهاتف",
+    "unavailable": "غير متوفر",
+    "additionalInfo": "معلومات إضافية",
+    "noAdditionalInfo": "لا تتوفر تفاصيل إضافية لهذه الرحلة حالياً."
+  },
+  "comments": {
+    "title": "التعليقات",
+    "addedSuccess": "تمت إضافة تعليقك بنجاح!",
+    "loginRequired": "يرجى تسجيل الدخول لإضافة تعليق.",
+    "updatedSuccess": "تم تعديل التعليق بنجاح!",
+    "deletedSuccess": "تم حذف التعليق بنجاح.",
+    "addFailed": "فشل في إضافة التعليق.",
+    "editFailed": "فشل في تعديل التعليق.",
+    "deleteFailed": "فشل في حذف التعليق.",
+    "editTitle": "تعديل التعليق:",
+    "editBtn": "تعديل",
+    "deleteConfirm": "هل أنت متأكد من حذف هذا التعليق؟",
+    "deleteBtn": "حذف"
+  },
+  "reviews": {
+    "title": "آراء المسافرين",
+    "noReviews": "لا توجد تقييمات بعد. كن أول من يشارك تجربته!",
+    "addReview": "أضف تقييمك",
+    "placeholder": "اكتب رأيك وتجربتك هنا...",
+    "submit": "إرسال التقييم",
+    "loginToReview": "يرجى تسجيل الدخول لكتابة تقييم.",
+    "submitting": "جاري الإرسال..."
+  },
+  "errors": {
+    "loadFailed": "تعذر تحميل بيانات الباقة.",
+    "notFound": "لم يتم العثور على الباقة المطلوبة."
+  }
+}

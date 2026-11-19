@@ -1,4 +1,4 @@
-import Header from "@/app/component/Header";
+import Header from "@/components/layout/Header";
 export default function PaymentLayout({
   children,
 }: {

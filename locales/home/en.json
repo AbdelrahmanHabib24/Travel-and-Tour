@@ -1,0 +1,100 @@
+{
+  "hero": {
+    "title": "Travel To Any Corner In The World",
+    "mainHeading": "Make Your Tour Amazing With Us",
+    "searchBadge": "Search For Your Trip",
+    "searchFormTitle": "Search for your trip",
+    "searchDestination": "Select your destination:",
+    "selectDestination": "Select a city...",
+    "selectDate": "Select your date:",
+    "selectDatePlaceholder": "Select a date...",
+    "calendarAriaLabel": "Choose travel date",
+    "maxPrice": "Max Price:",
+    "searchButton": "Search",
+    "searching": "Searching...",
+    "videoError": "Failed to load the video. Please try again later.",
+    "videoNotSupported": "Your browser does not support the video tag.",
+    "destinations": {
+      "Italy": "Italy",
+      "France": "France",
+      "Australia": "Australia",
+      "Hong Kong": "Hong Kong",
+      "Brazil": "Brazil",
+      "London": "London",
+      "Indonesia": "Indonesia",
+      "Switzerland": "Switzerland",
+      "India": "India"
+    }
+  },
+  "services": {
+    "badge": "What We Offer",
+    "title": "We Offer Best Services",
+    "subtitle": "Comprehensive travel management designed to give you peace of mind from departure to return.",
+    "items": {
+      "guide": {
+        "title": "Expert Tour Guides",
+        "description": "Professional, certified local guides who bring every historic and cultural site to life."
+      },
+      "booking": {
+        "title": "Easy & Fast Booking",
+        "description": "Seamless online reservations with instant confirmation and flexible cancellation policies."
+      },
+      "custom": {
+        "title": "Customized Itineraries",
+        "description": "Personalized travel schedules customized to match your exact interests, pace, and budget."
+      },
+      "support": {
+        "title": "24/7 Dedicated Support",
+        "description": "Our travel concierge is available around the clock to support you during your entire journey."
+      }
+    },
+    "featuredDestinations": {
+      "Brazil": "Brazil",
+      "England": "England",
+      "France": "France",
+      "Australia": "Australia",
+      "California": "California",
+      "Germany": "Germany",
+      "HongKong": "Hong Kong",
+      "India": "India"
+    },
+    "featureAria": "Featured destination: {destination}"
+  },
+  "testimonials": {
+    "badge": "HAPPY CUSTOMER",
+    "title": "Testimonials",
+    "items": [
+      {
+        "title": "James Martinez",
+        "profession": "Director , Nova Gold",
+        "url": "/person-1.webp",
+        "desc": "Fanstastic destinations , knowledgeable guides , seamless logistics. Spectacular views and memories. Exceeded expectations; worth every penny"
+      },
+      {
+        "title": "Sophia Anderson",
+        "profession": "Manager , Safe City",
+        "url": "/person-2.webp",
+        "desc": "Unforgettable adventures, expert planning, and personalized experiences. Breathtaking landscapes and genuine connections. Truly a dream trip; every moment was priceless."
+      },
+      {
+        "title": "Oliver King",
+        "profession": "Adventure Specialist, Travel Beyond",
+        "url": "/person-3.webp",
+        "desc": "Inspiring travel experiences, precise planning, and unique itineraries. Breathtaking sights and rich encounters. A remarkable journey; a priceless investment in exploration!"
+      },
+      {
+        "title": "Daniel Thompson",
+        "profession": "Event Coordinator, Urban Escapes",
+        "url": "/person-4.webp",
+        "desc": "Incredible experiences, meticulous organization, and custom itineraries. Stunning sights and memorable encounters. A remarkable journey; a true value for the investment."
+      },
+      {
+        "title": "Ali Khan",
+        "profession": "Ceo, High Chase",
+        "url": "/person-5.webp",
+        "desc": "Exceptional adventures, seamless planning, and curated experiences. Breathtaking views and unforgettable stories. Truly a life-changing trip; every moment was invaluable."
+      }
+    ]
+  }
+}
+
