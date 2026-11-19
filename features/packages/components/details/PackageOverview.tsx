@@ -33,7 +33,7 @@ export const PackageOverview: React.FC<PackageOverviewProps> = ({
       autoplay: false,
       rtl: isRTL,
     }),
-    [isRTL, galleryImages.length]
+    [isRTL, galleryImages.length],
   );
 
   return (
@@ -64,15 +64,18 @@ export const PackageOverview: React.FC<PackageOverviewProps> = ({
             <Slider key={locale} {...sliderSettings}>
               {galleryImages.map((img) => (
                 <div key={img.id}>
-                  <div className="relative h-[240px] sm:h-[340px] md:h-[400px] w-full">
-                    <Image
-                      src={img.url}
-                      alt={title}
-                      fill
-                      sizes="(max-width: 1024px) 100vw, 896px"
-                      className="object-cover"
-                      loading="lazy"
-                    />
+                  <div className="relative h-[280px] sm:h-[340px] md:h-[400px] w-full">
+                    <div key={img.id}>
+                      <Image
+                        src={img.url}
+                        alt={title}
+                        width={1200}
+                        height={800}
+                        sizes="(max-width: 1024px) 100vw, 896px"
+                        className="w-full h-auto"
+                        loading="lazy"
+                      />
+                    </div>
                   </div>
                 </div>
               ))}
