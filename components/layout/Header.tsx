@@ -109,7 +109,6 @@ const Header: React.FC = () => {
               linkStyles="hover:text-secondary cursor-pointer text-tertiary font-medium"
             />
             <div className="flex flex-col items-center gap-y-3 pb-6 px-6 border-t border-gray-100 pt-4">
-              <LanguageSwitcher />
               {user.isLoggedIn ? (
                 <button
                   type="button"
