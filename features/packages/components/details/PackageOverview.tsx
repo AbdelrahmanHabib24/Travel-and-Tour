@@ -1,10 +1,9 @@
-import React, { useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import Slider from "react-slick";
+import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
 import { motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import type { PackageImage } from "../../types";
 
 export interface PackageOverviewProps {
@@ -21,20 +20,47 @@ export const PackageOverview: React.FC<PackageOverviewProps> = ({
   const t = useTranslations("package-details");
   const locale = useLocale();
   const isRTL = locale === "ar";
+  const hasMultipleImages = galleryImages.length > 1;
 
-  const sliderSettings = useMemo(
-    () => ({
-      dots: true,
-      infinite: galleryImages.length > 1,
-      arrows: false,
-      speed: 500,
-      slidesToShow: 1,
-      slidesToScroll: 1,
-      autoplay: false,
-      rtl: isRTL,
-    }),
-    [isRTL, galleryImages.length],
+  const plugins = useMemo(() => {
+    if (!hasMultipleImages) return [];
+    return [
+      Autoplay({
+        delay: 4000,
+        stopOnMouseEnter: true,
+        stopOnInteraction: false,
+      }),
+    ];
+  }, [hasMultipleImages]);
+
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop: hasMultipleImages,
+      direction: isRTL ? "rtl" : "ltr",
+      duration: 25,
+    },
+    plugins
   );
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    // Ensure autoplay starts when ready
+    const autoplay = emblaApi.plugins()?.autoplay;
+    if (autoplay && hasMultipleImages) {
+      autoplay.play();
+    }
+
+    const onSelect = () => {
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+    };
+    emblaApi.on("select", onSelect);
+    return () => {
+      emblaApi.off("select", onSelect);
+    };
+  }, [emblaApi, hasMultipleImages]);
 
   return (
     <motion.div
@@ -58,28 +84,63 @@ export const PackageOverview: React.FC<PackageOverviewProps> = ({
       )}
 
       {/* Photos Gallery (when multiple images are available) */}
-      {galleryImages.length > 1 && (
+      {hasMultipleImages && (
         <section aria-label={t("overview.gallery")} className="pt-2">
-          <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-            <Slider key={locale} {...sliderSettings}>
-              {galleryImages.map((img) => (
-                <div key={img.id}>
-                  <div className="relative h-[280px] sm:h-[340px] md:h-[400px] w-full">
-                    <div key={img.id}>
-                      <Image
-                        src={img.url}
-                        alt={title}
-                        width={1200}
-                        height={800}
-                        sizes="(max-width: 1024px) 100vw, 896px"
-                        className="w-full h-auto"
-                        loading="lazy"
-                      />
-                    </div>
-                  </div>
+          <div
+            key={locale}
+            className="overflow-hidden rounded-2xl shadow-sm ring-1 ring-gray-100"
+            ref={emblaRef}
+          >
+            <div className="flex touch-pan-y">
+              {galleryImages.map((img, index) => (
+                <div
+                  key={img.id}
+                  className="relative min-w-0 flex-[0_0_100%] aspect-video bg-gray-100"
+                >
+                  <Image
+                    src={img.url}
+                    alt={`${title} - ${index + 1}`}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 896px"
+                    className="object-cover object-center"
+                    loading={index === 0 ? "eager" : "lazy"}
+                  />
                 </div>
               ))}
-            </Slider>
+            </div>
+          </div>
+
+          {/* Pagination Dots */}
+          <div
+            role="tablist"
+            aria-label={t("overview.gallery")}
+            className="mt-4 flex items-center justify-center gap-1.5"
+          >
+            {galleryImages.map((_, index) => {
+              const isSelected = selectedIndex === index;
+              return (
+                <button
+                  key={index}
+                  type="button"
+                  role="tab"
+                  aria-selected={isSelected}
+                  aria-label={`${t("overview.gallery")} ${index + 1} / ${galleryImages.length}`}
+                  onClick={() => {
+                    setSelectedIndex(index);
+                    emblaApi?.scrollTo(index);
+                  }}
+                  className="flex h-6 items-center justify-center px-1 rounded-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
+                >
+                  <span
+                    className={`block h-2.5 rounded-full transition-all duration-300 ${
+                      isSelected
+                        ? "w-7 bg-secondary"
+                        : "w-2.5 bg-gray-300 hover:bg-gray-400"
+                    }`}
+                  />
+                </button>
+              );
+            })}
           </div>
         </section>
       )}
