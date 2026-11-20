@@ -71,8 +71,8 @@ export const ChatEmptyState: React.FC<ChatEmptyStateProps> = ({
   const t = useTranslations("sunny");
 
   return (
-    <div className="min-h-full flex flex-col items-center justify-between text-center py-1">
-      <div className="flex flex-col items-center">
+    <div className="min-h-full flex flex-col items-center gap-5 sm:gap-6 lg:gap-4 text-center pt-4 pb-1 sm:pt-5 sm:pb-1 lg:py-1">
+      <div className="flex flex-col items-center my-auto lg:my-0">
         <div className="w-28 h-28 sm:w-[118px] sm:h-[118px] relative flex items-center justify-center select-none shrink-0">
           <Image
             src="/sunny-welcome.webp"
@@ -88,13 +88,13 @@ export const ChatEmptyState: React.FC<ChatEmptyStateProps> = ({
           <span aria-hidden="true">👋</span>
         </h3>
 
-        <p className="text-[12.5px] text-[#64748B] leading-snug max-w-[305px] mt-1 mb-2.5">
+        <p className="text-[12.5px] text-[#64748B] leading-snug max-w-[305px] mt-1 lg:mb-2.5">
           {welcomeBody}
         </p>
       </div>
 
       {/* Three Initial Starter Suggestion Buttons Grounded in Real Inventory */}
-      <div className="w-full space-y-2 pb-0.5">
+      <div className="w-full space-y-2 pb-0.5 lg:mt-auto">
         {welcomeSuggestions.map((suggestion) => (
           <button
             key={suggestion.text}
